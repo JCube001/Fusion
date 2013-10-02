@@ -1,0 +1,21 @@
+#######################################
+# Syntax Coloring Map for Fusion
+#
+# Datatypes (KEYWORD1)
+# Methods and Functions (KEYWORD2)
+# Constants (LITERAL1)
+#######################################
+
+Filter	KEYWORD1
+setAccelXYZ	KEYWORD2
+setCompassXYZ	KEYWORD2
+setGyroXYZ	KEYWORD2
+
+ComplementaryFilter	KEYWORD1
+setAlpha	KEYWORD2
+setDeltaTime	KEYWORD2
+useCompass	KEYWORD2
+
+KalmanFilter	KEYWORD1
+KalmanExtendedFilter	KEYWORD1
+
