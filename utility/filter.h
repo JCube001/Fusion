@@ -3,15 +3,19 @@
 
 #include <math.h>
 
-#if (ARDUINO >= 100)
- #include "Arduino.h"
+#if !defined(_FUSION_TEST)
+  #if (ARDUINO >= 100)
+    #include "Arduino.h"
+  #else
+    #include "WProgram.h"
+  #endif
 #else
- #include "WProgram.h"
+  #define PI  (M_PI)
 #endif
 
 #include "quaternion.h"
 
-#define RAD_TO_DEG  (180.0 / PI)
+#define RAD_TO_DEG  (180.0F / PI)
 
 class Filter {
 public:
