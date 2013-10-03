@@ -1,7 +1,7 @@
 #include "complementary.h"
 
 ComplementaryFilter::ComplementaryFilter(void)
-  : angle({0, 0, 0}),
+  : angle{0, 0, 0},
     _alpha(0),
     _deltaTime(0)
 {

@@ -1,9 +1,9 @@
 #include "filter.h"
 
 Filter::Filter(void)
-  : _accelData({0, 0, 0}),
-    _compassData({0, 0, 0}),
-    _gyroData({0, 0, 0})
+  : _accelData{0, 0, 0},
+    _compassData{0, 0, 0},
+    _gyroData{0, 0, 0}
 {
 }
 
