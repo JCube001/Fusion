@@ -10,12 +10,13 @@ Filter	KEYWORD1
 setAccelXYZ	KEYWORD2
 setCompassXYZ	KEYWORD2
 setGyroXYZ	KEYWORD2
+process	KEYWORD2
 
 ComplementaryFilter	KEYWORD1
 setAlpha	KEYWORD2
 setDeltaTime	KEYWORD2
-useCompass	KEYWORD2
 
 KalmanFilter	KEYWORD1
+
 KalmanExtendedFilter	KEYWORD1
 

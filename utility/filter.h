@@ -1,11 +1,15 @@
 #ifndef _FILTER_H
 #define _FILTER_H
 
+#include <math.h>
+
 #if (ARDUINO >= 100)
  #include "Arduino.h"
 #else
  #include "WProgram.h"
 #endif
+
+#include "quaternion.h"
 
 #define RAD_TO_DEG  (180.0 / PI)
 
@@ -20,9 +24,9 @@ public:
   virtual void process(void) = 0;
   
 protected:
-  float accelData[3];
-  float compassData[3];
-  float gyroData[3];
+  float _accelData[3];
+  float _compassData[3];
+  float _gyroData[3];
 };
 
 #endif

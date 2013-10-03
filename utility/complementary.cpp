@@ -1,25 +1,22 @@
 #include "complementary.h"
 
-ComplementaryFilter::ComplementaryFilter(void) {
-  this->angle.roll = 0;
-  this->angle.pitch = 0;
-  this->angle.yaw = 0;
-  
-  this->deltaTime = 0;
-  this->alpha = 0;
-  this->findYaw = false;
+ComplementaryFilter::ComplementaryFilter(void)
+  : angle({0, 0, 0}),
+    _alpha(0),
+    _deltaTime(0)
+{
 }
 
 void ComplementaryFilter::setAlpha(const float a) {
   if (a >= 0 && a <= 1)
-    this->alpha = a;
+    this->_alpha = a;
 }
 
 void ComplementaryFilter::setDeltaTime(const float dt) {
   if (dt > 0)
-    this->deltaTime = dt;
+    this->_deltaTime = dt;
   else
-    this->deltaTime = 0;
+    this->_deltaTime = 0;
 }
 
 void ComplementaryFilter::process(void) {
@@ -27,19 +24,19 @@ void ComplementaryFilter::process(void) {
   float yawHeading;
   
   // Accumulate the change in gyroscope position
-  this->angle.roll += this->gyroData[0] * this->deltaTime;
-  this->angle.pitch += this->gyroData[1] * this->deltaTime;
-  this->angle.yaw += this->gyroData[2] * this->deltaTime;
+  this->angle.roll += this->_gyroData[0] * this->_deltaTime;
+  this->angle.pitch += this->_gyroData[1] * this->_deltaTime;
+  this->angle.yaw += this->_gyroData[2] * this->_deltaTime;
   
   // Turning around the Y axis results in a vector on the X axis
-  rollAcc = atan2(this->accelData[1], this->accelData[2]) * RAD_TO_DEG;
-  this->angle.roll = (this->angle.roll * this->alpha) + (rollAcc * (1 - this->alpha));
+  rollAcc = atan2(this->_accelData[1], this->_accelData[2]) * RAD_TO_DEG;
+  this->angle.roll = (this->angle.roll * this->_alpha) + (rollAcc * (1 - this->_alpha));
   
   // Turning around the X axis results in a vector on the Y axis
-  pitchAcc = atan2(this->accelData[0], this->accelData[2]) * RAD_TO_DEG;
-  this->angle.pitch = (this->angle.pitch * this->alpha) + (pitchAcc * (1 - this->alpha));
+  pitchAcc = atan2(this->_accelData[0], this->_accelData[2]) * RAD_TO_DEG;
+  this->angle.pitch = (this->angle.pitch * this->_alpha) + (pitchAcc * (1 - this->_alpha));
   
   // Angle of the vector y,x is the compass heading
-  yawHeading = atan2(this->compassData[1], this->compassData[0]) * RAD_TO_DEG;
-  this->angle.yaw = (this->angle.yaw * this->alpha) + (yawHeading * (1 - this->alpha));
+  yawHeading = atan2(this->_compassData[1], this->_compassData[0]) * RAD_TO_DEG;
+  this->angle.yaw = (this->angle.yaw * this->_alpha) + (yawHeading * (1 - this->_alpha));
 }

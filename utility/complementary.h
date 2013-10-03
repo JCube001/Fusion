@@ -1,14 +1,6 @@
 #ifndef _COMPLEMENTARY_H
 #define _COMPLEMENTARY_H
 
-#include <math.h>
-
-#if (ARDUINO >= 100)
- #include "Arduino.h"
-#else
- #include "WProgram.h"
-#endif
-
 #include "filter.h"
 
 class ComplementaryFilter : public Filter {
@@ -30,14 +22,8 @@ public:
   void process(void);
 
 protected:
-  // The percentage of gyroscope data to use
-  float alpha;
-  
-  // The time in seconds since the last good sensor reading
-  float deltaTime;
-  
-  // Choose between 6 and 9 DoF
-  bool findYaw;
+  float _alpha;      // The percentage of gyroscope data to use
+  float _deltaTime;  // The time in seconds since the last good sensor reading
 };
 
 #endif
