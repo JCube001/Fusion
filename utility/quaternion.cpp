@@ -1,7 +1,7 @@
 #include "quaternion.h"
 
 Quaternion::Quaternion(void)
-  : W(1.0F), X(0.0F), Y(0.0F), Z(0.0F)
+  : W(0.0F), X(0.0F), Y(0.0F), Z(0.0F)
 {
 }
 
@@ -10,18 +10,30 @@ Quaternion::Quaternion(float w, float x, float y, float z)
 {
 }
 
-bool Quaternion::operator==(const Quaternion& other) const {
+Quaternion::Quaternion(const Quaternion& other)
+  : W(other.W), X(other.X), Y(other.Y), Z(other.Z)
+{
+}
+
+Quaternion::~Quaternion()
+{
+}
+
+bool Quaternion::operator==(const Quaternion& other) const
+{
   return ((W == other.W) &&
           (X == other.X) &&
           (Y == other.Y) &&
           (Z == other.Z));
 }
 
-bool Quaternion::operator!=(const Quaternion& other) const {
+bool Quaternion::operator!=(const Quaternion& other) const
+{
   return !(*this == other);
 }
 
-inline Quaternion& Quaternion::operator=(const Quaternion& other) {
+inline Quaternion& Quaternion::operator=(const Quaternion& other)
+{
   W = other.W;
   X = other.X;
   Y = other.Y;
@@ -29,15 +41,18 @@ inline Quaternion& Quaternion::operator=(const Quaternion& other) {
   return *this;
 }
 
-Quaternion Quaternion::operator+(const Quaternion& other) const {
+Quaternion Quaternion::operator+(const Quaternion& other) const
+{
   return Quaternion(W + other.W, X + other.X, Y + other.Y, Z + other.Z);
 }
 
-Quaternion& Quaternion::operator+=(const Quaternion& other) {
+Quaternion& Quaternion::operator+=(const Quaternion& other)
+{
   return (*this = other + (*this));
 }
 
-Quaternion Quaternion::operator*(const Quaternion& other) const {
+Quaternion Quaternion::operator*(const Quaternion& other) const
+{
   Quaternion ret;
   
   ret.W = (W * other.W) - (X * other.X) - (Y * other.Y) - (Z * other.Z);
@@ -48,7 +63,8 @@ Quaternion Quaternion::operator*(const Quaternion& other) const {
   return ret;
 }
 
-Quaternion& Quaternion::operator*=(const Quaternion& other) {
+Quaternion& Quaternion::operator*=(const Quaternion& other)
+{
   return (*this = other * (*this));
 }
 
@@ -61,13 +77,15 @@ void Quaternion::normalize(void) {
   Z /= magnitude;
 }
 
-void Quaternion::makeInverse(void) {
+void Quaternion::makeInverse(void)
+{
   X = -X;
   Y = -Y;
   Z = -Z;
 }
 
-void Quaternion::makeIdentity(void) {
+void Quaternion::makeIdentity(void)
+{
   W = 1.0F;
   X = 0.0F;
   Y = 0.0F;

@@ -7,6 +7,8 @@ class Quaternion {
 public:
   Quaternion(void);
   Quaternion(float w, float x, float y, float z);
+  Quaternion(const Quaternion& other);
+  ~Quaternion();
   
   bool operator==(const Quaternion& other) const;
   bool operator!=(const Quaternion& other) const;
@@ -21,7 +23,7 @@ public:
   void makeIdentity(void);
   
   float W;        // Real
-  float X, Y, Z;  // Imaginary
+  float X, Y, Z;  // Vectorial imaginary
 };
 
 #endif
