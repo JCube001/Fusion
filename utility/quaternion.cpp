@@ -1,17 +1,23 @@
 #include "quaternion.h"
 
 Quaternion::Quaternion(void)
-  : W(0.0F), X(0.0F), Y(0.0F), Z(0.0F)
+  : X(0.0f), Y(0.0f), Z(0.0f), W(0.0f)
 {
 }
 
-Quaternion::Quaternion(float w, float x, float y, float z)
-  : W(w), X(x), Y(y), Z(z)
+Quaternion::Quaternion(float x, float y, float z, float w)
+  : X(x), Y(y), Z(z), W(w)
 {
+}
+
+Quaternion::Quaternion(float axis[3], float angle)
+  : X(axis[0]), Y(axis[1]), Z(axis[2]), W(angle)
+{
+  //TODO euler angle convert?
 }
 
 Quaternion::Quaternion(const Quaternion& other)
-  : W(other.W), X(other.X), Y(other.Y), Z(other.Z)
+  : X(other.X), Y(other.Y), Z(other.Z), W(other.W)
 {
 }
 
@@ -21,46 +27,67 @@ Quaternion::~Quaternion()
 
 bool Quaternion::operator==(const Quaternion& other) const
 {
-  return ((W == other.W) &&
-          (X == other.X) &&
+  return ((X == other.X) &&
           (Y == other.Y) &&
-          (Z == other.Z));
+          (Z == other.Z) &&
+          (W == other.W));
 }
 
 bool Quaternion::operator!=(const Quaternion& other) const
 {
-  return !(*this == other);
+  return !((*this) == other);
 }
 
 inline Quaternion& Quaternion::operator=(const Quaternion& other)
 {
-  W = other.W;
   X = other.X;
   Y = other.Y;
   Z = other.Z;
-  return *this;
+  W = other.W;
+  
+  return (*this);
 }
 
 Quaternion Quaternion::operator+(const Quaternion& other) const
 {
-  return Quaternion(W + other.W, X + other.X, Y + other.Y, Z + other.Z);
+  return Quaternion(X + other.X, Y + other.Y, Z + other.Z, W + other.W);
 }
 
-Quaternion& Quaternion::operator+=(const Quaternion& other)
+Quaternion Quaternion::operator-(const Quaternion& other) const
 {
-  return (*this = other + (*this));
+  return Quaternion(X - other.X, Y - other.Y, Z - other.Z, W - other.W);
 }
 
 Quaternion Quaternion::operator*(const Quaternion& other) const
 {
-  Quaternion ret;
+  return Quaternion(
+    (W * other.X) + (X * other.W) + (Y * other.Z) - (Z * other.Y),
+    (W * other.Y) - (X * other.Z) + (Y * other.W) + (Z * other.X),
+    (W * other.Z) + (X * other.Y) - (Y * other.X) + (Z * other.W),
+    (W * other.W) - (X * other.X) - (Y * other.Y) - (Z * other.Z));
+}
+
+Quaternion Quaternion::operator/(float n)
+{
+  //TODO
+  (void)n;
   
-  ret.W = (W * other.W) - (X * other.X) - (Y * other.Y) - (Z * other.Z);
-  ret.X = (W * other.X) + (X * other.W) + (Y * other.Z) - (Z * other.Y);
-  ret.Y = (W * other.Y) - (X * other.Z) + (Y * other.W) + (Z * other.X);
-  ret.Z = (W * other.Z) + (X * other.Y) - (Y * other.X) + (Z * other.W);
-  
-  return ret;
+  return Quaternion();
+}
+
+Quaternion Quaternion::operator/(Quaternion& other)
+{
+  return ((*this) * (other.inverse()));
+}
+
+Quaternion& Quaternion::operator+=(const Quaternion& other)
+{
+  return (*this = (*this) + other);
+}
+
+Quaternion& Quaternion::operator-=(const Quaternion& other)
+{
+  return (*this = (*this) - other);
 }
 
 Quaternion& Quaternion::operator*=(const Quaternion& other)
@@ -68,26 +95,101 @@ Quaternion& Quaternion::operator*=(const Quaternion& other)
   return (*this = other * (*this));
 }
 
-void Quaternion::normalize(void) {
-  float magnitude = sqrt((W * W) + (X * X) + (Y * Y) + (Z * Z));
+Quaternion& Quaternion::operator/=(Quaternion& other)
+{
+  return ((*this) = (*this) * (other.inverse()));
+}
+
+Quaternion Quaternion::conjugate(void)
+{
+  return Quaternion(-X, -Y, -Z, W);
+}
+
+Quaternion Quaternion::createFromAxisAngle(float x, float y, float z, float angle)
+{
+  //TODO how do we really want to handle this?
+  return Quaternion(x, y, z, angle);
+}
+
+Quaternion Quaternion::createFromAxisAngle(float axis[3], float angle)
+{
+  //TODO how do we really want to handle this?
+  return Quaternion(axis, angle);
+}
+
+Quaternion Quaternion::createFromYawPitchRoll(float yaw, float pitch, float roll)
+{
+  //TODO
+  (void)yaw;
+  (void)pitch;
+  (void)roll;
   
-  W /= magnitude;
-  X /= magnitude;
-  Y /= magnitude;
-  Z /= magnitude;
+  return Quaternion();
 }
 
-void Quaternion::makeInverse(void)
+float Quaternion::dot(Quaternion& quaternion1, Quaternion& quaternion2)
 {
-  X = -X;
-  Y = -Y;
-  Z = -Z;
+  return ((quaternion1.X * quaternion2.X) +
+          (quaternion1.Y * quaternion2.Y) +
+          (quaternion1.Z * quaternion2.Z) +
+          (quaternion1.W * quaternion2.W));
 }
 
-void Quaternion::makeIdentity(void)
+Quaternion Quaternion::identity(void)
 {
-  W = 1.0F;
-  X = 0.0F;
-  Y = 0.0F;
-  Z = 0.0F;
+  return Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+Quaternion Quaternion::inverse(void)
+{
+  return (this->conjugate() / this->normSquared());
+}
+
+Quaternion Quaternion::lerp(Quaternion& quaternion1, Quaternion& quaternion2, float amount)
+{
+  //TODO
+  (void)quaternion1;
+  (void)quaternion2;
+  (void)amount;
+  
+  return Quaternion();
+}
+
+Quaternion Quaternion::negate(void)
+{
+  return Quaternion(-X, -Y, -Z, -W);
+}
+
+float Quaternion::norm(void) const
+{
+  return sqrt((X * X) + (Y * Y) + (Z * Z) + (W * W));
+}
+
+Quaternion Quaternion::normalize(void)
+{
+  float n = this->norm();
+  
+  return Quaternion(X / n, Y / n, Z / n, W / n);
+}
+
+float Quaternion::normSquared(void)
+{
+  float n = this->norm();
+  
+  return (n * n);
+}
+
+Quaternion Quaternion::scale(float factor)
+{
+  return Quaternion(X * factor, Y * factor, Z * factor, W * factor);
+}
+
+Quaternion Quaternion::slerp(Quaternion& quaternion1, Quaternion& quaternion2, float amount)
+{
+  //TODO
+  (void)quaternion1;
+  (void)quaternion2;
+  (void)amount;
+  
+  return Quaternion();
 }

@@ -1,3 +1,7 @@
+/**
+ * TODO doxygen comments before I forget everything I just wrote
+ */
+
 #ifndef _QUATERNION_H
 #define _QUATERNION_H
 
@@ -5,8 +9,14 @@
 
 class Quaternion {
 public:
+  float W;  // The rotation component
+  float X;  // The x-value of the vector component
+  float Y;  // The y-value of the vector component
+  float Z;  // The z-value of the vector component
+  
   Quaternion(void);
-  Quaternion(float w, float x, float y, float z);
+  Quaternion(float x, float y, float z, float w);
+  Quaternion(float axis[3], float angle);
   Quaternion(const Quaternion& other);
   ~Quaternion();
   
@@ -14,16 +24,41 @@ public:
   bool operator!=(const Quaternion& other) const;
   inline Quaternion& operator=(const Quaternion& other);
   Quaternion operator+(const Quaternion& other) const;
-  Quaternion& operator+=(const Quaternion& other);
+  Quaternion operator-(const Quaternion& other) const;
   Quaternion operator*(const Quaternion& other) const;
+  Quaternion operator/(float n);
+  Quaternion operator/(Quaternion& other);
+  Quaternion& operator+=(const Quaternion& other);
+  Quaternion& operator-=(const Quaternion& other);
   Quaternion& operator*=(const Quaternion& other);
+  Quaternion& operator/=(Quaternion& other);
   
-  void normalize(void);
-  void makeInverse(void);
-  void makeIdentity(void);
+  Quaternion conjugate(void);
   
-  float W;        // Real
-  float X, Y, Z;  // Vectorial imaginary
+  static Quaternion createFromAxisAngle(float x, float y, float z, float angle);
+  static Quaternion createFromAxisAngle(float axis[3], float angle);
+  
+  static Quaternion createFromYawPitchRoll(float yaw, float pitch, float roll);
+  
+  static float dot(Quaternion& quaternion1, Quaternion& quaternion2);
+  
+  Quaternion identity(void);
+  
+  Quaternion inverse(void);
+  
+  static Quaternion lerp(Quaternion& quaternion1, Quaternion& quaternion2, float amount);
+  
+  Quaternion negate(void);
+  
+  float norm(void) const;
+  
+  Quaternion normalize(void);
+  
+  float normSquared(void);
+  
+  Quaternion scale(float factor);
+  
+  static Quaternion slerp(Quaternion& quaternion1, Quaternion& quaternion2, float amount);
 };
 
 #endif
