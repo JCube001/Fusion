@@ -55,7 +55,7 @@ public:
   
   Quaternion normalize(void);
   
-  float normSquared(void);
+  float normSquared(void) const;
   
   Quaternion scale(const float factor);
   

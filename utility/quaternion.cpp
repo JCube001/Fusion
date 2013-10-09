@@ -164,7 +164,7 @@ Quaternion Quaternion::negate(void)
 
 float Quaternion::norm(void) const
 {
-  return sqrt((X * X) + (Y * Y) + (Z * Z) + (W * W));
+  return sqrt(this->normSquared());
 }
 
 Quaternion Quaternion::normalize(void)
@@ -174,11 +174,9 @@ Quaternion Quaternion::normalize(void)
   return Quaternion(X / n, Y / n, Z / n, W / n);
 }
 
-float Quaternion::normSquared(void)
+float Quaternion::normSquared(void) const
 {
-  float n = this->norm();
-  
-  return (n * n);
+  return ((X * X) + (Y * Y) + (Z * Z) + (W * W));
 }
 
 Quaternion Quaternion::scale(const float factor)
