@@ -25,8 +25,9 @@ public:
   inline Quaternion& operator=(const Quaternion& other);
   Quaternion operator+(const Quaternion& other) const;
   Quaternion operator-(const Quaternion& other) const;
+  Quaternion operator*(const float scalar) const;
   Quaternion operator*(const Quaternion& other) const;
-  Quaternion operator/(float n);
+  Quaternion operator/(const float scalar) const;
   Quaternion operator/(Quaternion& other);
   Quaternion& operator+=(const Quaternion& other);
   Quaternion& operator-=(const Quaternion& other);
@@ -40,9 +41,9 @@ public:
   
   static Quaternion createFromYawPitchRoll(float yaw, float pitch, float roll);
   
-  static float dot(Quaternion& quaternion1, Quaternion& quaternion2);
+  static float dot(const Quaternion& quaternion1, const Quaternion& quaternion2);
   
-  Quaternion identity(void);
+  Quaternion identity(void) const;
   
   Quaternion inverse(void);
   
@@ -56,7 +57,7 @@ public:
   
   float normSquared(void);
   
-  Quaternion scale(float factor);
+  Quaternion scale(const float factor);
   
   static Quaternion slerp(Quaternion& quaternion1, Quaternion& quaternion2, float amount);
 };

@@ -58,6 +58,11 @@ Quaternion Quaternion::operator-(const Quaternion& other) const
   return Quaternion(X - other.X, Y - other.Y, Z - other.Z, W - other.W);
 }
 
+Quaternion Quaternion::operator*(const float scalar) const
+{
+  return Quaternion(X * scalar, Y * scalar, Z * scalar, W * scalar);
+}
+
 Quaternion Quaternion::operator*(const Quaternion& other) const
 {
   return Quaternion(
@@ -67,12 +72,9 @@ Quaternion Quaternion::operator*(const Quaternion& other) const
     (W * other.W) - (X * other.X) - (Y * other.Y) - (Z * other.Z));
 }
 
-Quaternion Quaternion::operator/(float n)
+Quaternion Quaternion::operator/(const float scalar) const
 {
-  //TODO
-  (void)n;
-  
-  return Quaternion();
+  return Quaternion(X / scalar, Y / scalar, Z / scalar, W / scalar);
 }
 
 Quaternion Quaternion::operator/(Quaternion& other)
@@ -127,7 +129,7 @@ Quaternion Quaternion::createFromYawPitchRoll(float yaw, float pitch, float roll
   return Quaternion();
 }
 
-float Quaternion::dot(Quaternion& quaternion1, Quaternion& quaternion2)
+float Quaternion::dot(const Quaternion& quaternion1, const Quaternion& quaternion2)
 {
   return ((quaternion1.X * quaternion2.X) +
           (quaternion1.Y * quaternion2.Y) +
@@ -135,7 +137,7 @@ float Quaternion::dot(Quaternion& quaternion1, Quaternion& quaternion2)
           (quaternion1.W * quaternion2.W));
 }
 
-Quaternion Quaternion::identity(void)
+Quaternion Quaternion::identity(void) const
 {
   return Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
 }
@@ -179,7 +181,7 @@ float Quaternion::normSquared(void)
   return (n * n);
 }
 
-Quaternion Quaternion::scale(float factor)
+Quaternion Quaternion::scale(const float factor)
 {
   return Quaternion(X * factor, Y * factor, Z * factor, W * factor);
 }
