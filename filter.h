@@ -13,7 +13,7 @@
   #define PI  (M_PI)
 #endif
 
-#include "quaternion.h"
+#include "utility/quaternion.h"
 
 #define RAD_TO_DEG  (180.0F / PI)
 
