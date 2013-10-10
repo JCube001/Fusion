@@ -6,8 +6,10 @@
 #define _QUATERNION_H
 
 #include <math.h>
+#include "vector.h"
 
-class Quaternion {
+class Quaternion
+{
 public:
   float W;  // The rotation component
   float X;  // The x-value of the vector component

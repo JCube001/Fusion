@@ -3,7 +3,7 @@
 
 #define _FUSION_LIB_VERSION 1
 
-#include "utility/complementary.h"
-#include "utility/kalman.h"
+#include "complementary.h"
+#include "kalman.h"
 
 #endif
