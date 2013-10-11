@@ -1,3 +1,6 @@
+#if 0
+// Reference only; this will go away soon.
+
 #include "quaternion.h"
 
 Quaternion::Quaternion(void)
@@ -193,3 +196,5 @@ Quaternion Quaternion::slerp(Quaternion& quaternion1, Quaternion& quaternion2, f
   
   return Quaternion();
 }
+
+#endif
