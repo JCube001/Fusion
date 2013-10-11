@@ -11,6 +11,7 @@ These are all websites which were used to help create this library.
 * http://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
 * http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 * https://www.youtube.com/watch?v=LB6U849kwXc
+* https://svn.code.sf.net/p/irrlicht/code/trunk/include/quaternion.h
 
 ## Vector
 
@@ -35,3 +36,5 @@ These are all websites which were used to help create this library.
 
 * http://stackoverflow.com/questions/4421706/operator-overloading
 * http://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B
+* http://stackoverflow.com/questions/3017264/c-is-it-good-practice-to-make-getters-and-setters-inline
+* http://www.learncpp.com/cpp-tutorial/98-overloading-the-subscript-operator/
