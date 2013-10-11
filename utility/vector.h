@@ -92,7 +92,7 @@ public:
    * @brief Assignment.
    *
    * @param rhs The right hand side vector to assign.
-   * @return The resulting vector.
+   * @return The assigned vector.
    */
   inline Vector3 operator=(const Vector3& rhs) const {
     return Vector3(rhs.x(), rhs.y(), rhs.z());
@@ -101,7 +101,7 @@ public:
   /**
    * @brief Unary negation.
    *
-   * @return The resulting vector.
+   * @return The negated vector.
    */
   inline Vector3 operator-() const {
     return Vector3(-x(), -y(), -z());
@@ -111,7 +111,7 @@ public:
    * @brief Addition.
    *
    * @param rhs The right hand side vector to add.
-   * @return The resulting vector.
+   * @return The sum of the vectors.
    */
   Vector3 operator+(const Vector3& rhs) const {
     return Vector3(x() + rhs.x(), y() + rhs.y(), z() + rhs.z());
@@ -121,7 +121,7 @@ public:
    * @brief Subtraction.
    *
    * @param rhs The right hand side vector to subtract by.
-   * @return The resulting vector.
+   * @return The difference of the vectors.
    */
   Vector3 operator-(const Vector3& rhs) const {
     return Vector3(x() - rhs.x(), y() - rhs.y(), z() - rhs.z());
@@ -131,7 +131,7 @@ public:
    * @brief Cross product multiplication.
    *
    * @param rhs The right hand side vector to multiply by.
-   * @return The resulting vector.
+   * @return The cross product of the vectors.
    */
   Vector3 operator*(const Vector3& rhs) const {
     return Vector3(y()*rhs.z() - z()*rhs.y(),
@@ -142,21 +142,21 @@ public:
   /**
    * @brief Scalar multiplication.
    *
-   * @param s The scalar value to multiply by.
-   * @return The resulting vector.
+   * @param rhs The right hand side scalar value to multiply by.
+   * @return The product of the vector times the scalar.
    */
-  Vector3 operator*(const float s) const {
-    return Vector3(x()*s, y()*s, z()*s);
+  Vector3 operator*(const float rhs) const {
+    return Vector3(x()*rhs, y()*rhs, z()*rhs);
   }
   
   /**
    * @brief Scalar division.
    *
-   * @param s The scalar value to divide by.
-   * @return The resulting vector.
+   * @param rhs The right hand side scalar value to divide by.
+   * @return The quotient of the vector divided by the scalar.
    */
-  Vector3 operator/(const float s) const {
-    return Vector3(x() / s, y() / s, z() / s);
+  Vector3 operator/(const float rhs) const {
+    return Vector3(x() / rhs, y() / rhs, z() / rhs);
   }
   
   /**
