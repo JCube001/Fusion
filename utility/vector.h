@@ -4,7 +4,7 @@
 #include <math.h>
 
 /**
- * @brief Vector, 3 dimensional.
+ * @brief Vector, three dimensional.
  */
 class Vector3 {
 public:
@@ -18,6 +18,7 @@ public:
   
   /**
    * @brief Copy constructor.
+   *
    * @param other The vector to copy from.
    */
   Vector3(const Vector3& other)
@@ -26,7 +27,20 @@ public:
   }
   
   /**
+   * @brief Array initialization constructor.
+   *
+   * @param array The array to store as vector components.
+   */
+  Vector3(const float* array)
+  {
+    for (int i = 0; i < 3; i++) {
+      _data[i] = array[i];
+    }
+  }
+  
+  /**
    * @brief Initialization constructor.
+   *
    * @param x The x-value component.
    * @param y The y-value component.
    * @param z The z-value component.
@@ -34,17 +48,6 @@ public:
   Vector3(const float x, const float y, const float z)
     : _data{x, y, z}
   {
-  }
-  
-  /**
-   * @brief Array initialization constructor.
-   * @param data The array to store as vector components.
-   */
-  Vector3(const float* data)
-  {
-    for (int i = 0; i < 3; i++) {
-      _data[i] = data[i];
-	}
   }
   
   /**
@@ -56,24 +59,38 @@ public:
   
   /**
    * @brief Return the vector x-component.
+   *
    * @return The vector x-component.
    */
   float x() const { return _data[0]; }
   
   /**
    * @brief Return the vector y-component.
+   *
    * @return The vector y-component.
    */
   float y() const { return _data[1]; }
   
   /**
    * @brief Return the vector z-component.
+   *
    * @return The vector z-component.
    */
   float z() const { return _data[2]; }
   
   /**
+   * @brief Subscript.
+   *
+   * @param i The index of the vector component to access.
+   * @return The value of the vector component stored at the index.
+   */
+  inline float operator[](const int i) const {
+    return _data[i];
+  }
+  
+  /**
    * @brief Assignment.
+   *
    * @param rhs The right hand side vector to assign.
    * @return The resulting vector.
    */
@@ -83,6 +100,7 @@ public:
   
   /**
    * @brief Unary negation.
+   *
    * @return The resulting vector.
    */
   inline Vector3 operator-() const {
@@ -91,6 +109,7 @@ public:
   
   /**
    * @brief Addition.
+   *
    * @param rhs The right hand side vector to add.
    * @return The resulting vector.
    */
@@ -100,6 +119,7 @@ public:
   
   /**
    * @brief Subtraction.
+   *
    * @param rhs The right hand side vector to subtract by.
    * @return The resulting vector.
    */
@@ -109,6 +129,7 @@ public:
   
   /**
    * @brief Cross product multiplication.
+   *
    * @param rhs The right hand side vector to multiply by.
    * @return The resulting vector.
    */
@@ -120,6 +141,7 @@ public:
   
   /**
    * @brief Scalar multiplication.
+   *
    * @param s The scalar value to multiply by.
    * @return The resulting vector.
    */
@@ -129,6 +151,7 @@ public:
   
   /**
    * @brief Scalar division.
+   *
    * @param s The scalar value to divide by.
    * @return The resulting vector.
    */
@@ -138,6 +161,7 @@ public:
   
   /**
    * @brief Equal to.
+   *
    * @param rhs The right hand side vector.
    * @return True if both vectors are equal, otherwise false.
    */
@@ -149,6 +173,7 @@ public:
   
   /**
    * @brief Not equal to.
+   *
    * @param rhs The right hand side vector.
    * @return True if both vectors are not equal, otherwise false.
    */
@@ -158,6 +183,7 @@ public:
   
   /**
    * @brief Less than.
+   *
    * @param rhs The right hand side vector.
    * @return True if the left hand side norm is less than the right hand side
    *         norm, otherwise false.
@@ -168,6 +194,7 @@ public:
   
   /**
    * @brief Greater than.
+   *
    * @param rhs The right hand side vector.
    * @return True if the left hand side norm is greater than the right hand side
    *         norm, otherwise false.
@@ -178,6 +205,7 @@ public:
   
   /**
    * @brief Less than or equal to.
+   *
    * @param rhs The right hand side vector.
    * @return True if the left hand side norm is less than or equal to the right
    *         hand side norm, otherwise false. 
@@ -188,6 +216,7 @@ public:
   
   /**
    * @brief Greater than or equal to.
+   *
    * @param rhs The right hand side vector.
    * @return True if the left hand side norm is greater than or equal to the
    *         right hand side norm, otherwise false. 
@@ -198,6 +227,7 @@ public:
   
   /**
    * @brief Dot product multiplication.
+   *
    * @param a The left hand side vector.
    * @param b The right hand side vector.
    * @return The scalar product of two vectors.
@@ -208,6 +238,7 @@ public:
   
   /**
    * @brief Performs a linear interpolation between two vectors.
+   *
    * @param a The start vector.
    * @param b The end vector.
    * @param amount A value between 0 and 1 indicating the weight of the end
@@ -220,6 +251,7 @@ public:
   
   /**
    * @brief Scalar triple product multiplication.
+   *
    * @param a The vector to obtain the dot product from.
    * @param b The vector to cross multiply with c.
    * @param c The vector to cross multiply with b.
@@ -231,6 +263,7 @@ public:
   
   /**
    * @brief Performs a normalized linear interpolation between two vectors.
+   *
    * @param a The start vector.
    * @param b The end vector.
    * @param amount A value between 0 and 1 indicating the weight of the end
@@ -243,6 +276,7 @@ public:
   
   /**
    * @brief Returns the norm (magnitude) of the vector.
+   *
    * @return The scalar norm of the vector.
    */
   float norm() const {
@@ -251,6 +285,7 @@ public:
   
   /**
    * @brief Returns a normalized (unit) vector.
+   *
    * @return The normalized vector.
    */
   Vector3 normalize() const {
@@ -259,6 +294,7 @@ public:
   
   /**
    * @brief Performs a spherical linear interpolation between two vectors.
+   *
    * @param a The start vector.
    * @param b The end vector.
    * @param amount A value between 0 and 1 indicating the weight of the end
