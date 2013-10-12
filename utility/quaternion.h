@@ -295,7 +295,7 @@ public:
    * @return The linear interpolation between two quaternions.
    */
   static Quaternion lerp(const Quaternion& a, const Quaternion& b, const float amount) {
-    return a + (b - a)*amount; // TODO Double check correctness.
+    return a + (b - a)*amount;
   }
   
   /**
@@ -327,6 +327,16 @@ public:
    */
   Quaternion normalize() const {
     return (*this) / norm();
+  }
+  
+  /**
+   * @brief Performs a rotation of the vector using this quaternion.
+   *
+   * @param v The vector to rotate.
+   * @return The rotated three dimensional vector.
+   */
+  Vector3 rotateVector(const Vector3& v) const {
+    return ((*this) * Quaternion(v, 0) * (*this).conjugate()).vector();
   }
   
   /**
