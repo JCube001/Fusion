@@ -6,6 +6,7 @@ These are all websites which were used to help create this library.
 
 * http://3dgep.com/?p=1815
 * http://www.ncsa.illinois.edu/~kindr/emtc/quaternions/
+* http://qt-project.org/doc/qt-4.8/qquaternion.html
 * http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.quaternion_members.aspx
 * http://en.wikipedia.org/wiki/Quaternion
 * http://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
