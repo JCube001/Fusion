@@ -10,8 +10,8 @@
  *        while the scalar represents the angle of rotation on that axis.
  *
  * @note There are two common ways to store the structure of a quaternion. They
- *       are {w, x, y, z} and {x, y, z, w} where w is the real component and
- *       {x, y, z} is the imaginary vector component. The layout {x, y, z, w}
+ *       are [w, x, y, z] and [x, y, z, w] where w is the real component and
+ *       [x, y, z] is the imaginary vector component. The layout [x, y, z, w]
  *       was choosen for this particular class because it makes it easier to
  *       work with the vectorial components as an array.
  * @note All angles are treated as radians.
@@ -52,7 +52,7 @@ public:
    * @brief Array initialization constructor.
    *
    * @param array The array to store as quaternion components. Should be in the
-   *        order of {x, y, z, w}.
+   *        order of [x, y, z, w].
    */
   Quaternion(const float* array)
   {
@@ -248,50 +248,72 @@ public:
   
   // TODO The rest of the comparative operator overloading.
   
+  /**
+   * @brief Returns the quaternion conjugate.
+   *
+   * @return The conjugate of the quaternion defined as q* == [s, -v].
+   */
+  Quaternion conjugate() const {
+    return Quaternion(-vector(), scalar());
+  }
   
+  /**
+   * @brief Dot product multiplication.
+   *
+   * @param a The left hand side quaternion.
+   * @param b The right hand side quaternion.
+   * @return The scalar product of two quaternions.
+   */
+  static float dot(const Quaternion& a, const Quaternion& b) {
+    return Vector3::dot(a.vector(), b.vector()) + a.scalar()*b.scalar();
+  }
   
+  /**
+   * @brief Returns the quaternion identity.
+   *
+   * @return The identity of the quaternion defined as q == [0, 0, 0, 1].
+   */
+  static Quaternion identity() {
+    return Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+  }
+  
+  /**
+   * @brief Returns the quaternion inverse.
+   *
+   * @return The inverse of the quaternion defined as q^-1 == q* / ||q||^2.
+   */
+  Quaternion inverse() const {
+    float n = norm();
+    return conjugate() / (n*n);
+  }
+  
+  /**
+   * @brief Returns the norm (magnitude) of the quaternion.
+   *
+   * @return The norm of the quaternion defined as ||q|| == sqrt(s^2 + v^2).
+   */
+  float norm() const {
+    return sqrt(x()*x() + y()*y() + z()*z() + w()*w());
+  }
+  
+  /**
+   * @brief Returns the normalized quaternion.
+   *
+   * @return The normalized quaternion defined as q' == q / ||q||.
+   */
+  Quaternion normalize() const {
+    return (*this) / norm();
+  }
   
 #if 0
   // Reference only; this will go away soon.
-
-  bool operator==(const Quaternion& other) const;
-  bool operator!=(const Quaternion& other) const;
-  inline Quaternion& operator=(const Quaternion& other);
-  Quaternion operator+(const Quaternion& other) const;
-  Quaternion operator-(const Quaternion& other) const;
-  Quaternion operator*(const float scalar) const;
-  Quaternion operator*(const Quaternion& other) const;
-  Quaternion operator/(const float scalar) const;
-  Quaternion operator/(Quaternion& other);
-  Quaternion& operator+=(const Quaternion& other);
-  Quaternion& operator-=(const Quaternion& other);
-  Quaternion& operator*=(const Quaternion& other);
-  Quaternion& operator/=(Quaternion& other);
-  
-  Quaternion conjugate(void);
   
   static Quaternion createFromAxisAngle(float x, float y, float z, float angle);
   static Quaternion createFromAxisAngle(float axis[3], float angle);
   
   static Quaternion createFromYawPitchRoll(float yaw, float pitch, float roll);
   
-  static float dot(const Quaternion& quaternion1, const Quaternion& quaternion2);
-  
-  Quaternion identity(void) const;
-  
-  Quaternion inverse(void);
-  
   static Quaternion lerp(Quaternion& quaternion1, Quaternion& quaternion2, float amount);
-  
-  Quaternion negate(void);
-  
-  float norm(void) const;
-  
-  Quaternion normalize(void);
-  
-  float normSquared(void) const;
-  
-  Quaternion scale(const float factor);
   
   static Quaternion slerp(Quaternion& quaternion1, Quaternion& quaternion2, float amount);
 #endif
