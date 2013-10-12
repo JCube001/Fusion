@@ -246,8 +246,6 @@ public:
     return !((*this) == rhs);
   }
   
-  // TODO The rest of the comparative operator overloading.
-  
   /**
    * @brief Returns the quaternion conjugate.
    *
@@ -288,6 +286,32 @@ public:
   }
   
   /**
+   * @brief Performs a linear interpolation between two quaternions.
+   *
+   * @param a The start quaternion.
+   * @param b The end quaternion.
+   * @param amount A value between 0 and 1 indicating the weight of the end
+   *        quaternion.
+   * @return The linear interpolation between two quaternions.
+   */
+  static Quaternion lerp(const Quaternion& a, const Quaternion& b, const float amount) {
+    return a + (b - a)*amount; // TODO Double check correctness.
+  }
+  
+  /**
+   * @brief Performs a normalized linear interpolation between two quaternions.
+   *
+   * @param a The start quaternion.
+   * @param b The end quaternion.
+   * @param amount A value between 0 and 1 indicating the weight of the end
+   *        quaternion.
+   * @return The normalized linear interpolation between two quaternions.
+   */
+  static Quaternion nlerp(const Quaternion& a, const Quaternion& b, const float amount) {
+    return Quaternion::lerp(a, b, amount).normalize();
+  }
+  
+  /**
    * @brief Returns the norm (magnitude) of the quaternion.
    *
    * @return The norm of the quaternion defined as ||q|| == sqrt(s^2 + v^2).
@@ -305,18 +329,23 @@ public:
     return (*this) / norm();
   }
   
-#if 0
-  // Reference only; this will go away soon.
-  
-  static Quaternion createFromAxisAngle(float x, float y, float z, float angle);
-  static Quaternion createFromAxisAngle(float axis[3], float angle);
-  
-  static Quaternion createFromYawPitchRoll(float yaw, float pitch, float roll);
-  
-  static Quaternion lerp(Quaternion& quaternion1, Quaternion& quaternion2, float amount);
-  
-  static Quaternion slerp(Quaternion& quaternion1, Quaternion& quaternion2, float amount);
-#endif
+  /**
+   * @brief Performs a spherical linear interpolation between two quaternions.
+   *
+   * @param a The start quaternion.
+   * @param b The end quaternion.
+   * @param amount A value between 0 and 1 indicating the weight of the end
+   *        vector.
+   * @return The spherical linear interpolation between two quaternions.
+   */
+  static Quaternion slerp(const Quaternion& a, const Quaternion& b, const float amount) {
+    // TODO All of this function.
+    (void)a;
+    (void)b;
+    (void)amount;
+    
+    return Quaternion();
+  }
   
 protected:
   float _data[4];
