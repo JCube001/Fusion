@@ -299,7 +299,7 @@ public:
    * @param b The end vector.
    * @param amount A value between 0 and 1 indicating the weight of the end
    *        vector.
-   * @return The sperical linear interpolation between two vectors.
+   * @return The spherical linear interpolation between two vectors.
    */
   static Vector3 slerp(const Vector3& a, const Vector3& b, const float amount) {
     // The dot product is also the cosine of the angle between two vectors.
