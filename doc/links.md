@@ -35,6 +35,7 @@ These are all websites which were used to help create this library.
 
 ## C++
 
+* http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml
 * http://stackoverflow.com/questions/4421706/operator-overloading
 * http://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B
 * http://stackoverflow.com/questions/3017264/c-is-it-good-practice-to-make-getters-and-setters-inline
