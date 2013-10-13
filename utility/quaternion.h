@@ -1,8 +1,31 @@
-#ifndef _QUATERNION_H
-#define _QUATERNION_H
+/*******************************************************************************
+The MIT License (MIT)
+
+Copyright (c) 2013 JCube001
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*******************************************************************************/
+
+#ifndef UTILITY_QUATERNION_H_
+#define UTILITY_QUATERNION_H_
 
 #include <math.h>
-#include "vector.h"
+#include "utility/vector.h"
 
 /**
  * @brief Quaternion. A structure composed of three imaginary vectorial
@@ -16,27 +39,21 @@
  *       work with the vectorial components as an array.
  * @note All angles are treated as radians.
  */
-class Quaternion
-{
-public:
+class Quaternion {
+ public:
   /**
    * @brief Default constructor.
    */
-  Quaternion()
-    : _data{0.0f, 0.0f, 0.0f, 0.0f}
-  {
-  }
-  
+  Quaternion() : _data {0.0f, 0.0f, 0.0f, 0.0f} {}
+
   /**
    * @brief Copy constructor.
    *
    * @param other The quaternion to copy from.
    */
   Quaternion(const Quaternion& other)
-    : _data{other.x(), other.y(), other.z(), other.w()}
-  {
-  }
-  
+    : _data {other.x(), other.y(), other.z(), other.w()} {}
+
   /**
    * @brief Component initalization constructor.
    *
@@ -44,23 +61,20 @@ public:
    * @param s The scalar real component.
    */
   Quaternion(const Vector3& v, const float s)
-    : _data{v.x(), v.y(), v.z(), s}
-  {
-  }
-  
+    : _data {v.x(), v.y(), v.z(), s} {}
+
   /**
    * @brief Array initialization constructor.
    *
-   * @param array The array to store as quaternion components. Should be in the
-   *        order of [x, y, z, w].
+   * @param array The array to store as quaternion components. Should be in
+   *        the order of [x, y, z, w].
    */
-  Quaternion(const float* array)
-  {
+  explicit Quaternion(const float* array) {
     for (int i = 0; i < 4; i++) {
       _data[i] = array[i];
     }
   }
-  
+
   /**
    * @brief Initialization constructor.
    *
@@ -70,73 +84,69 @@ public:
    * @param w The real component.
    */
   Quaternion(const float x, const float y, const float z, const float w)
-    : _data{x, y, z, w}
-  {
-  }
-  
+    : _data {x, y, z, w} {}
+
   /**
    * @brief Destructor.
    */
-  ~Quaternion()
-  {
-  }
-  
+  ~Quaternion() {}
+
   /**
    * @brief Return the quaternion x-component.
    *
    * @return The quaternion x-component.
    */
   float x() const { return _data[0]; }
-  
+
   /**
    * @brief Return the quaternion y-component.
    *
    * @return The quaternion y-component.
    */
   float y() const { return _data[1]; }
-  
+
   /**
    * @brief Return the quaternion z-component.
    *
    * @return The quaternion z-component.
    */
   float z() const { return _data[2]; }
-  
+
   /**
    * @brief Return the quaternion w-component.
    *
    * @return The quaternion w-component.
    */
   float w() const { return scalar(); }
-  
+
   /**
    * @brief Return the quaternion scalar component.
    *
    * @return The quaternion scalar component.
    */
   float scalar() const { return _data[3]; }
-  
+
   /**
    * @brief Set the quaternion scalar component.
    */
   void scalar(const float s) { _data[3] = s; }
-  
+
   /**
    * @brief Return the quaternion vector component.
    *
    * @return The quaternion vector component.
    */
   Vector3 vector() const { return Vector3(_data); }
-  
+
   /**
    * @brief Set the quaternion vector component.
    */
-  void vector(Vector3& v) {
+  void vector(const Vector3& v) {
     for (int i = 0; i < 3; i++) {
       _data[i] = v[i];
     }
   }
-  
+
   /**
    * @brief Subscript.
    *
@@ -146,7 +156,7 @@ public:
   inline float operator[](const int i) const {
     return _data[i];
   }
-  
+
   /**
    * @brief Assignment.
    *
@@ -156,7 +166,7 @@ public:
   inline Quaternion operator=(const Quaternion& rhs) const {
     return Quaternion(vector(), scalar());
   }
-  
+
   /**
    * @brief Unary negation.
    *
@@ -165,7 +175,7 @@ public:
   inline Quaternion operator-() const {
     return Quaternion(-vector(), -scalar());
   }
-  
+
   /**
    * @brief Addition.
    *
@@ -175,7 +185,7 @@ public:
   Quaternion operator+(const Quaternion& rhs) const {
     return Quaternion(vector() + rhs.vector(), scalar() + rhs.scalar());
   }
-  
+
   /**
    * @brief Subtraction.
    *
@@ -185,7 +195,7 @@ public:
   Quaternion operator-(const Quaternion& rhs) const {
     return Quaternion(vector() - rhs.vector(), scalar() - rhs.scalar());
   }
-  
+
   /**
    * @brief Cross product multiplication.
    *
@@ -193,9 +203,9 @@ public:
    * @return The cross product of the quaternions.
    */
   Quaternion operator*(const Quaternion& rhs) const {
-    return Quaternion(); // TODO
+    return Quaternion();  // TODO(JCube001): Implement.
   }
-  
+
   /**
    * @brief Scalar multiplication.
    *
@@ -205,7 +215,7 @@ public:
   Quaternion operator*(const float rhs) const {
     return Quaternion(vector() * rhs, scalar() * rhs);
   }
-  
+
   /**
    * @brief Division.
    *
@@ -213,9 +223,9 @@ public:
    * @return The quotient of the quaternions.
    */
   Quaternion operator/(const Quaternion& rhs) const {
-    return Quaternion(); // TODO double check that: (*this) * rhs.inverse();
+    return Quaternion();  // TODO(JCube001): (*this) * rhs.inverse();
   }
-  
+
   /**
    * @brief Scalar division.
    *
@@ -225,7 +235,7 @@ public:
   Quaternion operator/(const float rhs) const {
     return Quaternion(vector() / rhs, scalar() / rhs);
   }
-  
+
   /**
    * @brief Equal to.
    *
@@ -235,7 +245,7 @@ public:
   inline bool operator==(const Quaternion& rhs) const {
     return ((vector() == rhs.vector()) && (scalar() == rhs.scalar()));
   }
-  
+
   /**
    * @brief Not equal to.
    *
@@ -245,7 +255,7 @@ public:
   inline bool operator!=(const Quaternion& rhs) const {
     return !((*this) == rhs);
   }
-  
+
   /**
    * @brief Returns the quaternion conjugate.
    *
@@ -254,7 +264,7 @@ public:
   Quaternion conjugate() const {
     return Quaternion(-vector(), scalar());
   }
-  
+
   /**
    * @brief Dot product multiplication.
    *
@@ -265,7 +275,7 @@ public:
   static float dot(const Quaternion& a, const Quaternion& b) {
     return Vector3::dot(a.vector(), b.vector()) + a.scalar()*b.scalar();
   }
-  
+
   /**
    * @brief Returns the quaternion identity.
    *
@@ -274,7 +284,7 @@ public:
   static Quaternion identity() {
     return Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
   }
-  
+
   /**
    * @brief Returns the quaternion inverse.
    *
@@ -284,7 +294,7 @@ public:
     float n = norm();
     return conjugate() / (n*n);
   }
-  
+
   /**
    * @brief Performs a linear interpolation between two quaternions.
    *
@@ -294,12 +304,14 @@ public:
    *        quaternion.
    * @return The linear interpolation between two quaternions.
    */
-  static Quaternion lerp(const Quaternion& a, const Quaternion& b, const float amount) {
+  static Quaternion lerp(const Quaternion& a, const Quaternion& b,
+                         const float amount) {
     return a + (b - a)*amount;
   }
-  
+
   /**
-   * @brief Performs a normalized linear interpolation between two quaternions.
+   * @brief Performs a normalized linear interpolation between two
+   *        quaternions.
    *
    * @param a The start quaternion.
    * @param b The end quaternion.
@@ -307,10 +319,11 @@ public:
    *        quaternion.
    * @return The normalized linear interpolation between two quaternions.
    */
-  static Quaternion nlerp(const Quaternion& a, const Quaternion& b, const float amount) {
+  static Quaternion nlerp(const Quaternion& a, const Quaternion& b,
+                          const float amount) {
     return Quaternion::lerp(a, b, amount).normalize();
   }
-  
+
   /**
    * @brief Returns the norm (magnitude) of the quaternion.
    *
@@ -319,7 +332,7 @@ public:
   float norm() const {
     return sqrt(x()*x() + y()*y() + z()*z() + w()*w());
   }
-  
+
   /**
    * @brief Returns the normalized quaternion.
    *
@@ -328,7 +341,7 @@ public:
   Quaternion normalize() const {
     return (*this) / norm();
   }
-  
+
   /**
    * @brief Performs a rotation of the vector using this quaternion.
    *
@@ -338,7 +351,7 @@ public:
   Vector3 rotateVector(const Vector3& v) const {
     return ((*this) * Quaternion(v, 0) * (*this).conjugate()).vector();
   }
-  
+
   /**
    * @brief Performs a spherical linear interpolation between two quaternions.
    *
@@ -348,17 +361,18 @@ public:
    *        vector.
    * @return The spherical linear interpolation between two quaternions.
    */
-  static Quaternion slerp(const Quaternion& a, const Quaternion& b, const float amount) {
-    // TODO All of this function.
+  static Quaternion slerp(const Quaternion& a, const Quaternion& b,
+                          const float amount) {
+    // TODO(JCube001): Implement.
     (void)a;
     (void)b;
     (void)amount;
-    
+
     return Quaternion();
   }
-  
-protected:
+
+ protected:
   float _data[4];
 };
 
-#endif
+#endif  // UTILITY_QUATERNION_H_
