@@ -1,0 +1,4 @@
+# Unit test output
+test/*.o
+test/*.a
+test/*test
