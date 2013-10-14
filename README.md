@@ -13,6 +13,32 @@ implementations.
 
 Quaternions will also be used with all of the filters. (Eventually)
 
+## Install
+
+1.  Download the zip archive of this library.
+2.  Unzip and move the folder into your Arduino libraries folder.
+3.  Rename the folder you just moved to Fusion.
+4.  Done!
+
+## Usage
+
+All you will need to include in your Arduino sketch is the fusion.h header file.
+You may then instantiate and use a filter. The following is an example of this.
+
+```C++
+#include <fusion.h>
+
+ComplementaryFilter filter;
+```
+
+More information coming as soon as the filter interface is finalized.
+
+## Testing
+
+The Google C++ unit testing framework
+[gtest](http://code.google.com/p/googletest/) is used to help develop this
+library.
+
 ## TODO
 
 * Redo the quaternion library header using Vector3 to help store information.
