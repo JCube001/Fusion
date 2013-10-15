@@ -164,7 +164,7 @@ class Quaternion {
    * @return The assigned quaternion.
    */
   inline Quaternion operator=(const Quaternion& rhs) const {
-    return Quaternion(vector(), scalar());
+    return Quaternion(rhs.vector(), rhs.scalar());
   }
 
   /**
@@ -203,6 +203,7 @@ class Quaternion {
    * @return The cross product of the quaternions.
    */
   Quaternion operator*(const Quaternion& rhs) const {
+    (void)rhs;
     return Quaternion();  // TODO(JCube001): Implement.
   }
 
@@ -223,6 +224,7 @@ class Quaternion {
    * @return The quotient of the quaternions.
    */
   Quaternion operator/(const Quaternion& rhs) const {
+    (void)rhs;
     return Quaternion();  // TODO(JCube001): (*this) * rhs.inverse();
   }
 
