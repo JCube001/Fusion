@@ -1,11 +1,32 @@
-#include "complementary.h"
+/*******************************************************************************
+The MIT License (MIT)
+
+Copyright (c) 2013 JCube001
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*******************************************************************************/
+
+#include "./complementary.h"
 
 ComplementaryFilter::ComplementaryFilter(void)
-  : angle{0, 0, 0},
+  : angle {0, 0, 0},
     _alpha(0),
-    _deltaTime(0)
-{
-}
+    _deltaTime(0) {}
 
 void ComplementaryFilter::setAlpha(const float a) {
   if (a >= 0 && a <= 1)
@@ -22,21 +43,24 @@ void ComplementaryFilter::setDeltaTime(const float dt) {
 void ComplementaryFilter::process(void) {
   float rollAcc, pitchAcc;
   float yawHeading;
-  
+
   // Accumulate the change in gyroscope position
   this->angle.roll += this->_gyroData[0] * this->_deltaTime;
   this->angle.pitch += this->_gyroData[1] * this->_deltaTime;
   this->angle.yaw += this->_gyroData[2] * this->_deltaTime;
-  
+
   // Turning around the Y axis results in a vector on the X axis
   rollAcc = atan2(this->_accelData[1], this->_accelData[2]) * RAD_TO_DEG;
-  this->angle.roll = (this->angle.roll * this->_alpha) + (rollAcc * (1 - this->_alpha));
-  
+  this->angle.roll = (this->angle.roll * this->_alpha) +
+    (rollAcc * (1 - this->_alpha));
+
   // Turning around the X axis results in a vector on the Y axis
   pitchAcc = atan2(this->_accelData[0], this->_accelData[2]) * RAD_TO_DEG;
-  this->angle.pitch = (this->angle.pitch * this->_alpha) + (pitchAcc * (1 - this->_alpha));
-  
+  this->angle.pitch = (this->angle.pitch * this->_alpha) +
+    (pitchAcc * (1 - this->_alpha));
+
   // Angle of the vector y,x is the compass heading
   yawHeading = atan2(this->_compassData[1], this->_compassData[0]) * RAD_TO_DEG;
-  this->angle.yaw = (this->angle.yaw * this->_alpha) + (yawHeading * (1 - this->_alpha));
+  this->angle.yaw = (this->angle.yaw * this->_alpha) +
+    (yawHeading * (1 - this->_alpha));
 }
