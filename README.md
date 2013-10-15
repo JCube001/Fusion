@@ -39,6 +39,15 @@ The Google C++ unit testing framework
 [gtest](http://code.google.com/p/googletest/) is used to help develop this
 library.
 
+If you would like to run the tests yourself, you will need the package
+libgtest-dev. The following script should be enough to create the tests.
+
+```Bash
+sudo apt-get install libgtest-dev
+cd test
+make
+```
+
 ## TODO
 
 * Redo the quaternion library header using Vector3 to help store information.

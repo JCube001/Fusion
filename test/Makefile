@@ -1,4 +1,5 @@
-# Makefile for building Google Test and using it for testing the Fusion library.
+# Makefile for building Google Test and using it for testing the
+# Fusion library.
 #
 # SYNOPSIS:
 #
@@ -9,8 +10,10 @@
 # Points to the root of Google Test.
 GTEST_DIR = /usr/src/gtest
 
-# Where to find user code.
-USER_DIR = .
+# Where to find user test and source code.
+USER_DIR     = .
+SRC_DIR      = $(USER_DIR)/..
+SRC_UTIL_DIR = $(SRC_DIR)/utility
 
 # Archiver program.
 AR = ar
@@ -19,13 +22,18 @@ AR = ar
 CXX = g++
 
 # Flags passed to the preprocessor.
+# The first line is required by Google Test.
 CPPFLAGS += -I$(GTEST_DIR)/include
-CPPFLAGS += -I$(USER_DIR) -I$(USER_DIR)/../ -I$(USER_DIR)/../utility
+CPPFLAGS += -I$(USER_DIR) -I$(SRC_DIR) -I$(SRC_UTIL_DIR)
+CPPFLAGS += -D_FUSION_TEST
 
 # Flags passed to the C++ compiler.
-CXXFLAGS += -g -Wall -Wextra -std=c++11
+# The first line is required by Google Test.
+CXXFLAGS += -g -Wall -Wextra
+CXXFLAGS += -std=c++11
 
 # Flags passed to the linker.
+# The first line is required by Google Test.
 LDFLAGS += -lpthread
 LDFLAGS += -lm
 
@@ -33,9 +41,13 @@ LDFLAGS += -lm
 ARFLAGS = rcs
 
 # All tests produced by this Makefile. Remember to add new tests you
-# created to the list. Also remember to include a suffix of 'test' to
-# each test you name.
-TESTS = sample1_unittest
+# created to the list. Also remember to include a suffix of '_unittest'
+# to each test you name.
+TESTS = vector_unittest        \
+        quaternion_unittest    \
+        filter_unittest        \
+        complementary_unittest \
+        kalman_unittest
 
 # All Google Test headers. Usually you shouldn't change this
 # definition.
@@ -48,6 +60,9 @@ all : $(TESTS)
 
 clean :
 	rm -f $(TESTS) gtest.a gtest_main.a *.o
+
+mostlyclean :
+	rm -f $(TESTS) *.o
 
 # Builds gtest.a and gtest_main.a.
 
@@ -73,17 +88,62 @@ gtest.a : gtest-all.o
 gtest_main.a : gtest-all.o gtest_main.o
 	$(AR) $(ARFLAGS) $@ $^
 
-# Builds a sample test. A test should link with either gtest.a or
-# gtest_main.a, depending on whether it defines its own main()
-# function.
+# Builds the unit tests for vectors.
 
-sample1.o : $(USER_DIR)/sample1.cc $(USER_DIR)/sample1.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/sample1.cc
+vector_unittest.o : $(USER_DIR)/vector_unittest.cpp \
+                    $(SRC_UTIL_DIR)/vector.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/vector_unittest.cpp
 
-sample1_unittest.o : $(USER_DIR)/sample1_unittest.cc \
-                     $(USER_DIR)/sample1.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/sample1_unittest.cc
+vector_unittest : vector_unittest.o gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
-sample1_unittest : sample1.o sample1_unittest.o gtest_main.a
+# Builds the unit tests for quaternions.
+
+quaternion_unittest.o : $(USER_DIR)/quaternion_unittest.cpp \
+                        $(SRC_UTIL_DIR)/quaternion.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/quaternion_unittest.cpp
+
+quaternion_unittest : quaternion_unittest.o gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+# Builds the unit tests for the filter interface.
+
+filter.o : $(SRC_DIR)/filter.cpp $(SRC_DIR)/filter.h \
+           $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_DIR)/filter.cpp
+
+filter_unittest.o : $(USER_DIR)/filter_unittest.cpp \
+                    $(SRC_DIR)/filter.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/filter_unittest.cpp
+
+filter_unittest : filter.o filter_unittest.o gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+# Builds the unit tests for the complementary filters.
+
+complementary.o : $(SRC_DIR)/complementary.cpp $(SRC_DIR)/complementary.h \
+                  $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_DIR)/complementary.cpp
+
+complementary_unittest.o : $(USER_DIR)/complementary_unittest.cpp \
+                           $(SRC_DIR)/complementary.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/complementary_unittest.cpp
+
+complementary_unittest : complementary.o complementary_unittest.o filter.o \
+                         gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+# Builds the unit tests for the Kalman filters.
+
+kalman.o : $(SRC_DIR)/kalman.cpp $(SRC_DIR)/kalman.h \
+           $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_DIR)/kalman.cpp
+
+kalman_unittest.o : $(USER_DIR)/kalman_unittest.cpp \
+                    $(SRC_DIR)/kalman.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/kalman_unittest.cpp
+
+kalman_unittest : kalman.o kalman_unittest.o filter.o \
+                  gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
