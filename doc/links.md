@@ -4,6 +4,7 @@ These are all websites which were used to help create this library.
 
 ## Quaternion
 
+* http://www.wolframalpha.com
 * http://3dgep.com/?p=1815
 * http://www.ncsa.illinois.edu/~kindr/emtc/quaternions/
 * http://qt-project.org/doc/qt-4.8/qquaternion.html
@@ -13,6 +14,7 @@ These are all websites which were used to help create this library.
 * http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 * https://www.youtube.com/watch?v=LB6U849kwXc
 * https://svn.code.sf.net/p/irrlicht/code/trunk/include/quaternion.h
+* http://www.johndcook.com/blog/2012/02/15/dot-cross-and-quaternion-products/
 
 ## Vector
 

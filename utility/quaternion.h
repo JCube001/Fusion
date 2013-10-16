@@ -224,8 +224,7 @@ class Quaternion {
    * @return The quotient of the quaternions.
    */
   Quaternion operator/(const Quaternion& rhs) const {
-    (void)rhs;
-    return Quaternion();  // TODO(JCube001): (*this) * rhs.inverse();
+    return (*this) * rhs.inverse();
   }
 
   /**
