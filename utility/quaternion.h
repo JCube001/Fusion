@@ -368,6 +368,13 @@ class Quaternion {
    */
   static Quaternion slerp(const Quaternion& a, const Quaternion& b,
                           const float amount) {
+    (void)a;
+    (void)b;
+    (void)amount;
+
+    return Quaternion();
+
+#if 0
     // TODO(JCube001): Comment why this works, if it works.
     const Quaternion aa = a.normalize();
     const Quaternion bb = b.normalize();
@@ -381,6 +388,7 @@ class Quaternion {
     }
 
     return lerp(aa, bb, amount);
+#endif
   }
 
   // TODO(JCube001): SQUAD function.
