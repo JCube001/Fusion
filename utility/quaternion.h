@@ -55,7 +55,7 @@ class Quaternion {
     : _data {other.x(), other.y(), other.z(), other.w()} {}
 
   /**
-   * @brief Component initalization constructor.
+   * @brief Component initialization constructor.
    *
    * @param v The imaginary vectorial component.
    * @param s The scalar real component.
@@ -200,11 +200,14 @@ class Quaternion {
    * @brief Cross product multiplication.
    *
    * @param rhs The right hand side quaternion to multiply by.
-   * @return The cross product of the quaternions.
+   * @return The cross product of the quaternions defined as
+   *         q1q2 = [v2s1 + v1s2 + v1v2, s1s2 - v1.v2].
    */
   Quaternion operator*(const Quaternion& rhs) const {
-    (void)rhs;
-    return Quaternion();  // TODO(JCube001): Implement.
+    return Quaternion(rhs.vector()*scalar() + vector()*rhs.scalar() +
+                      vector()*rhs.vector(),
+                      scalar()*rhs.scalar() - Vector3::dot(vector(),
+                      rhs.vector()));
   }
 
   /**
@@ -214,14 +217,14 @@ class Quaternion {
    * @return The product of the quaternion times the scalar.
    */
   Quaternion operator*(const float rhs) const {
-    return Quaternion(vector() * rhs, scalar() * rhs);
+    return Quaternion(vector()*rhs, scalar()*rhs);
   }
 
   /**
    * @brief Division.
    *
    * @param rhs The right hand side quaternion to divide by.
-   * @return The quotient of the quaternions.
+   * @return The quotient of the quaternions defined as q1 / q2 = q1q2^-1.
    */
   Quaternion operator/(const Quaternion& rhs) const {
     return (*this) * rhs.inverse();
@@ -260,7 +263,7 @@ class Quaternion {
   /**
    * @brief Returns the quaternion conjugate.
    *
-   * @return The conjugate of the quaternion defined as q* == [s, -v].
+   * @return The conjugate of the quaternion defined as q* = [-v, s].
    */
   Quaternion conjugate() const {
     return Quaternion(-vector(), scalar());
@@ -271,7 +274,8 @@ class Quaternion {
    *
    * @param a The left hand side quaternion.
    * @param b The right hand side quaternion.
-   * @return The scalar product of two quaternions.
+   * @return The scalar product of two quaternions defined as
+   *         q1.q2 = [v1.v2 + s1s2].
    */
   static float dot(const Quaternion& a, const Quaternion& b) {
     return Vector3::dot(a.vector(), b.vector()) + a.scalar()*b.scalar();
@@ -280,7 +284,7 @@ class Quaternion {
   /**
    * @brief Returns the quaternion identity.
    *
-   * @return The identity of the quaternion defined as q == [0, 0, 0, 1].
+   * @return The identity of the quaternion defined as q = [0, 0, 0, 1].
    */
   static Quaternion identity() {
     return Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
@@ -289,7 +293,7 @@ class Quaternion {
   /**
    * @brief Returns the quaternion inverse.
    *
-   * @return The inverse of the quaternion defined as q^-1 == q* / ||q||^2.
+   * @return The inverse of the quaternion defined as q^-1 = q* / ||q||^2.
    */
   Quaternion inverse() const {
     float n = norm();
@@ -328,7 +332,7 @@ class Quaternion {
   /**
    * @brief Returns the norm (magnitude) of the quaternion.
    *
-   * @return The norm of the quaternion defined as ||q|| == sqrt(s^2 + v^2).
+   * @return The norm of the quaternion defined as ||q|| = sqrt(v^2 + s^2).
    */
   float norm() const {
     return sqrt(x()*x() + y()*y() + z()*z() + w()*w());
@@ -337,7 +341,7 @@ class Quaternion {
   /**
    * @brief Returns the normalized quaternion.
    *
-   * @return The normalized quaternion defined as q' == q / ||q||.
+   * @return The normalized quaternion defined as q' = q / ||q||.
    */
   Quaternion normalize() const {
     return (*this) / norm();
