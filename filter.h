@@ -27,11 +27,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <math.h>
 
 #if !defined(_FUSION_TEST)
- #if (ARDUINO >= 100)
-  #include <Arduino.h>
- #else
-  #include <WProgram.h>
- #endif
+  #if (ARDUINO >= 100)
+    #include <Arduino.h>
+  #else
+    #include <WProgram.h>
+  #endif
 #endif
 
 #include "./utility/quaternion.h"
