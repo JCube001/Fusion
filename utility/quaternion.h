@@ -368,13 +368,22 @@ class Quaternion {
    */
   static Quaternion slerp(const Quaternion& a, const Quaternion& b,
                           const float amount) {
-    // TODO(JCube001): Implement.
-    (void)a;
-    (void)b;
-    (void)amount;
+    // TODO(JCube001): Comment why this works, if it works.
+    const Quaternion aa = a.normalize();
+    const Quaternion bb = b.normalize();
 
-    return Quaternion();
+    const float c = acos(Quaternion::dot(aa, bb));
+    const float s = sin(c);
+    const float eps = 1e-5f;
+
+    if (!((-eps <= s) && (s <= eps))) {
+      return sin((1.0f - amount)*c) / s*aa + sin(amount*c) / s*bb;
+    }
+
+    return lerp(aa, bb, amount);
   }
+
+  // TODO(JCube001): SQUAD function.
 
  protected:
   float _data[4];
