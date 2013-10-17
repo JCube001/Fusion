@@ -15,6 +15,7 @@ These are all websites which were used to help create this library.
 * https://www.youtube.com/watch?v=LB6U849kwXc
 * https://svn.code.sf.net/p/irrlicht/code/trunk/include/quaternion.h
 * http://www.johndcook.com/blog/2012/02/15/dot-cross-and-quaternion-products/
+* http://en.wikipedia.org/wiki/Slerp
 
 ## Vector
 
