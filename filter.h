@@ -27,18 +27,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <math.h>
 
 #if !defined(_FUSION_TEST)
-  #if (ARDUINO >= 100)
-    #include <Arduino.h>
-  #else
-    #include <WProgram.h>
-  #endif
-#else
-  #define PI  (M_PI)
+ #if (ARDUINO >= 100)
+  #include <Arduino.h>
+ #else
+  #include <WProgram.h>
+ #endif
 #endif
 
 #include "./utility/quaternion.h"
 
-#define RAD_TO_DEG  (180.0f / PI)
+#define RAD_TO_DEG  (180.0f / M_PI)
 
 class Filter {
  public:
