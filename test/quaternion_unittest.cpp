@@ -22,3 +22,4 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 #include "../utility/quaternion.h"
+#include <gtest/gtest.h>
