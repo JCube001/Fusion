@@ -235,7 +235,7 @@ TEST(Vector3Test, DotProductMultiplication) {
   EXPECT_FLOAT_EQ(32.0f, Vector3::dot(v2, v1));
 }
 
-TEST(Vector3Test, LERP) {
+TEST(Vector3Test, Lerp) {
   const float a1 = 0.0f;
   const float a2 = 0.5f;
   const float a3 = 1.0f;
@@ -267,7 +267,7 @@ TEST(Vector3Test, TripleProductMultiplication) {
   EXPECT_FLOAT_EQ(0.0f, Vector3::tripleProduct(v1, v2, v3));
 }
 
-TEST(Vector3Test, NLERP) {
+TEST(Vector3Test, Nlerp) {
   const float a1 = 0.0f;
   const float a2 = 0.5f;
   const float a3 = 1.0f;
@@ -310,27 +310,28 @@ TEST(Vector3Test, Normalize) {
   EXPECT_FLOAT_EQ(v1.z() / v1_norm, v2.z());
 }
 
-// TODO(JCube001): Correct this, not actually a SLERP test yet.
-TEST(Vector3Test, SLERP) {
+TEST(Vector3Test, Slerp) {
   const float a1 = 0.0f;
-  const float a2 = 0.5f;
+  const float a2 = 0.75f;
   const float a3 = 1.0f;
+  const float v1_norm = static_cast<float>(sqrt(14.0f));
+  const float v2_norm = static_cast<float>(sqrt(77.0f));
   const Vector3 v1(1.0f, 2.0f, 3.0f);
   const Vector3 v2(4.0f, 5.0f, 6.0f);
-  const Vector3 v3(2.5f, 3.5f, 4.5f);
+  const Vector3 v3(0.41050804f, 0.56364781f, 0.71678758f);
   const Vector3 v4(Vector3::slerp(v1, v2, a1));
   const Vector3 v5(Vector3::slerp(v1, v2, a2));
   const Vector3 v6(Vector3::slerp(v1, v2, a3));
 
-  EXPECT_FLOAT_EQ(v1.x(), v4.x());
-  EXPECT_FLOAT_EQ(v1.y(), v4.y());
-  EXPECT_FLOAT_EQ(v1.z(), v4.z());
+  EXPECT_FLOAT_EQ(v1.x() / v1_norm, v4.x());
+  EXPECT_FLOAT_EQ(v1.y() / v1_norm, v4.y());
+  EXPECT_FLOAT_EQ(v1.z() / v1_norm, v4.z());
 
   EXPECT_FLOAT_EQ(v3.x(), v5.x());
   EXPECT_FLOAT_EQ(v3.y(), v5.y());
   EXPECT_FLOAT_EQ(v3.z(), v5.z());
 
-  EXPECT_FLOAT_EQ(v2.x(), v6.x());
-  EXPECT_FLOAT_EQ(v2.y(), v6.y());
-  EXPECT_FLOAT_EQ(v2.z(), v6.z());
+  EXPECT_FLOAT_EQ(v2.x() / v2_norm, v6.x());
+  EXPECT_FLOAT_EQ(v2.y() / v2_norm, v6.y());
+  EXPECT_FLOAT_EQ(v2.z() / v2_norm, v6.z());
 }

@@ -242,51 +242,49 @@ class Vector3 {
   /**
    * @brief Dot product multiplication.
    *
-   * @param a The left hand side vector.
-   * @param b The right hand side vector.
+   * @param p0 The left hand side vector.
+   * @param p1 The right hand side vector.
    * @return The scalar product of two vectors.
    */
-  static float dot(const Vector3& a, const Vector3& b) {
-    return a.x()*b.x() + a.y()*b.y() + a.z()*b.z();
+  static float dot(const Vector3& p0, const Vector3& p1) {
+    return p0.x()*p1.x() + p0.y()*p1.y() + p0.z()*p1.z();
   }
 
   /**
    * @brief Performs a linear interpolation between two vectors.
    *
-   * @param a The start vector.
-   * @param b The end vector.
-   * @param amount A value between 0 and 1 indicating the weight of the end
-   *        vector.
+   * @param p0 The start vector.
+   * @param p1 The end vector.
+   * @param t A value between 0 and 1 indicating the weight of the end vector.
    * @return The linear interpolation between two vectors.
    */
-  static Vector3 lerp(const Vector3& a, const Vector3& b, const float amount) {
-    return a + (b - a)*amount;
+  static Vector3 lerp(const Vector3& p0, const Vector3& p1, const float t) {
+    return p0*(1.0f - t) + p1*t;
   }
 
   /**
    * @brief Scalar triple product multiplication.
    *
-   * @param a The vector to obtain the dot product from.
-   * @param b The vector to cross multiply with c.
-   * @param c The vector to cross multiply with b.
-   * @return The scalar product of the three vectors.
+   * @param p0 The vector to obtain the dot product from.
+   * @param p1 The vector to cross multiply with p2.
+   * @param p2 The vector to cross multiply with p1.
+   * @return The scalar triple product of the three vectors.
    */
-  static float tripleProduct(const Vector3& a, const Vector3& b,
-                             const Vector3& c) {
-    return Vector3::dot(a, b*c);
+  static float tripleProduct(const Vector3& p0, const Vector3& p1,
+                             const Vector3& p2) {
+    return Vector3::dot(p0, p1*p2);
   }
 
   /**
    * @brief Performs a normalized linear interpolation between two vectors.
    *
-   * @param a The start vector.
-   * @param b The end vector.
-   * @param amount A value between 0 and 1 indicating the weight of the end
-   *        vector.
+   * @param p0 The start vector.
+   * @param p1 The end vector.
+   * @param t A value between 0 and 1 indicating the weight of the end vector.
    * @return The normalized linear interpolation between two vectors.
    */
-  static Vector3 nlerp(const Vector3& a, const Vector3& b, const float amount) {
-    return Vector3::lerp(a, b, amount).normalize();
+  static Vector3 nlerp(const Vector3& p0, const Vector3& p1, const float t) {
+    return Vector3::lerp(p0, p1, t).normalize();
   }
 
   /**
@@ -310,28 +308,33 @@ class Vector3 {
   /**
    * @brief Performs a spherical linear interpolation between two vectors.
    *
-   * @param a The start vector.
-   * @param b The end vector.
-   * @param amount A value between 0 and 1 indicating the weight of the end
-   *        vector.
-   * @return The spherical linear interpolation between two vectors.
+   * @param p0 The start vector.
+   * @param p1 The end vector.
+   * @param t A value between 0 and 1 indicating the weight of the end vector.
+   * @return The spherical linear interpolation between two vectors defined as
+   *         Slerp(p0, p1; t) = (sin((1-t)o) / sin(o))(p0 cap) +
+   *         (sin(to) / sin(o))(p1 cap) where o = acos(cos(o)) =
+   *         acos((p0 cap).(p1 cap)).
    */
-  static Vector3 slerp(const Vector3& a, const Vector3& b, const float amount) {
-    // The dot product is also the cosine of the angle between two vectors.
-    float c = Vector3::dot(a, b);
+  static Vector3 slerp(const Vector3& p0, const Vector3& p1, const float t) {
+    // Vectors must be normalized to work with angle calculations.
+    const Vector3 pp0 = p0.normalize();
+    const Vector3 pp1 = p1.normalize();
 
-    // Clamp it to be in the range of arc cosine.
-    c = fmax(-1.0f, fmin(1.0f, c));
+    // Calculate omega (the angle between p0 and p1) and the sine of omega.
+    const float o = acos(Vector3::dot(pp0, pp1));
+    const float so = sin(o);
 
-    // Return the angle between the start and end.
-    // Then multiply that by the amount to get the angle between start and the
-    // final result.
-    float theta = acos(c)*amount;
-    Vector3 relative = b - a*c;
-    relative = relative.normalize();
+    // A number approaching zero.
+    const float lim = 1e-5f;
 
-    // The result.
-    return (a*cos(theta)) + (relative*sin(theta));
+    // Check if omega is approaching zero.
+    if (!(-lim <= o && o <= lim)) {
+      return pp0*(sin((1.0f - t)*o) / so) + pp1*(sin(t*o) / so);
+    } else {
+      // The angle is too small, use Lerp.
+      return Vector3::lerp(pp0, pp1, t);
+    }
   }
 
  protected:
