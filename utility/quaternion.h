@@ -372,8 +372,7 @@ class Quaternion {
   static Quaternion slerp(const Quaternion& q0, const Quaternion& q1,
                           const float t) {
     // Quaternions must be normalized to work with angle calculations.
-    // Quaternion qq1 is kept mutable because it may not need to be negated
-    // later on.
+    // Quaternion qq1 is kept mutable because it may need to be negated later.
     const Quaternion qq0 = q0.normalize();
     Quaternion qq1 = q1.normalize();
 
