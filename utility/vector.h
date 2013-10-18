@@ -321,20 +321,20 @@ class Vector3 {
     const Vector3 pp0 = p0.normalize();
     const Vector3 pp1 = p1.normalize();
 
-    // Calculate omega (the angle between p0 and p1) and the sine of omega.
+    // Calculate omega (the angle between p0 and p1).
     const float o = acos(Vector3::dot(pp0, pp1));
-    const float so = sin(o);
 
     // A number approaching zero.
     const float lim = 1e-5f;
 
-    // Check if omega is approaching zero.
+    // Check if omega is approaching zero before performing the Slerp.
     if (!(-lim <= o && o <= lim)) {
+      const float so = sin(o);
       return pp0*(sin((1.0f - t)*o) / so) + pp1*(sin(t*o) / so);
-    } else {
-      // The angle is too small, use Lerp.
-      return Vector3::lerp(pp0, pp1, t);
     }
+
+    // The angle is too small, use Lerp.
+    return Vector3::lerp(pp0, pp1, t);
   }
 
  protected:
