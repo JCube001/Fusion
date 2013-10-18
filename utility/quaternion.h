@@ -360,38 +360,65 @@ class Quaternion {
   /**
    * @brief Performs a spherical linear interpolation between two quaternions.
    *
-   * @param a The start quaternion.
-   * @param b The end quaternion.
-   * @param amount A value between 0 and 1 indicating the weight of the end
-   *        vector.
-   * @return The spherical linear interpolation between two quaternions.
+   * @param q0 The start quaternion.
+   * @param q1 The end quaternion.
+   * @param t A value between 0 and 1 indicating the weight of the end
+   *          quaternion.
+   * @return The spherical linear interpolation between two quaternions defined
+   *         as Slerp(q0, q1; t) = (((q1 cap)(q0 cap)^-1)^t)(q0 cap) where
+   *         q^t = cos(to) + v sin(to) and o = acos(cos(o)) =
+   *         acos((q0 cap).(q1 cap)).
    */
-  static Quaternion slerp(const Quaternion& a, const Quaternion& b,
-                          const float amount) {
-    (void)a;
-    (void)b;
-    (void)amount;
+  static Quaternion slerp(const Quaternion& q0, const Quaternion& q1,
+                          const float t) {
+    // Quaternions must be normalized to work with angle calculations.
+    // Quaternion qq1 is kept mutable because it may not need to be negated
+    // later on.
+    const Quaternion qq0 = q0.normalize();
+    Quaternion qq1 = q1.normalize();
 
-    return Quaternion();
+    // Calculate omega (the angle between q0 and q1)
+    const float co = Quaternion::dot(qq0, qq1);
+    const float o = acos(co);
 
-#if 0
-    // TODO(JCube001): Comment why this works, if it works.
-    const Quaternion aa = a.normalize();
-    const Quaternion bb = b.normalize();
-
-    const float c = acos(Quaternion::dot(aa, bb));
-    const float s = sin(c);
-    const float eps = 1e-5f;
-
-    if (!((-eps <= s) && (s <= eps))) {
-      return sin((1.0f - amount)*c) / s*aa + sin(amount*c) / s*bb;
+    // Check if the dot product (cos omega) resulted in a negative value.
+    // If it did, then negate one end quaternion to prevent taking the long way
+    // around during the interpolation.
+    if (co < 0.0f) {
+      qq1 = -qq1;
     }
 
-    return lerp(aa, bb, amount);
-#endif
+    // A number approaching zero.
+    const float lim = 1e-5f;
+
+    // Check if omega is approaching zero before performing the Slerp.
+    if (!(-lim <= o && o <= lim)) {
+      const float so = sin(o);
+      return qq0*(sin((1.0f - t)*o) / so) + qq1*(sin(t*o) / so);
+    }
+
+    // The angle is too small, use Lerp.
+    return Quaternion::lerp(qq0, qq1, t);
   }
 
-  // TODO(JCube001): SQUAD function.
+  /**
+   * @brief Performs a spherical and quadrangle interpolation between four
+   *        quaternions.
+   *
+   * @param q0 The start quaternion.
+   * @param q1 The first control quaternion.
+   * @param q2 The second control quaternion.
+   * @param q3 The end quaternion.
+   * @return The spherical and quadrangle interpolation between four quaternions
+   *         defined as Squad(q0, q1, q2, q3; t) = Slerp(Slerp(q0, q1; t),
+   *         Slerp(q2, q3; t), 2t(1 - t)).
+   */
+  static Quaternion squad(const Quaternion& q0, const Quaternion& q1,
+                          const Quaternion& q2, const Quaternion& q3,
+                          const float t) {
+    return Quaternion::slerp(Quaternion::slerp(q0, q1, t),
+                             Quaternion::slerp(q2, q3, t), 2*t*(1 - t));
+  }
 
  protected:
   float _data[4];
