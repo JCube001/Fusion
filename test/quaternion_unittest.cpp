@@ -286,11 +286,29 @@ TEST(QuaternionTest, Conjugate) {
 }
 
 TEST(QuaternionTest, ConvertFromEulerAngles) {
-  FAIL() << "Test not yet implemented";
+  const float DEG_TO_RAD = static_cast<float>(M_PI / 180.0f);
+  const float roll = 10.0f * DEG_TO_RAD;
+  const float pitch = 25.0f * DEG_TO_RAD;
+  const float yaw = 50.0f * DEG_TO_RAD;
+  const Quaternion q = Quaternion::convertFromEulerAngles(roll, pitch, yaw);
+
+  EXPECT_FLOAT_EQ(-0.01400572f, q.x());
+  EXPECT_FLOAT_EQ(0.23137496f, q.y());
+  EXPECT_FLOAT_EQ(0.39393390f, q.z());
+  EXPECT_FLOAT_EQ(0.88942990f, q.w());
 }
 
 TEST(QuaternionTest, ConvertToEulerAngles) {
-  FAIL() << "Test not yet implemented";
+  const float DEG_TO_RAD = static_cast<float>(M_PI / 180.0f);
+  const float roll = 10.0f * DEG_TO_RAD;
+  const float pitch = 25.0f * DEG_TO_RAD;
+  const float yaw = 50.0f * DEG_TO_RAD;
+  const Quaternion q(-0.01400572f, 0.23137496f, 0.39393390f, 0.88942990f);
+  const float* e = Quaternion::convertToEulerAngles(q);
+
+  EXPECT_FLOAT_EQ(roll, e[0]);
+  EXPECT_FLOAT_EQ(pitch, e[1]);
+  EXPECT_FLOAT_EQ(yaw, e[2]);
 }
 
 TEST(QuaternionTest, DotProductMultiplication) {
@@ -395,11 +413,43 @@ TEST(QuaternionTest, Normalize) {
 }
 
 TEST(QuaternionTest, RotateVector) {
-  FAIL() << "Test not yet implemented";
+  const Vector3 v0(1.0f, 0.0f, 0.0f);
+  const Quaternion q(0.7071068f, 0.0f, 0.7071068f, 0.0f);
+  const Vector3 v1 = q.rotateVector(v0);
+
+  EXPECT_FLOAT_EQ(0.0f, v1.x());
+  EXPECT_FLOAT_EQ(0.0f, v1.y());
+  EXPECT_FLOAT_EQ(1.0f, v1.z());
 }
 
+// TODO(JCube001): Unsure what exactly q2 should be.
 TEST(QuaternionTest, Slerp) {
-  FAIL() << "Test not yet implemented";
+  const float t0 = 0.0f;
+  const float t1 = 0.5f;
+  const float t2 = 1.0f;
+  const float q0_norm = static_cast<float>(sqrt(30.0f));
+  const float q1_norm = static_cast<float>(sqrt(174.0f));
+  const Quaternion q0(1.0f, 2.0f, 3.0f, 4.0f);
+  const Quaternion q1(5.0f, 6.0f, 7.0f, 8.0f);
+  const Quaternion q2(3.0f, 4.0f, 5.0f, 6.0f);
+  const Quaternion q3(Quaternion::slerp(q0, q1, t0));
+  const Quaternion q4(Quaternion::slerp(q0, q1, t1));
+  const Quaternion q5(Quaternion::slerp(q0, q1, t2));
+
+  EXPECT_FLOAT_EQ(q0.x() / q0_norm, q3.x());
+  EXPECT_FLOAT_EQ(q0.y() / q0_norm, q3.y());
+  EXPECT_FLOAT_EQ(q0.z() / q0_norm, q3.z());
+  EXPECT_FLOAT_EQ(q0.w() / q0_norm, q3.w());
+
+  EXPECT_FLOAT_EQ(q2.x(), q4.x());
+  EXPECT_FLOAT_EQ(q2.y(), q4.y());
+  EXPECT_FLOAT_EQ(q2.z(), q4.z());
+  EXPECT_FLOAT_EQ(q2.w(), q4.w());
+
+  EXPECT_FLOAT_EQ(q1.x() / q1_norm, q5.x());
+  EXPECT_FLOAT_EQ(q1.y() / q1_norm, q5.y());
+  EXPECT_FLOAT_EQ(q1.z() / q1_norm, q5.z());
+  EXPECT_FLOAT_EQ(q1.w() / q1_norm, q5.w());
 }
 
 TEST(QuaternionTest, Squad) {

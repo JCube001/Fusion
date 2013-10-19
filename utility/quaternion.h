@@ -60,8 +60,8 @@ class Quaternion {
    * @param v The imaginary vectorial component.
    * @param s The scalar real component.
    */
-  Quaternion(const Vector3& v, const float s)
-    : _data {v.x(), v.y(), v.z(), s} {}
+  Quaternion(const Vector3& p, const float s)
+    : _data {p.x(), p.y(), p.z(), s} {}
 
   /**
    * @brief Array initialization constructor.
@@ -280,15 +280,15 @@ class Quaternion {
    * @note Specifically these are Tait-Bryan angles.
    * @note All angles are in radians.
    */
-  static Quaternion convertFromEulerAngles(const float r, const float p,
-                                           const float y) {
-    const float t = 2.0f;
-    const float sr = sin(r / t);
-    const float cr = cos(r / t);
-    const float sp = sin(p / t);
-    const float cp = cos(p / t);
-    const float sy = sin(y / t);
-    const float cy = cos(y / t);
+  static Quaternion convertFromEulerAngles(const float roll, const float pitch,
+                                           const float yaw) {
+    const float t = 0.5f;
+    const float sr = sin(roll * t);
+    const float cr = cos(roll * t);
+    const float sp = sin(pitch * t);
+    const float cp = cos(pitch * t);
+    const float sy = sin(yaw * t);
+    const float cy = cos(yaw * t);
 
     return Quaternion(sr*cp*cy - cr*sp*sy, cr*sp*cy + sr*cp*sy,
                       cr*cp*sy - sr*sp*cy, cr*cp*cy + sr*sp*sy);
@@ -299,8 +299,9 @@ class Quaternion {
    *        quaternion.
    *
    * @param q The quaternion to convert from.
-   * @return The Euler angles represented by the quaternion as an array of size
-   *         three. The values in the array are ordered {roll, pitch, yaw}.
+   * @return The pointer to the Euler angles represented by the quaternion as an
+   *         array of size three. The values in the array are ordered
+   *         [roll, pitch, yaw].
    *
    * @note Specifically these are Tait-Bryan angles.
    * @note All angles are in radians.
@@ -415,10 +416,10 @@ class Quaternion {
    * @brief Performs a rotation of the vector using the quaternion.
    *
    * @param v The vector to rotate.
-   * @return The rotated three dimensional vector.
+   * @return The rotated three dimensional vector defined as p' = qpq^-1.
    */
-  Vector3 rotateVector(const Vector3& v) const {
-    return ((*this) * Quaternion(v, 0) * (*this).conjugate()).vector();
+  Vector3 rotateVector(const Vector3& p) const {
+    return ((*this) * Quaternion(p, 0) * inverse()).vector();
   }
 
   /**
