@@ -200,16 +200,15 @@ TEST(QuaternionTest, SubtractionOperator) {
   EXPECT_FLOAT_EQ(4.0f, q2.w());
 }
 
-// TODO(JCube001): Fix
 TEST(QuaternionTest, QuaternionMultiplicationOperator) {
-  const Quaternion q0(1, 0.1, 0.2, 0.3);
-  const Quaternion q1(1, 0.25, 0.45, 0.5);
+  const Quaternion q0(1.0f, 2.0f, 3.0f, 4.0f);
+  const Quaternion q1(5.0f, 6.0f, 7.0f, 8.0f);
   const Quaternion q2 = q0 * q1;
 
-  EXPECT_FLOAT_EQ(0.315f, q2.x());
-  EXPECT_FLOAT_EQ(0.675f, q2.y());
-  EXPECT_FLOAT_EQ(0.795f, q2.z());
-  EXPECT_FLOAT_EQ(0.735f, q2.w());
+  EXPECT_FLOAT_EQ(24.0f, q2.x());
+  EXPECT_FLOAT_EQ(48.0f, q2.y());
+  EXPECT_FLOAT_EQ(48.0f, q2.z());
+  EXPECT_FLOAT_EQ(-6.0f, q2.w());
 }
 
 TEST(QuaternionTest, ScalarMultiplicationOperator) {
@@ -223,16 +222,16 @@ TEST(QuaternionTest, ScalarMultiplicationOperator) {
   EXPECT_FLOAT_EQ(8.0f, q1.w());
 }
 
-// TODO(JCube001): Fix
 TEST(QuaternionTest, QuaternionDivisionOperator) {
   const Quaternion q0(1.0f, 2.0f, 3.0f, 4.0f);
   const Quaternion q1(5.0f, 6.0f, 7.0f, 8.0f);
   const Quaternion q2 = q1 / q0;
+  const Quaternion q3 = q1 * q0.inverse();
 
-  EXPECT_FLOAT_EQ(4.0f, q2.x());
-  EXPECT_FLOAT_EQ(4.0f, q2.y());
-  EXPECT_FLOAT_EQ(4.0f, q2.z());
-  EXPECT_FLOAT_EQ(4.0f, q2.w());
+  EXPECT_FLOAT_EQ(q3.x(), q2.x());
+  EXPECT_FLOAT_EQ(q3.y(), q2.y());
+  EXPECT_FLOAT_EQ(q3.z(), q2.z());
+  EXPECT_FLOAT_EQ(q3.w(), q2.w());
 }
 
 TEST(QuaternionTest, ScalarDivisionOperator) {
