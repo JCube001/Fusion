@@ -5,6 +5,7 @@ These are all websites which were used to help create this library.
 ## Quaternion
 
 * http://www.wolframalpha.com
+* http://www.j3d.org/matrix_faq/matrfaq_latest.html#Q47
 * http://3dgep.com/?p=1815
 * http://www.ncsa.illinois.edu/~kindr/emtc/quaternions/
 * http://qt-project.org/doc/qt-4.8/qquaternion.html

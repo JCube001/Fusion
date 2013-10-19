@@ -201,7 +201,7 @@ class Quaternion {
    *
    * @param rhs The right hand side quaternion to multiply by.
    * @return The cross product of the quaternions defined as
-   *         q1q2 = [v2s1 + v1s2 + v1v2, s1s2 - v1.v2].
+   *         q0q1 = [v1s0 + v0s1 + v0v1, s0s1 - v0.v1].
    */
   Quaternion operator*(const Quaternion& rhs) const {
     return Quaternion(rhs.vector()*scalar() + vector()*rhs.scalar() +
@@ -224,7 +224,7 @@ class Quaternion {
    * @brief Division.
    *
    * @param rhs The right hand side quaternion to divide by.
-   * @return The quotient of the quaternions defined as q1 / q2 = q1q2^-1.
+   * @return The quotient of the quaternions defined as q0 / q1 = q0q1^-1.
    */
   Quaternion operator/(const Quaternion& rhs) const {
     return (*this) * rhs.inverse();
@@ -305,7 +305,7 @@ class Quaternion {
    * @note Specifically these are Tait-Bryan angles.
    * @note All angles are in radians.
    * @note This function is inefficient and should not be used on an embedded
-   *       device. Euler angles should be avoided entirely for that matter.
+   *       device. Euler angles should actually be avoided entirely.
    *       The only time this conversion from quaternion to Euler angles should
    *       take place is when displaying a rotation as human readable angle
    *       values.
@@ -346,9 +346,21 @@ class Quaternion {
    * @brief Returns the quaternion inverse.
    *
    * @return The inverse of the quaternion defined as q^-1 = q* / ||q||^2.
+   *
+   * @note Multiple definitions were encountered during research. After much
+   *       testing, this one seems to be the most correct.
    */
   Quaternion inverse() const {
     const float n = norm();
+
+    // Gracefully handle a zero quaternion by returning the identity.
+    // Only return the conjugate in the case where the magnitude is one.
+    if (n == 0.0f) {
+      return Quaternion::identity();
+    } else if (n == 1.0f) {
+      return conjugate();
+    }
+
     return conjugate() / (n*n);
   }
 
@@ -357,7 +369,7 @@ class Quaternion {
    *
    * @param q0 The start quaternion.
    * @param q1 The end quaternion.
-   * @param t A value between 0 and 1 indicating the weight of the end
+   * @param t A value between 0 and 1 inclusive indicating the weight of the end
    *          quaternion.
    * @return The linear interpolation between two quaternions.
    */
@@ -372,7 +384,7 @@ class Quaternion {
    *
    * @param q0 The start quaternion.
    * @param q1 The end quaternion.
-   * @param t A value between 0 and 1 indicating the weight of the end
+   * @param t A value between 0 and 1 inclusive indicating the weight of the end
    *          quaternion.
    * @return The normalized linear interpolation between two quaternions.
    */
@@ -414,7 +426,7 @@ class Quaternion {
    *
    * @param q0 The start quaternion.
    * @param q1 The end quaternion.
-   * @param t A value between 0 and 1 indicating the weight of the end
+   * @param t A value between 0 and 1 inclusive indicating the weight of the end
    *          quaternion.
    * @return The spherical linear interpolation between two quaternions defined
    *         as Slerp(q0, q1; t) = ((sin(1-t)*o) / sin(o))(q0 cap) +
@@ -440,7 +452,7 @@ class Quaternion {
     }
 
     // A number approaching zero.
-    const float lim = 1e-5f;
+    const float lim = 1.0e-5f;
 
     // Check if omega is approaching zero before performing the Slerp.
     if (!(-lim <= o && o <= lim)) {
@@ -460,6 +472,8 @@ class Quaternion {
    * @param q1 The first control quaternion.
    * @param q2 The second control quaternion.
    * @param q3 The end quaternion.
+   * @param t A value between 0 and 1 inclusive indicating the weight of the end
+   *          quaternion.
    * @return The spherical and quadrangle interpolation between four quaternions
    *         defined as Squad(q0, q1, q2, q3; t) = Slerp(Slerp(q0, q1; t),
    *         Slerp(q2, q3; t), 2t(1 - t)).

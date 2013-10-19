@@ -21,9 +21,9 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
-#include "../utility/vector.h"
 #include <gtest/gtest.h>
 #include <cmath>
+#include "../utility/vector.h"
 
 TEST(Vector3Test, DefaultConstructor) {
   const Vector3 v;

@@ -325,7 +325,7 @@ class Vector3 {
     const float o = acos(Vector3::dot(pp0, pp1));
 
     // A number approaching zero.
-    const float lim = 1e-5f;
+    const float lim = 1.0e-5f;
 
     // Check if omega is approaching zero before performing the Slerp.
     if (!(-lim <= o && o <= lim)) {
