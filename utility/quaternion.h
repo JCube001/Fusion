@@ -270,15 +270,67 @@ class Quaternion {
   }
 
   /**
+   * @brief Returns a quaternion converted from Euler angles.
+   *
+   * @param r The angle representing roll in radians.
+   * @param p The angle representing pitch in radians.
+   * @param y The angle representing yaw in radians.
+   * @return The quaternion representation of the Euler rotations.
+   *
+   * @note Specifically these are Tait-Bryan angles.
+   * @note All angles are in radians.
+   */
+  static Quaternion convertFromEulerAngles(const float r, const float p,
+                                           const float y) {
+    const float t = 2.0f;
+    const float sr = sin(r / t);
+    const float cr = cos(r / t);
+    const float sp = sin(p / t);
+    const float cp = cos(p / t);
+    const float sy = sin(y / t);
+    const float cy = cos(y / t);
+
+    return Quaternion(sr*cp*cy - cr*sp*sy, cr*sp*cy + sr*cp*sy,
+                      cr*cp*sy - sr*sp*cy, cr*cp*cy + sr*sp*sy);
+  }
+
+  /**
+   * @brief Returns an array containing Euler angles converted from a
+   *        quaternion.
+   *
+   * @param q The quaternion to convert from.
+   * @return The Euler angles represented by the quaternion as an array of size
+   *         three. The values in the array are ordered {roll, pitch, yaw}.
+   *
+   * @note Specifically these are Tait-Bryan angles.
+   * @note All angles are in radians.
+   * @note This function is inefficient and should not be used on an embedded
+   *       device. Euler angles should be avoided entirely for that matter.
+   *       The only time this conversion from quaternion to Euler angles should
+   *       take place is when displaying a rotation as human readable angle
+   *       values.
+   */
+  static float* convertToEulerAngles(Quaternion q) {
+    static float e[3];
+
+    e[0] = atan2(2.0f*(q.w()*q.x() + q.y()*q.z()),
+                 1.0f - 2.0f*(q.x()*q.x() + q.y()*q.y()));
+    e[1] = asin(2.0f*(q.w()*q.y() - q.z()*q.x()));
+    e[2] = atan2(2.0f*(q.w()*q.z() + q.x()*q.y()),
+                 1.0f - 2.0f*(q.y()*q.y() + q.z()*q.z()));
+
+    return e;
+  }
+
+  /**
    * @brief Dot product multiplication.
    *
-   * @param a The left hand side quaternion.
-   * @param b The right hand side quaternion.
-   * @return The scalar product of two quaternions defined as
-   *         q1.q2 = [v1.v2 + s1s2].
+   * @param q0 The left hand side quaternion.
+   * @param q1 The right hand side quaternion.
+   * @return The scalar product of two quaternions.
    */
-  static float dot(const Quaternion& a, const Quaternion& b) {
-    return Vector3::dot(a.vector(), b.vector()) + a.scalar()*b.scalar();
+  static float dot(const Quaternion& q0, const Quaternion& q1) {
+    return Vector3::dot(q0.vector(), q1.vector()) + q0.scalar()*q1.scalar();
   }
 
   /**
@@ -296,37 +348,37 @@ class Quaternion {
    * @return The inverse of the quaternion defined as q^-1 = q* / ||q||^2.
    */
   Quaternion inverse() const {
-    float n = norm();
+    const float n = norm();
     return conjugate() / (n*n);
   }
 
   /**
    * @brief Performs a linear interpolation between two quaternions.
    *
-   * @param a The start quaternion.
-   * @param b The end quaternion.
-   * @param amount A value between 0 and 1 indicating the weight of the end
-   *        quaternion.
+   * @param q0 The start quaternion.
+   * @param q1 The end quaternion.
+   * @param t A value between 0 and 1 indicating the weight of the end
+   *          quaternion.
    * @return The linear interpolation between two quaternions.
    */
-  static Quaternion lerp(const Quaternion& a, const Quaternion& b,
-                         const float amount) {
-    return a + (b - a)*amount;
+  static Quaternion lerp(const Quaternion& q0, const Quaternion& q1,
+                         const float t) {
+    return q0*(1.0f - t) + q1*t;
   }
 
   /**
    * @brief Performs a normalized linear interpolation between two
    *        quaternions.
    *
-   * @param a The start quaternion.
-   * @param b The end quaternion.
-   * @param amount A value between 0 and 1 indicating the weight of the end
-   *        quaternion.
+   * @param q0 The start quaternion.
+   * @param q1 The end quaternion.
+   * @param t A value between 0 and 1 indicating the weight of the end
+   *          quaternion.
    * @return The normalized linear interpolation between two quaternions.
    */
-  static Quaternion nlerp(const Quaternion& a, const Quaternion& b,
-                          const float amount) {
-    return Quaternion::lerp(a, b, amount).normalize();
+  static Quaternion nlerp(const Quaternion& q0, const Quaternion& q1,
+                          const float t) {
+    return Quaternion::lerp(q0, q1, t).normalize();
   }
 
   /**
@@ -339,7 +391,7 @@ class Quaternion {
   }
 
   /**
-   * @brief Returns the normalized quaternion.
+   * @brief Returns the normalized (unit) quaternion.
    *
    * @return The normalized quaternion defined as q' = q / ||q||.
    */
@@ -348,7 +400,7 @@ class Quaternion {
   }
 
   /**
-   * @brief Performs a rotation of the vector using this quaternion.
+   * @brief Performs a rotation of the vector using the quaternion.
    *
    * @param v The vector to rotate.
    * @return The rotated three dimensional vector.
@@ -365,8 +417,8 @@ class Quaternion {
    * @param t A value between 0 and 1 indicating the weight of the end
    *          quaternion.
    * @return The spherical linear interpolation between two quaternions defined
-   *         as Slerp(q0, q1; t) = (((q1 cap)(q0 cap)^-1)^t)(q0 cap) where
-   *         q^t = cos(to) + v sin(to) and o = acos(cos(o)) =
+   *         as Slerp(q0, q1; t) = ((sin(1-t)*o) / sin(o))(q0 cap) +
+   *         (sin(to) / sin(o))(q1 cap) where o = acos(cos(o)) =
    *         acos((q0 cap).(q1 cap)).
    */
   static Quaternion slerp(const Quaternion& q0, const Quaternion& q1,
