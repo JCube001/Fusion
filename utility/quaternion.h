@@ -483,7 +483,7 @@ class Quaternion {
                           const Quaternion& q2, const Quaternion& q3,
                           const float t) {
     return Quaternion::slerp(Quaternion::slerp(q0, q1, t),
-                             Quaternion::slerp(q2, q3, t), 2*t*(1 - t));
+                             Quaternion::slerp(q2, q3, t), 2.0f*t*(1.0f - t));
   }
 
  protected:

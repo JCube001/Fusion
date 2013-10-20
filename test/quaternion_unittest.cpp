@@ -452,5 +452,32 @@ TEST(QuaternionTest, Slerp) {
 }
 
 TEST(QuaternionTest, Squad) {
-  FAIL() << "Test not yet implemented";
+  const float t0 = 0.0f;
+  const float t1 = 0.5f;
+  const float t2 = 1.0f;
+  const float q0_norm = static_cast<float>(sqrt(30.0f));
+  const float q1_norm = static_cast<float>(sqrt(174.0f));
+  const Quaternion q0(1.0f, 2.0f, 3.0f, 4.0f);
+  const Quaternion q1(5.0f, 6.0f, 7.0f, 8.0f);
+  const Quaternion q2(9.0f, 10.0f, 11.0f, 12.0f);
+  const Quaternion q3(13.0f, 14.0f, 15.0f, 16.0f);
+  const Quaternion q4(0.36169109f, 0.44767761f, 0.53366412f, 0.61965063f);
+  const Quaternion q5(Quaternion::squad(q0, q1, q2, q3, t0));
+  const Quaternion q6(Quaternion::squad(q0, q1, q2, q3, t1));
+  const Quaternion q7(Quaternion::squad(q0, q1, q2, q3, t2));
+
+  EXPECT_FLOAT_EQ(q0.x() / q0_norm, q5.x());
+  EXPECT_FLOAT_EQ(q0.y() / q0_norm, q5.y());
+  EXPECT_FLOAT_EQ(q0.z() / q0_norm, q5.z());
+  EXPECT_FLOAT_EQ(q0.w() / q0_norm, q5.w());
+
+  EXPECT_FLOAT_EQ(q4.x(), q6.x());
+  EXPECT_FLOAT_EQ(q4.y(), q6.y());
+  EXPECT_FLOAT_EQ(q4.z(), q6.z());
+  EXPECT_FLOAT_EQ(q4.w(), q6.w());
+
+  EXPECT_FLOAT_EQ(q1.x() / q1_norm, q7.x());
+  EXPECT_FLOAT_EQ(q1.y() / q1_norm, q7.y());
+  EXPECT_FLOAT_EQ(q1.z() / q1_norm, q7.z());
+  EXPECT_FLOAT_EQ(q1.w() / q1_norm, q7.w());
 }
