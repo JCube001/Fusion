@@ -35,23 +35,94 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
 #include "./utility/quaternion.h"
+#include "./utility/vector.h"
 
+#define DEG_TO_RAD  (M_PI / 180.0f)
 #define RAD_TO_DEG  (180.0f / M_PI)
 
+/**
+ * @brief Filter. Abstract class for storing sensor readings.
+ *
+ * @note Any class which inherits this class must implement the method
+ *       process(). This is the method which actually performs the sensor fusion
+ *       and returns the filtered orientation of the sensors.
+ * @note Orientation should be considered as being relative to the plane of the
+ *       surface of the Earth.
+ */
 class Filter {
  public:
-  Filter(void);
+  /**
+   * @brief Degrees Of Freedom (DOF) supported by the filter.
+   */
+  typedef enum DOF {
+    6DOF, 9DOF
+  };
 
-  void setAccelXYZ(const float x, const float y, const float z);
-  void setCompassXYZ(const float x, const float y, const float z);
-  void setGyroXYZ(const float x, const float y, const float z);
+  /**
+   * @brief Default constructor.
+   */
+  Filter();
 
-  virtual void process(void) = 0;
+  /**
+   * @brief DOF Selection constructor.
+   *
+   * @param d The Degrees Of Freedom (DOF) to use.
+   */
+  Filter(DOF d);
+
+  /**
+   * @brief Destructor.
+   */
+  ~Filter();
+
+  /**
+   * @brief Store triple axis accelerometer data.
+   *
+   * @param x The x-axis acceleration value.
+   * @param y The y-axis acceleration value.
+   * @param z The z-axis acceleration value.
+   */
+  void accelerometerXYZ(const float x, const float y, const float z);
+
+  /**
+   * @brief Store triple axis gyroscope data.
+   *
+   * @param x The x-axis rotation acceleration in radians per second.
+   * @param y The y-axis rotation acceleration in radians per second.
+   * @param z The z-axis rotation acceleration in radians per second.
+   * @note All values are in radians per second.
+   */
+  void gyroscopeXYZ(const float x, const float y, const float z);
+
+  /**
+   * @brief Store triple axis magnetometer data.
+   *
+   * @param x The x-axis magnetic field strength value.
+   * @param y The y-axis magnetic field strength value.
+   * @param z The z-axis magnetic field strength value.
+   */
+  void magnetometerXYZ(const float x, const float y, const float z);
+
+  /**
+   * @brief Sensor fusion algorithm interface.
+   *
+   * @return The quaternion representing the rotation of the sensors relative to
+   *         the plane of the surface of the Earth.
+   *
+   * @note Must be overridden in all subclasses.
+   */
+  virtual Quaternion process() = 0;
 
  protected:
-  float _accelData[3];
-  float _compassData[3];
-  float _gyroData[3];
+  // User selected DOF.
+  DOF _dof;
+  
+  // 6DOF: Pitch and roll.
+  Vector3 _accelerometerData;
+  Vector3 _gyroscopeData;
+  
+  // 9DOF: Compass; heading and yaw.
+  Vector3 _magnetometerData;
 };
 
 #endif  // FILTER_H_

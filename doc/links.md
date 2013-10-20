@@ -26,17 +26,6 @@ These are all websites which were used to help create this library.
 * http://mathworld.wolfram.com/NormalizedVector.html
 * http://www.wikihow.com/Divide-a-Vector-by-a-Scalar
 
-## Complementary filter
-
-* http://forum.arduino.cc/index.php?topic=58048.0
-* http://www.pieter-jan.com/node/11
-
-## Kalman filter
-
-* http://blog.tkjelectronics.dk/2012/09/a-practical-approach-to-kalman-filter-and-how-to-implement-it/
-* http://greg.czerniak.info/guides/kalman1/
-* http://www.codeproject.com/Articles/326657/KalmanDemo
-
 ## C++
 
 * http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml
@@ -44,3 +33,23 @@ These are all websites which were used to help create this library.
 * http://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B
 * http://stackoverflow.com/questions/3017264/c-is-it-good-practice-to-make-getters-and-setters-inline
 * http://www.learncpp.com/cpp-tutorial/98-overloading-the-subscript-operator/
+* http://www.horstmann.com/ccj2/ccjapp3.html
+
+## Doxygen
+
+* http://www.stack.nl/~dimitri/doxygen/manual/docblocks.html
+
+## Sensor fusion
+
+* http://playground.arduino.cc//Main/WhatIsDegreesOfFreedom6DOF9DOF10DOF11DOF
+
+### Complementary filter
+
+* http://forum.arduino.cc/index.php?topic=58048.0
+* http://www.pieter-jan.com/node/11
+
+### Kalman filter
+
+* http://blog.tkjelectronics.dk/2012/09/a-practical-approach-to-kalman-filter-and-how-to-implement-it/
+* http://greg.czerniak.info/guides/kalman1/
+* http://www.codeproject.com/Articles/326657/KalmanDemo

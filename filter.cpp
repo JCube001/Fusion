@@ -23,25 +23,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "./filter.h"
 
-Filter::Filter(void)
-  : _accelData {0, 0, 0},
-    _compassData {0, 0, 0},
-    _gyroData {0, 0, 0} {}
+Filter::Filter()
+  : _dof(6DOF) {}
 
-void Filter::setAccelXYZ(const float x, const float y, const float z) {
-  this->_accelData[0] = x;
-  this->_accelData[1] = y;
-  this->_accelData[2] = z;
+Filter::Filter(DOF d)
+  : _dof(d) {}
+
+Filter::~Filter() {}
+
+void Filter::accelerometerXYZ(const float x, const float y, const float z) {
+  _accelerometerData = Vector3(x, y, z);
 }
 
-void Filter::setCompassXYZ(const float x, const float y, const float z) {
-  this->_compassData[0] = x;
-  this->_compassData[1] = y;
-  this->_compassData[2] = z;
+void Filter::gyroscopeXYZ(const float x, const float y, const float z) {
+  _gyroscopeData = Vector3(x, y, z);
 }
 
-void Filter::setGyroXYZ(const float x, const float y, const float z) {
-  this->_gyroData[0] = x;
-  this->_gyroData[1] = y;
-  this->_gyroData[2] = z;
+void Filter::magnetometerXYZ(const float x, const float y, const float z) {
+  _magnetometerData = Vector3(x, y, z);
 }
