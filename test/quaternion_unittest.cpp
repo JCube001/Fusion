@@ -422,7 +422,6 @@ TEST(QuaternionTest, RotateVector) {
   EXPECT_FLOAT_EQ(1.0f, v1.z());
 }
 
-// TODO(JCube001): Unsure what exactly q2 should be.
 TEST(QuaternionTest, Slerp) {
   const float t0 = 0.0f;
   const float t1 = 0.5f;
@@ -431,7 +430,7 @@ TEST(QuaternionTest, Slerp) {
   const float q1_norm = static_cast<float>(sqrt(174.0f));
   const Quaternion q0(1.0f, 2.0f, 3.0f, 4.0f);
   const Quaternion q1(5.0f, 6.0f, 7.0f, 8.0f);
-  const Quaternion q2(3.0f, 4.0f, 5.0f, 6.0f);
+  const Quaternion q2(0.28302330f, 0.41323282f, 0.54344235f, 0.67365187f);
   const Quaternion q3(Quaternion::slerp(q0, q1, t0));
   const Quaternion q4(Quaternion::slerp(q0, q1, t1));
   const Quaternion q5(Quaternion::slerp(q0, q1, t2));
