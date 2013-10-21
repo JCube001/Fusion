@@ -44,8 +44,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * @brief Filter. Abstract class for storing sensor readings.
  *
  * @note Any class which inherits this class must implement the method
- *       process(). This is the method which actually performs the sensor fusion
- *       and returns the filtered orientation of the sensors.
+ *       process(). This is the method which actually performs the sensor
+ *       fusion and determines the orientation of the sensors.
  * @note Orientation should be considered as being relative to the plane of the
  *       surface of the Earth.
  */
@@ -54,9 +54,19 @@ class Filter {
   /**
    * @brief Degrees Of Freedom (DOF) supported by the filter.
    */
-  typedef enum DOF {
+  typedef enum {
     6DOF, 9DOF
-  };
+  } DOF;
+
+  /**
+   * @brief Structure for storing quaternion orientation.
+   */
+  typedef struct orientation_s {
+    float w;
+    float x;
+    float y;
+    float z;
+  } orientation_t;
 
   /**
    * @brief Default constructor.
@@ -104,14 +114,15 @@ class Filter {
   void magnetometerXYZ(const float x, const float y, const float z);
 
   /**
-   * @brief Sensor fusion algorithm interface.
-   *
-   * @return The quaternion representing the rotation of the sensors relative to
-   *         the plane of the surface of the Earth.
+   * @brief Sensor fusion algorithm interface. Any implementation must store
+   *        the resulting rotation orientation in the data member of this
+   *        class.
    *
    * @note Must be overridden in all subclasses.
    */
-  virtual Quaternion process() = 0;
+  virtual void process() = 0;
+
+  orientation_t data;  ///< Orientation output (quaternion).
 
  protected:
   // User selected DOF.
@@ -123,6 +134,8 @@ class Filter {
   
   // 9DOF: Compass; heading and yaw.
   Vector3 _magnetometerData;
+  
+  Quaternion _rotation;
 };
 
 #endif  // FILTER_H_

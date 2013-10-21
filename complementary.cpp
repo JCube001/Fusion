@@ -24,23 +24,58 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "./complementary.h"
 
 ComplementaryFilter::ComplementaryFilter(void)
-  : angle {0, 0, 0},
-    _alpha(0),
-    _deltaTime(0) {}
+  : Filter(),
+    data {0.0f, 0.0f, 0.0f, 0.0f},
+    _alpha(0.0f),
+    _deltaTime(0.0f) {}
 
-void ComplementaryFilter::setAlpha(const float a) {
-  if (a >= 0 && a <= 1)
-    this->_alpha = a;
+ComplementaryFilter::ComplementaryFilter(const DOF d, const float a)
+  : Filter(d),
+    data {0.0f, 0.0f, 0.0f, 0.0f},
+    _alpha(a),
+    _deltaTime(0.0f) {}
+
+ComplementaryFilter::~ComplementaryFilter() {}
+
+void ComplementaryFilter::alpha(const float a) {
+  if (0.0f <= a && a <= 1.0f) {
+    _alpha = a;
+  }
 }
 
-void ComplementaryFilter::setDeltaTime(const float dt) {
-  if (dt > 0)
-    this->_deltaTime = dt;
-  else
-    this->_deltaTime = 0;
+void ComplementaryFilter::deltaTime(const float dt) {
+  if (dt > 0.0f) {
+    _deltaTime = dt;
+  } else {
+    _deltaTime = 0.0f;
+  }
 }
 
-void ComplementaryFilter::process(void) {
+// TODO(JCube001): Redo with quaternions.
+void ComplementaryFilter::process() {
+  Vector3 estimated_direction, measured_direction, half_error;
+  Quaternion temporary_quaternion;
+  
+  // If the delta time is zero, then do nothing.
+  if (_deltaTime == 0.0f) {
+    return;
+  }
+
+  if (_dof == 9DOF) {
+    // Normalize the magnetometer measurement.
+    measured_direction = _magnetometerData.normalize();
+
+    // Reference the direction of Earth's magnetic field.
+
+    // Estimate the direction of Earth's magnetic field.
+
+    // The error is the sum of the cross product between the estimated and the
+    // measured direction of field vectors.
+    half_error = estimated_direction * measured_direction;
+  }
+
+// Old code.
+#if 0
   float rollAcc, pitchAcc;
   float yawHeading;
 
@@ -63,4 +98,5 @@ void ComplementaryFilter::process(void) {
   yawHeading = atan2(this->_compassData[1], this->_compassData[0]) * RAD_TO_DEG;
   this->angle.yaw = (this->angle.yaw * this->_alpha) +
     (yawHeading * (1 - this->_alpha));
+#endif
 }

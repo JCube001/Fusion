@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 Filter::Filter()
   : _dof(6DOF) {}
 
-Filter::Filter(DOF d)
+Filter::Filter(const DOF d)
   : _dof(d) {}
 
 Filter::~Filter() {}

@@ -26,27 +26,63 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "./filter.h"
 
+/**
+ * @brief Complementary filter. Weighs data from the gyroscope against data
+ *        from the accelerometer in order to produce a reading of a
+ *        rotation orientation with little error.
+ *
+ * @note  Using a gyroscope and an accelerometer only yields pitch and roll
+ *        (6DOF). A magnetometer must also be used in order to determine yaw
+ *        (9DOF).
+ */
 class ComplementaryFilter : public Filter {
  public:
-  typedef struct eulerAngles_s {
-    float roll;
-    float pitch;
-    float yaw;
-  } eulerAngles;
+  /**
+   * @brief Default constructor.
+   */
+  ComplementaryFilter();
+  
+  /**
+   * @brief Initialization constructor.
+   *
+   * @param d The Degrees Of Freedom (DOF) to use.
+   * @param a A number between 0 and 1 which represents the weight to give
+   *          the gyroscope data relative to other sensor data.
+   */
+  ComplementaryFilter(const DOF d, const float a);
+  
+  /**
+   * @brief Destructor.
+   */
+  ~ComplementaryFilter();
 
-  // Output angles (degrees)
-  eulerAngles angle;
+  /**
+   * @brief Set the alpha value.
+   *
+   * @param a A number between 0 and 1 which represents the weight to give
+   *          the gyroscope data relative to other sensor data.
+   *
+   * @note Does nothing if the input is out of range.
+   */
+  void alpha(const float a);
+  
+  /**
+   * @brief Set the delta time.
+   *
+   * @param dt The time in seconds since the last sensor reading.
+   *
+   * @note Sets the delta time to zero if the input is negative or also zero.
+   */
+  void deltaTime(const float dt);
 
-  ComplementaryFilter(void);
-
-  void setAlpha(const float a);
-  void setDeltaTime(const float dt);
-
-  void process(void);
+  /**
+   * @brief The complementary filter algorithm.
+   */
+  void process();
 
  protected:
-  float _alpha;      // The percentage of gyroscope data to use
-  float _deltaTime;  // The time in seconds since the last good sensor reading
+  float _alpha;      ///< The percentage of gyroscope data to use.
+  float _deltaTime;  ///< The time in seconds since the last sensor reading.
 };
 
 #endif  // COMPLEMENTARY_H_
