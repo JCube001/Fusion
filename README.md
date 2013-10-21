@@ -11,8 +11,6 @@ implementations.
 * Kalman
 * Extended Kalman
 
-Quaternions will also be used with all of the filters. (Eventually)
-
 ## Install
 
 1.  Download the zip archive of this library.
@@ -28,16 +26,18 @@ You may then instantiate and use a filter. The following is an example of this.
 ```C++
 #include <fusion.h>
 
-ComplementaryFilter filter;
+ComplementaryFilter filter(Filter::9DOF);
 ```
+
+Note that the degrees of freedom you plan on using in your system should be
+passed to the constructor. The default is 6DOF.
 
 More information coming as soon as the filter interface is finalized.
 
 ## Testing
 
-The Google C++ unit testing framework
-[gtest](http://code.google.com/p/googletest/) is used to help develop this
-library.
+The [Google Testing](http://code.google.com/p/googletest/) framework for C++
+unit tests is used to help develop this library.
 
 If you would like to run the tests yourself, you will need the package
 libgtest-dev. The following script should be enough to create the tests.
@@ -50,9 +50,6 @@ make
 
 ## TODO
 
-* Redo the quaternion library header using Vector3 to help store information.
-* Unit tests for Vector3 and Quaternion.
 * Unit tests for all filters.
 * Should look into supporting multiple different degrees of freedom.
 * Find a good way to run unit tests on everything.
-* Add Direction Cosine Matrix (DCM) to the mix.
