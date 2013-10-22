@@ -61,7 +61,10 @@ void ComplementaryFilter::process() {
     return;
   }
 
-  if (_dof == 9DOF) {
+  if (_dof == 9DOF &&
+      magnetometer_data.x() != 0.0f &&
+      magnetometer_data.y() != 0.0f &&
+      magnetometer_data.z() != 0.0f) {
     // Normalize the magnetometer measurement.
     measured_direction = _magnetometerData.normalize();
 
@@ -71,7 +74,19 @@ void ComplementaryFilter::process() {
 
     // The error is the sum of the cross product between the estimated and the
     // measured direction of field vectors.
-    half_error = estimated_direction * measured_direction;
+    half_error += estimated_direction * measured_direction;
+  }
+
+  if (accelerometer_data.x() != 0.0f &&
+      accelerometer_data.y() != 0.0f &&
+      accelerometer_data.z() != 0.0f) {
+    // TODO(JCube001): Weigh accelerometer.
+  }
+
+  if (gyroscope_data.x() != 0.0f &&
+      gyroscope_data.y() != 0.0f &&
+      gyroscope_data.z() != 0.0f) {
+    // TODO(JCube001): Weigh gyroscope.
   }
 
 // Old code.
