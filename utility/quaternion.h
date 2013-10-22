@@ -311,7 +311,7 @@ class Quaternion {
    *       take place is when displaying a rotation as human readable angle
    *       values.
    */
-  static float* convertToEulerAngles(Quaternion q) {
+  static float* convertToEulerAngles(const Quaternion& q) {
     static float e[3];
 
     e[0] = atan2(2.0f*(q.w()*q.x() + q.y()*q.z()),
