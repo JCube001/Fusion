@@ -1,10 +1,45 @@
-/******************************************************************
+/*******************************************************************************
+The MIT License (MIT)
+
+Copyright (c) 2013 JCube001
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+********************************************************************************
+
+Orientation
+
 Displays an animation of the rotation encountered by an external
 IMU. Accepts input as a quaternion packed as comma seperated
 values (CSV) in a string. Each value is a float component of the
 quaternion. A single newline character delimits each message.
 Serial communication is used to read input.
-******************************************************************/
+
+Controls:
+P - Toggle pause for reading input.
+H - Return to home position.
+T - Enter test mode. Manual control of the rotation enabled.
+  UP ARROW - Pitch down.
+  DOWN ARROW - Pitch up.
+  LEFT ARROW - Roll left.
+  RIGHT ARROW - Roll right.
+  < - Yaw left.
+  > - Yaw right.
+*******************************************************************************/
 
 import processing.serial.*;
 
@@ -12,8 +47,10 @@ import processing.serial.*;
 final int BAUDRATE = 9600;
 final String PORTNAME = "/dev/ttyACM0";
 
+// Global states and storage.
 boolean paused = false;
-float[] quaternion = {0.0f, 0.0f, 0.0f, 0.0f};
+boolean testing = false;
+float[] quaternion = {1.0f, 0.0f, 0.0f, 0.0f};
 float[] euler = {0.0f, 0.0f, 0.0f};
 Serial port;
 
@@ -22,6 +59,7 @@ Serial port;
  */
 void setup() {
   size(500, 400, P3D);
+  background(0);
   
   // Text setup.
   PFont font = loadFont("SansSerif.plain-48.vlw");
@@ -42,29 +80,38 @@ void setup() {
 void draw() {
   String orientation;
   
+  // Setup drawing.
   background(0);
-  fill(255);
   
   // Update global information.
-  euler = quaternionToEulerAngles(quaternion);
+  if (testing) {
+    quaternion = eulerAnglesToQuaternion(euler);
+  } else {
+    euler = quaternionToEulerAngles(quaternion);
+  }
   
   // Draw all elements.
   drawRotationCube();
   drawUnitCircles();
   
   // Display data as human readable text.
+  fill(255);
+  
   orientation = "Quaternion\nW: " + quaternion[0] + "\nX: " +
     quaternion[1] + "\nY: " + quaternion[2] + "\nZ: " +
     quaternion[3];
   textAlign(LEFT, TOP);
   text(orientation, 10, 10);
   
-  orientation = "Euler Angles\nPhi: " + euler[0] + "\nTheta: " +
-    euler[1] + "\nPsi: " + euler[2];
+  orientation = "Euler Angles\nDegrees\nPhi: " + degrees(euler[0]) +
+    "\nTheta: " + degrees(euler[1]) + "\nPsi: " + degrees(euler[2]);
   textAlign(RIGHT, TOP);
   text(orientation, width - 10, 10);
   
-  if (paused) {
+  if (testing) {
+    textAlign(CENTER, TOP);
+    text("TEST MODE", width / 2, 10);
+  } else if (paused) {
     textAlign(CENTER, TOP);
     text("PAUSED", width / 2, 10);
   }
@@ -75,9 +122,62 @@ void draw() {
  */
 void keyPressed() {
   switch (key) {
+  case CODED:
+    switch (keyCode) {
+    case UP:
+      if (testing) {
+        euler[1] -= radians(1.0f);
+      }
+      break;
+    case DOWN:
+      if (testing) {
+        euler[1] += radians(1.0f);
+      }
+      break;
+    case LEFT:
+      if (testing) {
+        euler[0] += radians(1.0f);
+      }
+      break;
+    case RIGHT:
+      if (testing) {
+        euler[0] -= radians(1.0f);
+      }
+      break;
+    default:
+      break;
+    }
+    break;
+  case '<':
+  case ',':
+    if (testing) {
+      euler[2] -= radians(1.0f);
+    }
+    break;
+  case '>':
+  case '.':
+    if (testing) {
+      euler[2] += radians(1.0f);
+    }
+    break;
+  case 'T':
+  case 't':
+    // Toggle test mode, also pauses.
+    testing = !testing;
+    paused = true;
+    quaternion = new float[] {1.0f, 0.0f, 0.0f, 0.0f};
+    euler = new float[] {0.0f, 0.0f, 0.0f};
+    break;
   case 'p':
   case 'P':
+    // Toggle serial input paused.
     paused = !paused;
+    break;
+  case 'H':
+  case 'h':
+    // Return to home position.
+    quaternion = new float[] {1.0f, 0.0f, 0.0f, 0.0f};
+    euler = new float[] {0.0f, 0.0f, 0.0f};
     break;
   default:
     break;
@@ -93,8 +193,8 @@ void keyPressed() {
  *        the side effect of storing the quaternion.
  */
 void serialEvent(Serial port) {
-  // If paused, then do not act on serial events.
-  if (paused) {
+  // If paused or testing, then do not act on serial events.
+  if (paused || testing) {
     return;
   }
   
@@ -126,10 +226,9 @@ void drawRotationCube() {
   strokeWeight(2);
   
   // Set the rotation for the entire cube.
-  // TODO(JCube001): Test if this works.
-  rotateX(euler[0]);
-  rotateY(euler[1]);
-  rotateZ(euler[2]);
+  rotateX(-euler[1]);
+  rotateY(-euler[2]);
+  rotateZ(-euler[0]);
   
   // Cube
   stroke(0, 153, 153);
@@ -173,7 +272,68 @@ void drawRotationCube() {
  * @note Euler angles should be updated before calling this method.
  */
 void drawUnitCircles() {
-  // TODO(JCube001): Implement!
+  pushMatrix();
+  translate(width / 2, height - 40);
+  strokeWeight(2);
+  fill(0, 153, 153, 200);
+  
+  // X axis rotation.
+  pushMatrix();
+  translate(-100, 0);
+  rotate(-euler[0]);
+  stroke(255, 0, 0);
+  line(0, 0, 20, 0);
+  ellipse(0, 0, 40, 40);
+  popMatrix();
+  
+  // Y axis rotation.
+  pushMatrix();
+  translate(0, 0);
+  rotate(-euler[1]);
+  stroke(0, 255, 0);
+  line(0, 0, 20, 0);
+  ellipse(0, 0, 40, 40);
+  popMatrix();
+  
+  // Z axis rotation.
+  pushMatrix();
+  translate(100, 0);
+  rotate(-euler[2]);
+  stroke(0, 0, 255);
+  line(0, 0, 20, 0);
+  ellipse(0, 0, 40, 40);
+  popMatrix();
+  
+  popMatrix();
+}
+
+/**
+ * @brief Converts Euler angles to a quaternion.
+ *
+ * @param e The Euler angles to convert, in radians.
+ * @return An array of size four which contains the converted
+ *         unit quaternion. The format of the array is
+ *         [W, X, Y, Z].
+ *
+ * @note All angles are in radians.
+ */
+float[] eulerAnglesToQuaternion(final float[] e) {
+  final float t = 0.5f;
+  final float cr = cos(e[0] * t);
+  final float cp = cos(e[1] * t);
+  final float cy = cos(e[2] * t);
+  final float sr = sin(e[0] * t);
+  final float sp = sin(e[1] * t);
+  final float sy = sin(e[2] * t);
+  
+  float[] q = new float[4];
+  
+  q[0] = cr*cp*cy + sr*sp*sy;
+  q[1] = sr*cp*cy - cr*sp*sy;
+  q[2] = cr*sp*cy + sr*cp*sy;
+  q[3] = cr*cp*sy - sr*sp*cy;
+  
+  return q;
 }
 
 /**
