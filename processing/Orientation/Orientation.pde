@@ -90,6 +90,21 @@ void draw() {
     euler = quaternionToEulerAngles(quaternion);
   }
   
+  // Keep Euler angles within the unit circle.
+  // Also, correct rounding errors if needed.
+  for (int i = 0; i < euler.length; i++) {
+    if (euler[i] >= TWO_PI) {
+      euler[i] -= TWO_PI;
+    } else if (euler[i] < 0.0f) {
+      euler[i] += TWO_PI;
+    }
+    
+    float testValue = TWO_PI - euler[i];
+    if (testValue <= 0.0001f) {
+      euler[i] = 0.0f;
+    }
+  }
+  
   // Draw all elements.
   drawRotationCube();
   drawUnitCircles();
@@ -97,14 +112,14 @@ void draw() {
   // Display data as human readable text.
   fill(255);
   
-  orientation = "Quaternion\nW: " + quaternion[0] + "\nX: " +
-    quaternion[1] + "\nY: " + quaternion[2] + "\nZ: " +
-    quaternion[3];
+  orientation = "Quaternion\nW: " + quaternion[0] + "\nX: " + quaternion[1] +
+    "\nY: " + quaternion[2] + "\nZ: " + quaternion[3];
   textAlign(LEFT, TOP);
   text(orientation, 10, 10);
   
-  orientation = "Euler Angles\nDegrees\nPhi: " + degrees(euler[0]) +
-    "\nTheta: " + degrees(euler[1]) + "\nPsi: " + degrees(euler[2]);
+  orientation = String.format(
+    "Euler Angles\nDegrees\nPhi: %.3f\nTheta: %.3f\nPsi: %.3f",
+    degrees(euler[0]), degrees(euler[1]), degrees(euler[2]));
   textAlign(RIGHT, TOP);
   text(orientation, width - 10, 10);
   
