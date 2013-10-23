@@ -12,6 +12,7 @@ import processing.serial.*;
 final int BAUDRATE = 9600;
 final String PORTNAME = "/dev/ttyACM0";
 
+boolean paused = false;
 float[] quaternion = {0.0f, 0.0f, 0.0f, 0.0f};
 float[] euler = {0.0f, 0.0f, 0.0f};
 Serial port;
@@ -62,6 +63,27 @@ void draw() {
     euler[1] + "\nPsi: " + euler[2];
   textAlign(RIGHT, TOP);
   text(orientation, width - 10, 10);
+  
+  if (paused) {
+    textAlign(CENTER, TOP);
+    text("PAUSED", width / 2, 10);
+  }
+}
+
+/**
+ * @brief Processing key press event method.
+ */
+void keyPressed() {
+  switch (key) {
+  case 'p':
+  case 'P':
+    paused = !paused;
+    break;
+  default:
+    break;
+  }
+  
+  redraw();
 }
 
 /**
@@ -69,10 +91,14 @@ void draw() {
  *        of four floats seperated by only a comma. A newline
  *        character marks the end of each message. This method has
  *        the side effect of storing the quaternion.
- *
- * @note Overridden.
  */
 void serialEvent(Serial port) {
+  // If paused, then do not act on serial events.
+  if (paused) {
+    return;
+  }
+  
+  // Retrieve and store data, then draw.
   try {
     String buffer = port.readString();
     String[] input = splitTokens(buffer, ",");
@@ -89,12 +115,55 @@ void serialEvent(Serial port) {
 }
 
 /**
- * @brief Draws a cube according to stored Euler angles.
+ * @brief Draws a cube according to stored Euler angles. Uses a
+ *        left handed coordinate system.
  *
  * @note Euler angles should be updated before calling this method.
  */
 void drawRotationCube() {
-  // TODO(JCube001): Implement!
+  pushMatrix();
+  translate(width / 2, height / 2, 0);
+  strokeWeight(2);
+  
+  // Set the rotation for the entire cube.
+  // TODO(JCube001): Test if this works.
+  rotateX(euler[0]);
+  rotateY(euler[1]);
+  rotateZ(euler[2]);
+  
+  // Cube
+  stroke(0, 153, 153);
+  fill(0, 153, 153, 200);
+  box(100);
+  
+  // Get ready to draw all axes.
+  fill(255);
+  
+  // X axis (phi or roll).
+  stroke(255, 0, 0);
+  line(0, 0, -100, 0, 0, 100);
+  pushMatrix();
+  translate(0, 0, -100);
+  box(10);
+  popMatrix();
+  
+  // Y axis (theta or pitch).
+  stroke(0, 255, 0);
+  line(-100, 0, 0, 100, 0, 0);
+  pushMatrix();
+  translate(-100, 0, 0);
+  box(10);
+  popMatrix();
+  
+  // Z axis (psi or yaw).
+  stroke(0, 0, 255);
+  line(0, -100, 0, 0, 100, 0);
+  pushMatrix();
+  translate(0, -100, 0);
+  box(10);
+  popMatrix();
+  
+  popMatrix();
 }
 
 /**
@@ -110,12 +179,13 @@ void drawUnitCircles() {
 /**
  * @brief Converts a quaternion to Euler angles.
  *
- * @param q The quaternion to convert.
+ * @param q The unit quaternion to convert.
  * @return An array of size three which contains the converted
  *         Euler angles in radians. The format of the array is
  *         [phi, theta, psi].
  *
  * @note All angles are in radians.
+ * @note The quaternion for input must be a unit quaternion.
  */
 float[] quaternionToEulerAngles(final float[] q) {
   float[] e = new float[3];
