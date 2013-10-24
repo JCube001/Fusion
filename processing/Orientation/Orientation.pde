@@ -91,22 +91,17 @@ void draw() {
   }
   
   // Keep Euler angles within the unit circle.
-  // Also, correct rounding errors if needed.
   for (int i = 0; i < euler.length; i++) {
     if (euler[i] >= TWO_PI) {
       euler[i] -= TWO_PI;
     } else if (euler[i] < 0.0f) {
       euler[i] += TWO_PI;
     }
-    
-    float testValue = TWO_PI - euler[i];
-    if (testValue <= 0.0001f) {
-      euler[i] = 0.0f;
-    }
   }
   
   // Draw all elements.
-  drawRotationCube();
+  //drawRotationCube();
+  drawRotationVector();
   drawUnitCircles();
   
   // Display data as human readable text.
@@ -175,6 +170,18 @@ void keyPressed() {
       euler[2] += radians(1.0f);
     }
     break;
+  default:
+    break;
+  }
+  
+  redraw();
+}
+
+/**
+ * @brief Processing key released event.
+ */
+void keyReleased() {
+  switch (key) {
   case 'T':
   case 't':
     // Toggle test mode, also pauses.
@@ -182,11 +189,13 @@ void keyPressed() {
     paused = true;
     quaternion = new float[] {1.0f, 0.0f, 0.0f, 0.0f};
     euler = new float[] {0.0f, 0.0f, 0.0f};
+    port.clear();
     break;
   case 'p':
   case 'P':
     // Toggle serial input paused.
     paused = !paused;
+    port.clear();
     break;
   case 'H':
   case 'h':
@@ -276,6 +285,24 @@ void drawRotationCube() {
   translate(0, -100, 0);
   box(10);
   popMatrix();
+  
+  popMatrix();
+}
+
+/**
+ * @brief Draw the rotation vector. 
+ */
+void drawRotationVector() {
+  PVector vector = new PVector(1.0f, 0.0f, 0.0f);
+  vector = rotateVector(vector, quaternion);
+  
+  pushMatrix();
+  translate(width / 2, height / 2, 0);
+  strokeWeight(2);
+  
+  stroke(0, 153, 153);
+  fill(0, 153, 153, 200);
+  line(0, 0, 0, vector.x, vector.y, vector.z);
   
   popMatrix();
 }
@@ -372,4 +399,50 @@ float[] quaternionToEulerAngles(final float[] q) {
                1.0f - 2.0f*(q[2]*q[2] + q[3]*q[3]));
   
   return e;
+}
+
+/**
+ * @brief Rotate a vector using a quaternion.
+ *
+ * @param p The 3D vector to rotate.
+ * @param q The quaternion to use to perform the rotation.
+ * @return The rotated 3D vector.
+ */
+PVector rotateVector(final PVector p, final float[] q) {
+  float[] uq = {0.0f, p.x, p.y, p.z};
+  float[] qp = quaternionMultiplication(q, uq);
+  float[] qpq = quaternionMultiplication(qp, quaternionInverse(q));
+  
+  return new PVector(qpq[1], qpq[2], qpq[3]);
+}
+
+/**
+ * @brief Quaternion cross product multiplication.
+ *
+ * @param q0 The left hand side quaternion.
+ * @param q1 The right hand side quaternion.
+ * @return The cross product of the two quaternions.
+ */
+float[] quaternionMultiplication(final float[] q0, final float[] q1) {
+  float[] q0q1 = new float[4];
+  
+  q0q1[0] = q0[0]*q1[0] - q0[1]*q1[1] - q0[2]*q1[2] - q0[3]*q1[3];
+  q0q1[1] = q0[0]*q1[1] + q0[1]*q1[0] + q0[2]*q1[3] - q0[3]*q1[2];
+  q0q1[2] = q0[0]*q1[2] - q0[1]*q1[3] + q0[2]*q1[0] + q0[3]*q1[1];
+  q0q1[3] = q0[0]*q1[3] + q0[1]*q1[2] - q0[2]*q1[1] + q0[3]*q1[0];
+  
+  return q0q1;
+}
+
+/**
+ * @brief Returns the quaternion inverse.
+ *
+ * @param q The quaternion to invert.
+ * @return The inverse quaternion.
+ */
+float[] quaternionInverse(final float[] q) {
+  float norm = sqrt(sq(q[0]) + sq(q[1]) + sq(q[2]) + sq(q[3]));
+  
+  return new float[] {q[0] / sq(norm), -q[1] / sq(norm)
+    -q[2] / sq(norm), -q[3] / sq(norm)};
 }
