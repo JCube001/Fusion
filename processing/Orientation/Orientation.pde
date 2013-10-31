@@ -135,22 +135,22 @@ void keyPressed() {
     switch (keyCode) {
     case UP:
       if (testing) {
-        euler[1] -= radians(1.0f);
+        euler[1] += radians(1.0f);
       }
       break;
     case DOWN:
       if (testing) {
-        euler[1] += radians(1.0f);
+        euler[1] -= radians(1.0f);
       }
       break;
     case LEFT:
       if (testing) {
-        euler[0] += radians(1.0f);
+        euler[0] -= radians(1.0f);
       }
       break;
     case RIGHT:
       if (testing) {
-        euler[0] -= radians(1.0f);
+        euler[0] += radians(1.0f);
       }
       break;
     default:
@@ -160,13 +160,13 @@ void keyPressed() {
   case '<':
   case ',':
     if (testing) {
-      euler[2] -= radians(1.0f);
+      euler[2] += radians(1.0f);
     }
     break;
   case '>':
   case '.':
     if (testing) {
-      euler[2] += radians(1.0f);
+      euler[2] -= radians(1.0f);
     }
     break;
   default:
@@ -238,10 +238,8 @@ void serialEvent(Serial port) {
 }
 
 /**
- * @brief Draws a cube according to stored Euler angles. Uses a
+ * @brief Draws a cube according to the stored quaternion. Uses a
  *        left handed coordinate system.
- *
- * @note Euler angles should be updated before calling this method.
  */
 void drawRotationCube() {
   pushMatrix();
@@ -249,11 +247,16 @@ void drawRotationCube() {
   strokeWeight(2);
   
   // Set the rotation for the entire cube.
-  // Remember, 3D rotations are not commutative!
-  // TODO Therefore we need additional logic.
-  rotateZ(-euler[0]);
-  rotateX(-euler[1]);
-  rotateY(-euler[2]);
+  // Convert the quaternion to axis angle.
+  float theta = 2.0f*acos(quaternion[0]);
+  if (theta != 0.0f) {
+    rotate(theta,
+           quaternion[2] / sin(theta*0.5f),
+           quaternion[3] / sin(theta*0.5f),
+           quaternion[1] / sin(theta*0.5f));
+  } else {
+    rotate(theta, 0.0f, 0.0f, 0.0f);
+  }
   
   // Cube
   stroke(0, 153, 153);
