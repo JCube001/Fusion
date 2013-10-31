@@ -66,9 +66,13 @@ void setup() {
   textFont(font, 18);
   
   // Serial port setup.
-  port = new Serial(this, PORTNAME, BAUDRATE);
-  port.clear();
-  port.bufferUntil('\n');
+  try {
+    port = new Serial(this, PORTNAME, BAUDRATE);
+    port.clear();
+    port.bufferUntil('\n');
+  } catch (Exception e) {
+    println(e);
+  }
   
   // Only draw when an event occurs.
   noLoop();
