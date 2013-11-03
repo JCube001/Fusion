@@ -99,7 +99,7 @@ class Filter {
    *
    * @note Must be overridden in all subclasses.
    */
-  virtual void process() = 0;
+  virtual bool process() = 0;
 
   orientation_t data;  /**< Orientation output (quaternion). */
 
