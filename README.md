@@ -26,11 +26,8 @@ You may then instantiate and use a filter. The following is an example of this.
 ```C++
 #include <fusion.h>
 
-ComplementaryFilter filter(Filter::9DOF);
+fusion::ComplementaryFilter filter;
 ```
-
-Note that the degrees of freedom you plan on using in your system should be
-passed to the constructor. The default is 6DOF.
 
 More information coming as soon as the filter interface is finalized.
 
@@ -50,6 +47,6 @@ make
 
 ## TODO
 
+* Finish writing all of the filters.
 * Unit tests for all filters.
-* Should look into supporting multiple different degrees of freedom.
-* Find a good way to run unit tests on everything.
+* Flight test.
