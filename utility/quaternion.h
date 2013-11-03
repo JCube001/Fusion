@@ -27,6 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <math.h>
 #include "utility/vector.h"
 
+namespace fusion {
+
 /**
  * @brief Quaternion. A structure composed of three imaginary vectorial
  *        components and one real component. The vector represents the axis
@@ -539,5 +541,7 @@ class Quaternion {
  protected:
   float data_[4];
 };
+
+}  // namespace fusion
 
 #endif  // UTILITY_QUATERNION_H_

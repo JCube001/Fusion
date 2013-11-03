@@ -26,6 +26,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <math.h>
 
+namespace fusion {
+
 /**
  * @brief Vector, three dimensional.
  */
@@ -340,5 +342,7 @@ class Vector3 {
  protected:
   float _data[3];
 };
+
+}  // namespace fusion
 
 #endif  // UTILITY_VECTOR_H_
