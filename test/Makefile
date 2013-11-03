@@ -25,7 +25,6 @@ CXX = g++
 # The first line is required by Google Test.
 CPPFLAGS += -I$(GTEST_DIR)/include
 CPPFLAGS += -I$(USER_DIR) -I$(SRC_DIR) -I$(SRC_UTIL_DIR)
-CPPFLAGS += -D_FUSION_TEST
 
 # Flags passed to the C++ compiler.
 # The first line is required by Google Test.
