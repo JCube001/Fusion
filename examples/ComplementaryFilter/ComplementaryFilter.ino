@@ -16,10 +16,13 @@ located in Fusion/processing/Orientation/Orientation.pde.
 #include <Adafruit_LSM303.h>
 #include <fusion.h>
 
+unsigned long time_now = 0;
+unsigned long time_last = 0;
+
 // Sensors (modify for your sensors as needed)
 Adafruit_L3GD20 gyro;
-Adafruit_LSM303_Accel accel = Adafruit_LSM303_Accel(54321);
-Adafruit_LSM303_Mag mag = Adafruit_LSM303_Mag(12345);
+Adafruit_LSM303_Accel accel(54321);
+Adafruit_LSM303_Mag mag(12345);
 
 // The filter we will use
 fusion::ComplementaryFilter filter;
@@ -27,48 +30,67 @@ fusion::ComplementaryFilter filter;
 void setup() {
   Serial.begin(9600);
   
+  // Set the alpha value to use with the filter
+  // Must be between 0 and 1 inclusive
+  filter.alpha(0.98);
+  
   // Sensor setup (modify for your sensors as needed)
   if (!gyro.begin(gyro.L3DS20_RANGE_250DPS)) {
-    Serial.println("L3GD20 failed to initialize!");
-    while (1);
+    Serial.println("L3GD20 (gyro) failed to initialize!");
+    while (true);
   }
   
   if(!accel.begin())
   {
     Serial.println("LSM303 (accel) failed to initialize!");
-    while(1);
+    while (true);
   }
   
   if(!mag.begin())
   {
     Serial.println("LSM303 (mag) failed to initialize!");
-    while(1);
+    while (true);
   }
+  
+  delay(10);
 }
 
 void loop() {
+  sensors_event_t accel_event, mag_event;
+  
   // Retrieve sensor data (modify for your sensors as needed)
-  sensors_event_t event; 
   gyro.read();
+  accel.getEvent(&accel_event);
+  mag.getEvent(&mag_event);
+  
+  // Get the time of when data was read
+  time_now = millis();
+  
+  // Determine the difference between this time to the time of the last sensor
+  // reading, then convert to seconds
+  filter.deltaTime((float)(time_now - time_last) / 1000.0f);
+  time_last = time_now;
   
   // Store sensor data (again, modify input values as needed)
   // Note also that the gyroscope input must be in radians per second
-  accel.getEvent(&event);
-  filter.accelerometer(event.acceleration.x,
-                       event.acceleration.y,
-                       event.acceleration.z);
+  filter.accelerometer(accel_event.acceleration.x,
+                       accel_event.acceleration.y,
+                       accel_event.acceleration.z);
   
   filter.gyroscope(gyro.data.x * L3GD20_DPS_TO_RADS,
                    gyro.data.y * L3GD20_DPS_TO_RADS,
                    gyro.data.z * L3GD20_DPS_TO_RADS);
   
-  mag.getEvent(&event);
-  filter.magnetometer(event.magnetic.x,
-                      event.magnetic.y,
-                      event.magnetic.z);
+  filter.magnetometer(mag_event.magnetic.x,
+                      mag_event.magnetic.y,
+                      mag_event.magnetic.z);
   
   // Process the sensor data
-  filter.process();
+  if (!filter.process()) {
+    Serial.println("Unable to run the filter!");
+    Serial.println("Check that the alpha value and delta time are correct");
+    while (true);
+  }
   
   // Send out the now up-to-date quaternion
   Serial.print(filter.data.w); Serial.print(',');
@@ -77,6 +99,6 @@ void loop() {
   Serial.print(filter.data.z); Serial.print(',');
   Serial.println();
   
-  // Don't print out too fast
+  // Do not print out too fast
   delay(50);
 }

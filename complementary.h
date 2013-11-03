@@ -34,8 +34,8 @@ namespace fusion {
  *        rotation orientation with little error.
  *
  * @note  Using a gyroscope and an accelerometer only yields pitch and roll
- *        (6DOF). A magnetometer must also be used in order to determine yaw
- *        (9DOF).
+ *        (6 DoF). A magnetometer must also be used in order to determine yaw
+ *        (9 DoF).
  */
 class ComplementaryFilter : public Filter {
  public:
@@ -55,7 +55,7 @@ class ComplementaryFilter : public Filter {
    * @param a A number between 0 and 1 which represents the weight to give
    *          the gyroscope data relative to other sensor data.
    *
-   * @note Does nothing if the input is out of range.
+   * @note Sets the alpha value to -1 if the input is out of range.
    */
   void alpha(const float a);
 
@@ -70,8 +70,13 @@ class ComplementaryFilter : public Filter {
 
   /**
    * @brief The complementary filter algorithm.
+   *
+   * @return True is processing completed without error, otherwise false.
+   *
+   * @note Checks if the alpha value and the delta time are valid before any
+   *       processing occurs.
    */
-  void process();
+  bool process();
 
  protected:
   float alpha_;       /**< The percentage of gyroscope data to use. */

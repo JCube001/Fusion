@@ -27,7 +27,7 @@ namespace fusion {
 
 ComplementaryFilter::ComplementaryFilter()
   : Filter(),
-    alpha_(0.0f),
+    alpha_(-1.0f),
     delta_time_(0.0f) {}
 
 ComplementaryFilter::~ComplementaryFilter() {}
@@ -35,6 +35,8 @@ ComplementaryFilter::~ComplementaryFilter() {}
 void ComplementaryFilter::alpha(const float a) {
   if (0.0f <= a && a <= 1.0f) {
     alpha_ = a;
+  } else {
+    alpha_ = -1.0f;
   }
 }
 
@@ -46,16 +48,17 @@ void ComplementaryFilter::deltaTime(const float dt) {
   }
 }
 
-// TODO(JCube001): Redo with quaternions.
-void ComplementaryFilter::process() {
+// TODO(JCube001): Get working with quaternions.
+bool ComplementaryFilter::process() {
   Vector3 estimated_direction;
   Vector3 measured_direction;
   Vector3 half_error;
   Quaternion temporary_quaternion;
 
-  // If the delta time is zero, then do nothing.
-  if (delta_time_ == 0.0f) {
-    return;
+  // If the alpha value is negative or the delta time is zero,
+  // then do not proceed.
+  if (alpha_ < 0.0f || delta_time_ == 0.0f) {
+    return false;
   }
 
   if (magnetometer_data_.x() != 0.0f &&
@@ -110,6 +113,8 @@ void ComplementaryFilter::process() {
   this->angle.yaw = (this->angle.yaw * this->alpha_) +
     (yawHeading * (1 - this->alpha_));
 #endif
+
+  return true;
 }
 
 }  // namespace fusion
