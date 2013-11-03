@@ -324,10 +324,10 @@ class Quaternion {
     const float pn = q.vector().norm();
     const float theta = 2*atan2(pn, q.w());
     static float a[4];
-    
+
     // Store the angle.
     a[0] = theta;
-    
+
     // If the angle is zero, then that means the vector component must have a
     // norm of zero. The result will therefore be a zero quaternion.
     if (theta != 0.0f) {
@@ -339,7 +339,7 @@ class Quaternion {
       a[2] = 0.0f;
       a[3] = 0.0f;
     }
-    
+
     return a;
   }
 
