@@ -30,7 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /**
  * @brief Quaternion. A structure composed of three imaginary vectorial
  *        components and one real component. The vector represents the axis
- *        while the scalar represents the angle of rotation on that axis.
+ *        while the scalar represents the angle of rotation about that axis.
  *
  * @note There are two common ways to store the structure of a quaternion. They
  *       are [w, x, y, z] and [x, y, z, w] where w is the real component and
@@ -44,7 +44,7 @@ class Quaternion {
   /**
    * @brief Default constructor.
    */
-  Quaternion() : _data {0.0f, 0.0f, 0.0f, 0.0f} {}
+  Quaternion() : data_ {0.0f, 0.0f, 0.0f, 0.0f} {}
 
   /**
    * @brief Copy constructor.
@@ -52,7 +52,7 @@ class Quaternion {
    * @param other The quaternion to copy from.
    */
   Quaternion(const Quaternion& other)
-    : _data {other.w(), other.x(), other.y(), other.z()} {}
+    : data_ {other.w(), other.x(), other.y(), other.z()} {}
 
   /**
    * @brief Component initialization constructor.
@@ -61,7 +61,7 @@ class Quaternion {
    * @param p The imaginary vectorial component.
    */
   Quaternion(const float s, const Vector3& p)
-    : _data {s, p.x(), p.y(), p.z()} {}
+    : data_ {s, p.x(), p.y(), p.z()} {}
 
   /**
    * @brief Array initialization constructor.
@@ -71,7 +71,7 @@ class Quaternion {
    */
   explicit Quaternion(const float* array) {
     for (int i = 0; i < 4; i++) {
-      _data[i] = array[i];
+      data_[i] = array[i];
     }
   }
 
@@ -84,7 +84,7 @@ class Quaternion {
    * @param z The z-value of the imaginary vector component.
    */
   Quaternion(const float w, const float x, const float y, const float z)
-    : _data {w, x, y, z} {}
+    : data_ {w, x, y, z} {}
 
   /**
    * @brief Destructor.
@@ -103,47 +103,47 @@ class Quaternion {
    *
    * @return The quaternion x-component.
    */
-  float x() const { return _data[1]; }
+  float x() const { return data_[1]; }
 
   /**
    * @brief Return the quaternion y-component.
    *
    * @return The quaternion y-component.
    */
-  float y() const { return _data[2]; }
+  float y() const { return data_[2]; }
 
   /**
    * @brief Return the quaternion z-component.
    *
    * @return The quaternion z-component.
    */
-  float z() const { return _data[3]; }
+  float z() const { return data_[3]; }
 
   /**
    * @brief Return the quaternion scalar component.
    *
    * @return The quaternion scalar component.
    */
-  float scalar() const { return _data[0]; }
+  float scalar() const { return data_[0]; }
 
   /**
    * @brief Set the quaternion scalar component.
    */
-  void scalar(const float s) { _data[0] = s; }
+  void scalar(const float s) { data_[0] = s; }
 
   /**
    * @brief Return the quaternion vector component.
    *
    * @return The quaternion vector component.
    */
-  Vector3 vector() const { return Vector3(_data + 1); }
+  Vector3 vector() const { return Vector3(data_ + 1); }
 
   /**
    * @brief Set the quaternion vector component.
    */
   void vector(const Vector3& v) {
     for (int i = 1; i < 4; i++) {
-      _data[i] = v[i];
+      data_[i] = v[i];
     }
   }
 
@@ -154,7 +154,7 @@ class Quaternion {
    * @return The value of the quaternion component stored at the index.
    */
   inline float operator[](const int i) const {
-    return _data[i];
+    return data_[i];
   }
 
   /**
@@ -271,12 +271,27 @@ class Quaternion {
   }
 
   /**
-   * @brief Returns a quaternion converted from Euler angles.
+   * @brief Returns a unit quaternion converted from an axis-angle.
    *
-   * @param r The angle representing roll in radians.
-   * @param p The angle representing pitch in radians.
-   * @param y The angle representing yaw in radians.
-   * @return The quaternion representation of the Euler rotations.
+   * @param angle The angle the axis is rotated at in radians.
+   * @param axis The vector representation of the axis.
+   * @return The unit quaternion representation of the axis-angle.
+   *
+   * @note All angles are in radians.
+   */
+  static Quaternion convertFromAxisAngle(const float angle,
+                                         const Vector3& axis) {
+    const float t = 0.5f;
+    return Quaternion(cos(angle*t), axis*sin(angle*t));
+  }
+
+  /**
+   * @brief Returns a unit quaternion converted from Euler angles.
+   *
+   * @param roll The angle representing roll in radians.
+   * @param pitch The angle representing pitch in radians.
+   * @param yaw The angle representing yaw in radians.
+   * @return The unit quaternion representation of the Euler rotations.
    *
    * @note Specifically these are Tait-Bryan angles.
    * @note All angles are in radians.
@@ -296,12 +311,45 @@ class Quaternion {
   }
 
   /**
-   * @brief Returns an array containing Euler angles converted from a
-   *        quaternion.
+   * @brief Returns an axis-angle representation of a unit quaternion.
    *
-   * @param q The quaternion to convert from.
-   * @return The pointer to the Euler angles represented by the quaternion as an
-   *         array of size three. The values in the array are ordered
+   * @param q The unit quaternion to convert from.
+   * @return The pointer to the axis-angle represented by the unit quaternion
+   *         as an array of size four. The values in the array are ordered
+   *         [angle, x, y, z].
+   *
+   * @note All angles are in radians.
+   */
+  static float* convertToAxisAngle(const Quaternion& q) {
+    const float pn = q.vector().norm();
+    const float theta = 2*atan2(pn, q.w());
+    static float a[4];
+    
+    // Store the angle.
+    a[0] = theta;
+    
+    // If the angle is zero, then that means the vector component must have a
+    // norm of zero. The result will therefore be a zero quaternion.
+    if (theta != 0.0f) {
+      a[1] = q.x() / pn;
+      a[2] = q.y() / pn;
+      a[3] = q.z() / pn;
+    } else {
+      a[1] = 0.0f;
+      a[2] = 0.0f;
+      a[3] = 0.0f;
+    }
+    
+    return a;
+  }
+
+  /**
+   * @brief Returns an array containing Euler angles converted from a
+   *        unit quaternion.
+   *
+   * @param q The unit quaternion to convert from.
+   * @return The pointer to the Euler angles represented by the unit quaternion
+   *         as an array of size three. The values in the array are ordered
    *         [roll, pitch, yaw].
    *
    * @note Specifically these are Tait-Bryan angles.
@@ -489,7 +537,7 @@ class Quaternion {
   }
 
  protected:
-  float _data[4];
+  float data_[4];
 };
 
 #endif  // UTILITY_QUATERNION_H_
