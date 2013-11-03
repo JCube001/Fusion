@@ -25,20 +25,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define FILTER_H_
 
 #include <math.h>
-
-#if !defined(_FUSION_TEST)
-  #if (ARDUINO >= 100)
-    #include <Arduino.h>
-  #else
-    #include <WProgram.h>
-  #endif
-#endif
-
-#include "./utility/quaternion.h"
-#include "./utility/vector.h"
+#include "utility/quaternion.h"
+#include "utility/vector.h"
 
 #define DEG_TO_RAD  (M_PI / 180.0f)
 #define RAD_TO_DEG  (180.0f / M_PI)
+
+namespace fusion {
 
 /**
  * @brief Filter. Abstract class for storing sensor readings.
@@ -51,13 +44,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 class Filter {
  public:
-  /**
-   * @brief Degrees Of Freedom (DOF) supported by the filter.
-   */
-  typedef enum {
-    6DOF, 9DOF
-  } DOF;
-
   /**
    * @brief Structure for storing quaternion orientation.
    */
@@ -74,13 +60,6 @@ class Filter {
   Filter();
 
   /**
-   * @brief DOF Selection constructor.
-   *
-   * @param d The Degrees Of Freedom (DOF) to use.
-   */
-  Filter(DOF d);
-
-  /**
    * @brief Destructor.
    */
   ~Filter();
@@ -92,7 +71,7 @@ class Filter {
    * @param y The y-axis acceleration value.
    * @param z The z-axis acceleration value.
    */
-  void accelerometerXYZ(const float x, const float y, const float z);
+  void accelerometer(const float x, const float y, const float z);
 
   /**
    * @brief Store triple axis gyroscope data.
@@ -102,7 +81,7 @@ class Filter {
    * @param z The z-axis rotation acceleration in radians per second.
    * @note All values are in radians per second.
    */
-  void gyroscopeXYZ(const float x, const float y, const float z);
+  void gyroscope(const float x, const float y, const float z);
 
   /**
    * @brief Store triple axis magnetometer data.
@@ -111,7 +90,7 @@ class Filter {
    * @param y The y-axis magnetic field strength value.
    * @param z The z-axis magnetic field strength value.
    */
-  void magnetometerXYZ(const float x, const float y, const float z);
+  void magnetometer(const float x, const float y, const float z);
 
   /**
    * @brief Sensor fusion algorithm interface. Any implementation must store
@@ -122,20 +101,15 @@ class Filter {
    */
   virtual void process() = 0;
 
-  orientation_t data;  ///< Orientation output (quaternion).
+  orientation_t data;  /**< Orientation output (quaternion). */
 
  protected:
-  // User selected DOF.
-  DOF _dof;
-  
-  // 6DOF: Pitch and roll.
-  Vector3 _accelerometerData;
-  Vector3 _gyroscopeData;
-  
-  // 9DOF: Compass; heading and yaw.
-  Vector3 _magnetometerData;
-  
-  Quaternion _rotation;
+  Vector3 accelerometer_data_;  /**< Pitch and roll. */
+  Vector3 gyroscope_data_;      /**< Pitch and roll. */
+  Vector3 magnetometer_data_;   /**< Compass heading and yaw. */
+  Quaternion orientation_;      /**< Internal quaternion. */
 };
+
+}  // namespace fusion
 
 #endif  // FILTER_H_

@@ -24,7 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COMPLEMENTARY_H_
 #define COMPLEMENTARY_H_
 
-#include "./filter.h"
+#include "filter.h"
+
+namespace fusion {
 
 /**
  * @brief Complementary filter. Weighs data from the gyroscope against data
@@ -41,16 +43,7 @@ class ComplementaryFilter : public Filter {
    * @brief Default constructor.
    */
   ComplementaryFilter();
-  
-  /**
-   * @brief Initialization constructor.
-   *
-   * @param d The Degrees Of Freedom (DOF) to use.
-   * @param a A number between 0 and 1 which represents the weight to give
-   *          the gyroscope data relative to other sensor data.
-   */
-  ComplementaryFilter(const DOF d, const float a);
-  
+
   /**
    * @brief Destructor.
    */
@@ -65,7 +58,7 @@ class ComplementaryFilter : public Filter {
    * @note Does nothing if the input is out of range.
    */
   void alpha(const float a);
-  
+
   /**
    * @brief Set the delta time.
    *
@@ -81,8 +74,10 @@ class ComplementaryFilter : public Filter {
   void process();
 
  protected:
-  float _alpha;      ///< The percentage of gyroscope data to use.
-  float _deltaTime;  ///< The time in seconds since the last sensor reading.
+  float alpha_;       /**< The percentage of gyroscope data to use. */
+  float delta_time_;  /**< The time in seconds since the last sensor reading. */
 };
+
+}  // namespace fusion
 
 #endif  // COMPLEMENTARY_H_

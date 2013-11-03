@@ -24,12 +24,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef KALMAN_H_
 #define KALMAN_H_
 
-#include "./filter.h"
+#include "filter.h"
+
+namespace fusion {
 
 class KalmanFilter : public Filter {
 };
 
 class KalmanExtendedFilter : public KalmanFilter {
 };
+
+}  // namespace fusion
 
 #endif  // KALMAN_H_

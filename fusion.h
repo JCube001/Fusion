@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef FUSION_H_
 #define FUSION_H_
 
-#include "./complementary.h"
-#include "./kalman.h"
+#include "complementary.h"
+#include "kalman.h"
 
 #endif  // FUSION_H_
