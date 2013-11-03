@@ -51,7 +51,7 @@ TEST(QuaternionTest, ComponentInitializationConstructor) {
   const float z = 3.0f;
   const float w = 4.0f;
   const Vector3 v(x, y, z);
-  const Quaternion q(v, w);
+  const Quaternion q(w, v);
 
   EXPECT_FLOAT_EQ(x, q.x());
   EXPECT_FLOAT_EQ(y, q.y());
@@ -127,7 +127,7 @@ TEST(QuaternionTest, SetScalar) {
 
 TEST(QuaternionTest, GetVector) {
   const Vector3 v0(1.0f, 2.0f, 3.0f);
-  const Quaternion q(v0, 99.99f);
+  const Quaternion q(99.99f, v0);
   const Vector3 v1(q.vector());
 
   EXPECT_FLOAT_EQ(v0.x(), v1.x());
