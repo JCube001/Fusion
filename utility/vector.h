@@ -37,7 +37,7 @@ class Vector3 {
    * @brief Default constructor.
    */
   Vector3()
-    : _data {0.0f, 0.0f, 0.0f} {}
+    : data_ {0.0f, 0.0f, 0.0f} {}
 
   /**
    * @brief Copy constructor.
@@ -45,7 +45,7 @@ class Vector3 {
    * @param other The vector to copy from.
    */
   Vector3(const Vector3& other)
-    : _data {other.x(), other.y(), other.z()} {}
+    : data_ {other.x(), other.y(), other.z()} {}
 
   /**
    * @brief Array initialization constructor.
@@ -54,7 +54,7 @@ class Vector3 {
    */
   explicit Vector3(const float* array) {
     for (int i = 0; i < 3; i++) {
-      _data[i] = array[i];
+      data_[i] = array[i];
     }
   }
 
@@ -66,7 +66,7 @@ class Vector3 {
    * @param z The z-value component.
    */
   Vector3(const float x, const float y, const float z)
-    : _data {x, y, z} {}
+    : data_ {x, y, z} {}
 
   /**
    * @brief Destructor.
@@ -78,21 +78,21 @@ class Vector3 {
    *
    * @return The vector x-component.
    */
-  float x() const { return _data[0]; }
+  float x() const { return data_[0]; }
 
   /**
    * @brief Return the vector y-component.
    *
    * @return The vector y-component.
    */
-  float y() const { return _data[1]; }
+  float y() const { return data_[1]; }
 
   /**
    * @brief Return the vector z-component.
    *
    * @return The vector z-component.
    */
-  float z() const { return _data[2]; }
+  float z() const { return data_[2]; }
 
   /**
    * @brief Subscript.
@@ -101,7 +101,7 @@ class Vector3 {
    * @return The value of the vector component stored at the index.
    */
   inline float operator[](const int i) const {
-    return _data[i];
+    return data_[i];
   }
 
   /**
@@ -340,7 +340,7 @@ class Vector3 {
   }
 
  protected:
-  float _data[3];
+  float data_[3];
 };
 
 }  // namespace fusion
