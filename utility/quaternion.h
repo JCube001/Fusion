@@ -37,7 +37,7 @@ namespace fusion {
  * @note There are two common ways to store the structure of a quaternion. They
  *       are [w, x, y, z] and [x, y, z, w] where w is the real component and
  *       [x, y, z] is the imaginary vector component. The layout [w, x, y, z]
- *       was choosen for this particular class because this is the format used
+ *       was chosen for this particular class because this is the format used
  *       most to describe quaternions mathematically.
  * @note All angles are treated as radians.
  */
@@ -283,8 +283,8 @@ class Quaternion {
    */
   static Quaternion convertFromAxisAngle(const float angle,
                                          const Vector3& axis) {
-    const float t = 0.5f;
-    return Quaternion(cos(angle*t), axis*sin(angle*t));
+    const float half = 0.5f;
+    return Quaternion(cos(angle*half), axis*sin(angle*half));
   }
 
   /**
@@ -300,13 +300,13 @@ class Quaternion {
    */
   static Quaternion convertFromEulerAngles(const float roll, const float pitch,
                                            const float yaw) {
-    const float t = 0.5f;
-    const float sr = sin(roll * t);
-    const float cr = cos(roll * t);
-    const float sp = sin(pitch * t);
-    const float cp = cos(pitch * t);
-    const float sy = sin(yaw * t);
-    const float cy = cos(yaw * t);
+    const float half = 0.5f;
+    const float sr = sin(roll*half);
+    const float cr = cos(roll*half);
+    const float sp = sin(pitch*half);
+    const float cp = cos(pitch*half);
+    const float sy = sin(yaw*half);
+    const float cy = cos(yaw*half);
 
     return Quaternion(cr*cp*cy + sr*sp*sy, sr*cp*cy - cr*sp*sy,
                       cr*sp*cy + sr*cp*sy, cr*cp*sy - sr*sp*cy);
