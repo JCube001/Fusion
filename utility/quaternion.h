@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define UTILITY_QUATERNION_H_
 
 #include <math.h>
-#include "utility/vector.h"
+#include "vector.h"
 
 namespace fusion {
 
