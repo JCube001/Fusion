@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define UTILITY_QUATERNION_H_
 
 #include <math.h>
+#include "math_extra.h"
 #include "vector.h"
 
 namespace fusion {
@@ -383,6 +384,18 @@ class Quaternion {
    */
   static float dot(const Quaternion& q0, const Quaternion& q1) {
     return Vector3::dot(q0.vector(), q1.vector()) + q0.scalar()*q1.scalar();
+  }
+
+  /**
+   * @brief Returns the normalized (unit) quaternion.
+   *
+   * @return The normalized quaternion.
+   *
+   * @note Makes use of the inverse square root to be able to avoid division
+   *       operations entirely.
+   */
+  Quaternion fastNormalize() const {
+    return (*this) * invSqrt(w()*w() + x()*x() + y()*y() + z()*z());
   }
 
   /**

@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define UTILITY_VECTOR_H_
 
 #include <math.h>
+#include "math_extra.h"
 
 namespace fusion {
 
@@ -250,6 +251,18 @@ class Vector3 {
    */
   static float dot(const Vector3& p0, const Vector3& p1) {
     return p0.x()*p1.x() + p0.y()*p1.y() + p0.z()*p1.z();
+  }
+
+  /**
+   * @brief Returns a normalized (unit) vector.
+   *
+   * @return The normalized vector.
+   *
+   * @note Makes use of the inverse square root to be able to avoid division
+   *       operations entirely.
+   */
+  Vector3 fastNormalize() const {
+    return (*this) * invSqrt(x()*x() + y()*y() + z()*z());
   }
 
   /**
