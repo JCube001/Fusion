@@ -30,10 +30,6 @@ fusion::ComplementaryFilter filter;
 void setup() {
   Serial.begin(9600);
   
-  // Set the alpha value to use with the filter
-  // Must be between 0 and 1 inclusive
-  filter.alpha(0.98);
-  
   // Sensor setup (modify for your sensors as needed)
   if (!gyro.begin(gyro.L3DS20_RANGE_250DPS)) {
     Serial.println("L3GD20 (gyro) failed to initialize!");
@@ -86,17 +82,13 @@ void loop() {
                       mag_event.magnetic.z);
   
   // Process the sensor data
-  if (!filter.process()) {
-    Serial.println("Unable to run the filter!");
-    Serial.println("Check that the alpha value and delta time are correct");
-    while (true);
-  }
+  filter.update()
   
   // Send out the now up-to-date quaternion
-  Serial.print(filter.data.w); Serial.print(',');
-  Serial.print(filter.data.x); Serial.print(',');
-  Serial.print(filter.data.y); Serial.print(',');
-  Serial.print(filter.data.z); Serial.print(',');
+  Serial.print(filter.orientation.w()); Serial.print(',');
+  Serial.print(filter.orientation.x()); Serial.print(',');
+  Serial.print(filter.orientation.y()); Serial.print(',');
+  Serial.print(filter.orientation.z()); Serial.print(',');
   Serial.println();
   
   // Do not print out too fast
