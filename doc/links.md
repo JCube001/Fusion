@@ -18,6 +18,7 @@ These are all websites which were used to help create this library.
 * http://www.johndcook.com/blog/2012/02/15/dot-cross-and-quaternion-products/
 * http://en.wikipedia.org/wiki/Slerp
 * http://en.wikipedia.org/wiki/Axis%E2%80%93angle_representation
+* http://www.maths.ed.ac.uk/~aar/papers/hanson.pdf
 
 ## Vector
 
