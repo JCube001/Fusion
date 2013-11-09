@@ -45,16 +45,6 @@ namespace fusion {
 class Filter {
  public:
   /**
-   * @brief Structure for storing quaternion orientation.
-   */
-  typedef struct orientation_s {
-    float w;
-    float x;
-    float y;
-    float z;
-  } orientation_t;
-
-  /**
    * @brief Default constructor.
    */
   Filter();
@@ -99,15 +89,24 @@ class Filter {
    *
    * @note Must be overridden in all subclasses.
    */
-  virtual bool process() = 0;
+  virtual void update() = 0;
 
-  orientation_t data;  /**< Orientation output (quaternion). */
+  Quaternion orientation;  /**< Orientation output. */
 
  protected:
-  Vector3 accelerometer_data_;  /**< Pitch and roll. */
-  Vector3 gyroscope_data_;      /**< Pitch and roll. */
-  Vector3 magnetometer_data_;   /**< Compass heading and yaw. */
-  Quaternion orientation_;      /**< Internal quaternion. */
+  /**
+   * @brief Check if data is set.
+   *
+   * @param data The data to check.
+   *
+   * @return True if all of the components of data are not set to zero,
+   *         otherwise false.
+   */
+  bool hasData(Vector3& data);
+
+  Vector3 accelerometer_data_;  /**< Earth gravity reference frame. */
+  Vector3 gyroscope_data_;      /**< Rotation as angular velocity. */
+  Vector3 magnetometer_data_;   /**< Earth magnetic flux reference frame. */
 };
 
 }  // namespace fusion

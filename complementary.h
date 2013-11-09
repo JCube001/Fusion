@@ -29,13 +29,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace fusion {
 
 /**
- * @brief Complementary filter. Weighs data from the gyroscope against data
- *        from the accelerometer in order to produce a reading of a
- *        rotation orientation with little error.
+ * @brief Complementary filter. Weighs data from the gyroscope sensor frame
+ *        against data from the accelerometer earth and sensor frames and
+ *        optionally, the magnetometer earth and sensor frames. All data is
+ *        processed as quaternions. Magnetic distortion compensation and
+ *        gyroscope bias drift compensation are also accounted for.
  *
- * @note  Using a gyroscope and an accelerometer only yields pitch and roll
- *        (6 DoF). A magnetometer must also be used in order to determine yaw
- *        (9 DoF).
+ * @note See http://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=2&ved=0CDEQFjAB&url=http%3A%2F%2Fsharenet-wii-motion-trac.googlecode.com%2Ffiles%2FAn_efficient_orientation_filter_for_inertial_and_inertialmagnetic_sensor_arrays.pdf&ei=bml6Utf5OsTiyAHnzICIBA&usg=AFQjCNEBfCip2CAVZhCKjxP1HYvVvWruYw&sig2=nlrT60sY1wPnCxDvpEipRw&bvm=bv.55980276,d.aWc&cad=rja
  */
 class ComplementaryFilter : public Filter {
  public:
@@ -50,37 +50,19 @@ class ComplementaryFilter : public Filter {
   ~ComplementaryFilter();
 
   /**
-   * @brief Set the alpha value.
-   *
-   * @param a A number between 0 and 1 which represents the weight to give
-   *          the gyroscope data relative to other sensor data.
-   *
-   * @note Sets the alpha value to -1 if the input is out of range.
+   * @brief The complementary filter algorithm. This implementation can handle
+   *        both IMU (6 DoF) and MARG (9 DoF) Attitude and Heading Reference
+   *        Systems (AHRS). This is accomplished by checking to see which
+   *        values were stored in the filter for each sensor prior to update()
+   *        being called.
    */
-  void alpha(const float a);
-
-  /**
-   * @brief Set the delta time.
-   *
-   * @param dt The time in seconds since the last sensor reading.
-   *
-   * @note Sets the delta time to zero if the input is negative or also zero.
-   */
-  void deltaTime(const float dt);
-
-  /**
-   * @brief The complementary filter algorithm.
-   *
-   * @return True is processing completed without error, otherwise false.
-   *
-   * @note Checks if the alpha value and the delta time are valid before any
-   *       processing occurs.
-   */
-  bool process();
+  virtual void update();
 
  protected:
-  float alpha_;       /**< The percentage of gyroscope data to use. */
-  float delta_time_;  /**< The time in seconds since the last sensor reading. */
+  static const Quaternion Eg_hat(0.0f, 0.0f, 0.0f, 1.0f);  /**< Reference */
+    /**< direction of gravity in earth frame. */
+  Quaternion Eb_hat;   /**< Reference direction of flux in earth frame. */
+  Quaternion SEq_hat;  /**< Estimated orientation */
 };
 
 }  // namespace fusion

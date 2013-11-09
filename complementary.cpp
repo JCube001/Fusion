@@ -27,94 +27,93 @@ namespace fusion {
 
 ComplementaryFilter::ComplementaryFilter()
   : Filter(),
-    alpha_(-1.0f),
-    delta_time_(0.0f) {}
+    Eb_hat(Quaternion(0.0f, 1.0f, 0.0f, 0.0f)) {}
 
 ComplementaryFilter::~ComplementaryFilter() {}
 
-void ComplementaryFilter::alpha(const float a) {
-  if (0.0f <= a && a <= 1.0f) {
-    alpha_ = a;
+void ComplementaryFilter::update() {
+  float J_g[3][4];    // Accelerometer objective function's Jacobian matrix.
+  float J_b[3][4];    // Magnetometer objective function's Jacobian matrix.
+  Quaternion Sa_hat;  // Accelerometer measurements in sensor frame.
+  Quaternion Sm_hat;  // Magnetometer measurements in sensor frame.
+  Quaternion f_g;     // Result of the accelerometer objective function.
+  Quaternion f_b;     // Result of the magnetometer objective function.
+  Quaternion SEq_dot_omega;  // Quaternion rate from gyroscope elements.
+  Quaternion SEq_hat_dot;    // Estimated direction of gyroscope error.
+  
+  // Check if we at least have IMU sensor readings.
+  if (!hasData(gyroscope_data_) || !hasData(accelerometer_data_)) {
+    return;
+  }
+
+  // Set the current quaternion as the orientation estimate.
+  SEq_hat = orientation;
+
+  // Auxilliary variables to avoid redundant arithematic/function calls.
+  Quaternion half_SEq = SEq_hat * 0.5f;
+  Quaternion two_SEq = SEq_hat * 2.0f;
+  
+  // Normalize the accelerometer measurements.
+  Sa_hat = Quaternion(0.0f, accelerometer_data_).fastNormalize();
+
+  // Compute the objective function.
+  f_g = SEq_hat.conjugate() * Eg_hat * SEq_hat - Sa_hat;
+  
+  // Compute the Jacobian matrix.
+  J_g[0][0] = -two_SEq.y();
+  J_g[0][1] = two_SEq.z();
+  J_g[0][2] = -two_SEq.w();
+  J_g[0][3] = two_SEq.x();
+  J_g[1][0] = two_SEq.x();
+  J_g[1][1] = two_SEq.w();
+  J_g[1][2] = two_SEq.z();
+  J_g[1][3] = two_SEq.y();
+  J_g[2][0] = 0.0f;
+  J_g[2][1] = -2.0f * two_SEq.x();
+  J_g[2][2] = -2.0f * two_SEq.y();
+  J_g[2][3] = 0.0f;
+  
+  // Use the magnetometer if it is available (MARG).
+  if (hasData(magnetometer_data_)) {
+    // Auxilliary variables to avoid redundant arithematic/function calls.
+    Quaternion two_Eb_x_SEq = two_SEq * Eb_hat.x();
+    Quaternion two_Eb_z_SEq = two_SEq * Eb_hat.z();
+    
+    // Normalize the magnetometer measurements.
+    Sm_hat = Quaternion(0.0f, magnetometer_data_).fastNormalize();
+    
+    // Compute the objective function.
+    f_b = SEq_hat.conjugate() * Eb_hat * SEq_hat - Sm_hat;
+    
+    // Compute the Jacobian matrix.
+    J_b[0][0] = -two_Eb_z_SEq.y();
+    J_b[0][1] = two_Eb_z_SEq.z();
+    J_b[0][2] = -2.0f * two_Eb_x_SEq.y() - two_Eb_z_SEq.w();
+    J_b[0][3] = -2.0f * two_Eb_x_SEq.z() + two_Eb_z_SEq.x();
+    J_b[1][0] = -two_Eb_x_SEq.z() + two_Eb_z_SEq.x();
+    J_b[1][1] = two_Eb_x_SEq.y() + two_Eb_z_SEq.w();
+    J_b[1][2] = two_Eb_x_SEq.x() + two_Eb_z_SEq.z();
+    J_b[1][3] = -two_Eb_x_SEq.w() + two_Eb_z_SEq.y();
+    J_b[2][0] = two_Eb_x_SEq.y();
+    J_b[2][1] = two_Eb_x_SEq.z() - 2.0f * two_Eb_z_SEq.x();
+    J_b[2][2] = two_Eb_x_SEq.w() - 2.0f * two_Eb_z_SEq.y();
+    J_b[2][3] = two_Eb_x_SEq.x();
+    
+    // Compute the gradient (matrix multiplication: J_gb * f_gb)
+    SEq_hat_dot = Quaternion();
   } else {
-    alpha_ = -1.0f;
+    // Compute the gradient (matrix multiplication: J_g * f_g)
+    SEq_hat_dot = Quaternion();
   }
-}
-
-void ComplementaryFilter::deltaTime(const float dt) {
-  if (dt > 0.0f) {
-    delta_time_ = dt;
-  } else {
-    delta_time_ = 0.0f;
-  }
-}
-
-// TODO(JCube001): Get working with quaternions.
-bool ComplementaryFilter::process() {
-  Vector3 estimated_direction;
-  Vector3 measured_direction;
-  Vector3 half_error;
-  Quaternion temporary_quaternion;
-
-  // If the alpha value is negative or the delta time is zero,
-  // then do not proceed.
-  if (alpha_ < 0.0f || delta_time_ == 0.0f) {
-    return false;
-  }
-
-  if (magnetometer_data_.x() != 0.0f &&
-      magnetometer_data_.y() != 0.0f &&
-      magnetometer_data_.z() != 0.0f) {
-    // Normalize the magnetometer measurement.
-    measured_direction = magnetometer_data_.normalize();
-
-    // Reference the direction of Earth's magnetic field.
-
-    // Estimate the direction of Earth's magnetic field.
-
-    // The error is the sum of the cross product between the estimated and the
-    // measured direction of field vectors.
-    // half_error += estimated_direction * measured_direction;
-  }
-
-  if (accelerometer_data_.x() != 0.0f &&
-      accelerometer_data_.y() != 0.0f &&
-      accelerometer_data_.z() != 0.0f) {
-    // TODO(JCube001): Weigh accelerometer.
-  }
-
-  if (gyroscope_data_.x() != 0.0f &&
-      gyroscope_data_.y() != 0.0f &&
-      gyroscope_data_.z() != 0.0f) {
-    // TODO(JCube001): Weigh gyroscope.
-  }
-
-// Old code.
-#if 0
-  float rollAcc, pitchAcc;
-  float yawHeading;
-
-  // Accumulate the change in gyroscope position
-  this->angle.roll += this->_gyroData[0] * this->delta_time_;
-  this->angle.pitch += this->_gyroData[1] * this->delta_time_;
-  this->angle.yaw += this->_gyroData[2] * this->delta_time_;
-
-  // Turning around the Y axis results in a vector on the X axis
-  rollAcc = atan2(this->_accelData[1], this->_accelData[2]) * RAD_TO_DEG;
-  this->angle.roll = (this->angle.roll * this->alpha_) +
-    (rollAcc * (1 - this->alpha_));
-
-  // Turning around the X axis results in a vector on the Y axis
-  pitchAcc = atan2(this->_accelData[0], this->_accelData[2]) * RAD_TO_DEG;
-  this->angle.pitch = (this->angle.pitch * this->alpha_) +
-    (pitchAcc * (1 - this->alpha_));
-
-  // Angle of the vector y,x is the compass heading
-  yawHeading = atan2(this->_compassData[1], this->_compassData[0]) * RAD_TO_DEG;
-  this->angle.yaw = (this->angle.yaw * this->alpha_) +
-    (yawHeading * (1 - this->alpha_));
-#endif
-
-  return true;
+  
+  // Normalize the gradient to estimate the direction of gyroscope error.
+  SEq_hat_dot = SEq_hat_dot.fastNormalize();
+  
+  
+  
+  // Normalize the quaternion.
+  SEq_hat = SEq_hat.fastNormalize();
+  orientation = SEq_hat;
 }
 
 }  // namespace fusion

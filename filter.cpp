@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace fusion {
 
 Filter::Filter()
-  : data {0.0f, 0.0f, 0.0f, 0.0f},
+  : orientation(Quaternion::identity()),
     accelerometer_data_(Vector3(0.0f, 0.0f, 0.0f)),
     gyroscope_data_(Vector3(0.0f, 0.0f, 0.0f)),
     magnetometer_data_(Vector3(0.0f, 0.0f, 0.0f)) {}
@@ -43,6 +43,14 @@ void Filter::gyroscope(const float x, const float y, const float z) {
 
 void Filter::magnetometer(const float x, const float y, const float z) {
   magnetometer_data_ = Vector3(x, y, z);
+}
+
+bool Filter::hasData(Vector3& data) {
+  if (data != Vector3(0.0f, 0.0f, 0.0f)) {
+    return true;
+  }
+  
+  return false;
 }
 
 }  // namespace fusion
