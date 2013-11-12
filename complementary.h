@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COMPLEMENTARY_H_
 #define COMPLEMENTARY_H_
 
+#include <math.h>
 #include "filter.h"
 
 namespace fusion {
@@ -50,6 +51,16 @@ class ComplementaryFilter : public Filter {
   ~ComplementaryFilter();
 
   /**
+   * @brief Sets the sample rate.
+   *
+   * @param dt The sample rate.
+   *
+   * @note If dt is zero or a negative number, then no delta time is set and
+   *       update() will not run.
+   */
+  void deltaTime(float dt);
+
+  /**
    * @brief The complementary filter algorithm. This implementation can handle
    *        both IMU (6 DoF) and MARG (9 DoF) Attitude and Heading Reference
    *        Systems (AHRS). This is accomplished by checking to see which
@@ -59,10 +70,13 @@ class ComplementaryFilter : public Filter {
   virtual void update();
 
  protected:
-  static const Quaternion Eg_hat(0.0f, 0.0f, 0.0f, 1.0f);  /**< Reference */
-    /**< direction of gravity in earth frame. */
-  Quaternion Eb_hat;   /**< Reference direction of flux in earth frame. */
-  Quaternion SEq_hat;  /**< Estimated orientation */
+  const Quaternion Eg_hat_ = Quaternion(0.0f, 0.0f, 0.0f, 1.0f);  /**<*/
+    /**< Reference direction of gravity in the earth frame. */
+  float beta_;          /**< Gyroscope error filter gain. */
+  float zeta_;          /**< Gyroscope drift filter gain. */
+  float delta_time_;    /**< Sample rate. */
+  Quaternion Eb_hat_;   /**< Reference direction of flux in earth frame. */
+  Quaternion SEq_hat_;  /**< Estimated orientation */
 };
 
 }  // namespace fusion
