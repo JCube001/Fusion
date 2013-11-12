@@ -85,12 +85,28 @@ void loop() {
   filter.update();
   
   // Send out the now up-to-date quaternion
-  Serial.print(filter.orientation.w()); Serial.print(',');
-  Serial.print(filter.orientation.x()); Serial.print(',');
-  Serial.print(filter.orientation.y()); Serial.print(',');
-  Serial.print(filter.orientation.z()); Serial.print(',');
-  Serial.println();
+  printFloat(filter.orientation.w(), 5); Serial.print(',');
+  printFloat(filter.orientation.x(), 5); Serial.print(',');
+  printFloat(filter.orientation.y(), 5); Serial.print(',');
+  printFloat(filter.orientation.z(), 5); Serial.println();
   
   // Do not print out too fast
   delay(50);
+}
+
+void printFloat(const float n, const int places) {
+  int integer = (int)floor(n);
+  float decimals = n - integer;
+  
+  // Print the integer component and a decimal point character
+  Serial.print(integer); Serial.print('.');
+  
+  // Print the decimal place components
+  for (int i = 0; i < places; i++) {
+    decimals *= 10;
+    integer = (int)floor(decimals);
+    decimals -= integer;
+    
+    Serial.print(integer);
+  }
 }
