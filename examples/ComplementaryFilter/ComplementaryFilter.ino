@@ -82,7 +82,7 @@ void loop() {
                       mag_event.magnetic.z);
   
   // Process the sensor data
-  filter.update()
+  filter.update();
   
   // Send out the now up-to-date quaternion
   Serial.print(filter.orientation.w()); Serial.print(',');
