@@ -111,7 +111,7 @@ class Vector3 {
    * @param rhs The right hand side vector to assign.
    * @return The assigned vector.
    */
-  inline Vector3 operator=(const Vector3& rhs) const {
+  inline Vector3 operator=(const Vector3 rhs) const {
     return Vector3(rhs.x(), rhs.y(), rhs.z());
   }
 
@@ -174,6 +174,56 @@ class Vector3 {
    */
   Vector3 operator/(const float rhs) const {
     return Vector3(x() / rhs, y() / rhs, z() / rhs);
+  }
+
+  /**
+   * @brief Compound addition.
+   *
+   * @param rhs The right hand side vector to add.
+   * @return The sum of the vectors.
+   */
+  Vector3 operator+=(const Vector3& rhs) const {
+    return (*this) + rhs;
+  }
+
+  /**
+   * @brief Compound subtraction.
+   *
+   * @param rhs The right hand side vector to subtract by.
+   * @return The difference of the vectors.
+   */
+  Vector3 operator-=(const Vector3& rhs) const {
+    return (*this) - rhs;
+  }
+
+  /**
+   * @brief Compound cross product multiplication.
+   *
+   * @param rhs The right hand side vector to multiply by.
+   * @return The cross product of the vectors.
+   */
+  Vector3 operator*=(const Vector3& rhs) const {
+    return (*this) * rhs;
+  }
+
+  /**
+   * @brief Compound scalar multiplication.
+   *
+   * @param rhs The right hand side scalar value to multiply by.
+   * @return The product of the vector times the scalar.
+   */
+  Vector3 operator*=(const float rhs) const {
+    return (*this) * rhs;
+  }
+
+  /**
+   * @brief Compound scalar division.
+   *
+   * @param rhs The right hand side scalar value to divide by.
+   * @return The quotient of the vector divided by the scalar.
+   */
+  Vector3 operator/=(const float rhs) const {
+    return (*this) / rhs;
   }
 
   /**

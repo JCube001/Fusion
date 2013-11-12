@@ -245,6 +245,66 @@ class Quaternion {
   }
 
   /**
+   * @brief Compound addition.
+   *
+   * @param rhs The right hand side quaternion to add.
+   * @return The sum of the quaternions.
+   */
+  Quaternion operator+=(const Quaternion& rhs) const {
+    return (*this) + rhs;
+  }
+
+  /**
+   * @brief Compound subtraction.
+   *
+   * @param rhs The right hand side quaternion to subtract by.
+   * @return The difference of the quaternions.
+   */
+  Quaternion operator-=(const Quaternion& rhs) const {
+    return (*this) - rhs;
+  }
+
+  /**
+   * @brief Compound cross product multiplication.
+   *
+   * @param rhs The right hand side quaternion to multiply by.
+   * @return The cross product of the quaternions.
+   */
+  Quaternion operator*=(const Quaternion& rhs) const {
+    return (*this) * rhs;
+  }
+
+  /**
+   * @brief Compound scalar multiplication.
+   *
+   * @param rhs The right hand side scalar value to multiply by.
+   * @return The product of the quaternion times the scalar.
+   */
+  Quaternion operator*=(const float rhs) const {
+    return (*this) * rhs;
+  }
+
+  /**
+   * @brief Compound division.
+   *
+   * @param rhs The right hand side quaternion to divide by.
+   * @return The quotient of the quaternions.
+   */
+  Quaternion operator/=(const Quaternion& rhs) const {
+    return (*this) / rhs;
+  }
+
+  /**
+   * @brief Compound scalar division.
+   *
+   * @param rhs The right hand side scalar value to divide by.
+   * @return The quotient of the quaternion divided by the scalar.
+   */
+  Quaternion operator/=(const float rhs) const {
+    return (*this) / rhs;
+  }
+
+  /**
    * @brief Equal to.
    *
    * @param rhs The right hand side quaternion.
