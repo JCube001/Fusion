@@ -102,7 +102,7 @@ class Filter {
    * @return True if all of the components of data are not set to zero,
    *         otherwise false.
    */
-  bool hasData(Vector3& data);
+  bool hasData(const Vector3& data) const;
 
   Vector3 accelerometer_data_;  /**< Earth gravity reference frame. */
   Vector3 gyroscope_data_;      /**< Rotation as angular velocity. */

@@ -45,11 +45,11 @@ void Filter::magnetometer(const float x, const float y, const float z) {
   magnetometer_data_ = Vector3(x, y, z);
 }
 
-bool Filter::hasData(Vector3& data) {
+bool Filter::hasData(const Vector3& data) const {
   if (data != Vector3(0.0f, 0.0f, 0.0f)) {
     return true;
   }
-  
+
   return false;
 }
 
