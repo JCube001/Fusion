@@ -27,7 +27,8 @@ namespace fusion {
 
 ComplementaryFilter::ComplementaryFilter()
   : Filter(),
-    Eb_hat(Quaternion(0.0f, 1.0f, 0.0f, 0.0f)) {}
+    Eb_hat(Quaternion(0.0f, 1.0f, 0.0f, 0.0f)),
+    SEq_hat(Quaternion::identity()) {}
 
 ComplementaryFilter::~ComplementaryFilter() {}
 
@@ -46,10 +47,8 @@ void ComplementaryFilter::update() {
     return;
   }
 
-  // Set the current quaternion as the orientation estimate.
-  SEq_hat = orientation;
-
   // Auxilliary variables to avoid redundant arithematic/function calls.
+  bool has_magnetometer_data = hasData(magnetometer_data_);
   Quaternion half_SEq = SEq_hat * 0.5f;
   Quaternion two_SEq = SEq_hat * 2.0f;
   
@@ -74,7 +73,7 @@ void ComplementaryFilter::update() {
   J_g[2][3] = 0.0f;
   
   // Use the magnetometer if it is available (MARG).
-  if (hasData(magnetometer_data_)) {
+  if (has_magnetometer_data) {
     // Auxilliary variables to avoid redundant arithematic/function calls.
     Quaternion two_Eb_x_SEq = two_SEq * Eb_hat.x();
     Quaternion two_Eb_z_SEq = two_SEq * Eb_hat.z();
@@ -99,21 +98,41 @@ void ComplementaryFilter::update() {
     J_b[2][2] = two_Eb_x_SEq.w() - 2.0f * two_Eb_z_SEq.y();
     J_b[2][3] = two_Eb_x_SEq.x();
     
-    // Compute the gradient (matrix multiplication: J_gb * f_gb)
-    SEq_hat_dot = Quaternion();
+    // Compute the gradient (matrix multiplication: JT_gb * f_gb)
+    SEq_hat_dot = Quaternion();  // TODO(JCube001): Finish
   } else {
-    // Compute the gradient (matrix multiplication: J_g * f_g)
-    SEq_hat_dot = Quaternion();
+    // Compute the gradient (matrix multiplication: JT_g * f_g)
+    SEq_hat_dot =
+      Quaternion(J_g[0][0]*f_g[1] + J_g[1][0]*f_g[2] + J_g[2][0]*f_g[3],
+                 J_g[0][1]*f_g[1] + J_g[1][1]*f_g[2] + J_g[2][1]*f_g[3],
+                 J_g[0][2]*f_g[1] + J_g[1][2]*f_g[2] + J_g[2][2]*f_g[3],
+                 J_g[0][3]*f_g[1] + J_g[1][3]*f_g[2] + J_g[2][3]*f_g[3]);
   }
   
   // Normalize the gradient to estimate the direction of gyroscope error.
   SEq_hat_dot = SEq_hat_dot.fastNormalize();
   
+  if (has_magnetometer_data) {
+    // Compute angular estimated direction of gyroscope error.
+    
+    // Compute and remove the gyroscope bias.
+  }
   
+  // Compute the quaternion rate measured by the gyroscope.
+  
+  // Compute then integrate the estimated quaternion rate.
   
   // Normalize the quaternion.
   SEq_hat = SEq_hat.fastNormalize();
+  
+  // Set orientation to the current quaternion estimate.
   orientation = SEq_hat;
+  
+  if (has_magnetometer_data) {
+    // Compute magnetic flux in the earth frame.
+    
+    // Normalize the flux vector to have only x and z components.
+  }
 }
 
 }  // namespace fusion
