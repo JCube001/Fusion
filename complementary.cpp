@@ -131,8 +131,10 @@ void ComplementaryFilter::update() {
 
   if (has_magnetometer_data) {
     // Compute angular estimated direction of gyroscope error.
+    // TODO(JCube001): Finish
 
     // Compute and remove the gyroscope bias.
+    // TODO(JCube001): Finish
   }
 
   // Compute the quaternion rate measured by the gyroscope.

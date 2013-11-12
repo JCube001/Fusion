@@ -28,9 +28,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "utility/quaternion.h"
 #include "utility/vector.h"
 
-#define DEG_TO_RAD  (M_PI / 180.0f)
-#define RAD_TO_DEG  (180.0f / M_PI)
-
 namespace fusion {
 
 /**
@@ -83,9 +80,7 @@ class Filter {
   void magnetometer(const float x, const float y, const float z);
 
   /**
-   * @brief Sensor fusion algorithm interface. Any implementation must store
-   *        the resulting rotation orientation in the data member of this
-   *        class.
+   * @brief Sensor fusion algorithm interface.
    *
    * @note Must be overridden in all subclasses.
    */
