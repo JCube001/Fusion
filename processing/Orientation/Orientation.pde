@@ -71,6 +71,7 @@ void setup() {
     port.clear();
     port.bufferUntil('\n');
   } catch (Exception e) {
+    testing = true;
     println(e);
   }
   
@@ -192,13 +193,21 @@ void keyReleased() {
     paused = true;
     quaternion = new float[] {1.0f, 0.0f, 0.0f, 0.0f};
     euler = new float[] {0.0f, 0.0f, 0.0f};
-    port.clear();
+    try {
+      port.clear();
+    } catch (Exception e) {
+      // Port not available.
+    }
     break;
   case 'p':
   case 'P':
     // Toggle serial input paused.
     paused = !paused;
-    port.clear();
+    try {
+      port.clear();
+    } catch (Exception e) {
+      // Port not available.
+    }
     break;
   case 'H':
   case 'h':
@@ -236,7 +245,6 @@ void serialEvent(Serial port) {
     
     redraw();
   } catch (Exception e) {
-    println("Error while reading serial port: ");
     println(e);
   }
 }
