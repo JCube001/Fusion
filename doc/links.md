@@ -36,6 +36,8 @@ These are all websites which were used to help create this library.
 * http://stackoverflow.com/questions/3017264/c-is-it-good-practice-to-make-getters-and-setters-inline
 * http://www.learncpp.com/cpp-tutorial/98-overloading-the-subscript-operator/
 * http://www.horstmann.com/ccj2/ccjapp3.html
+* http://stackoverflow.com/questions/8682296/how-to-initialize-array-elements-by-using-initializer-list
+* http://stackoverflow.com/questions/12005959/static-const-versus-const-static
 
 ## Doxygen
 
