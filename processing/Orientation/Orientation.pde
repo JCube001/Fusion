@@ -254,18 +254,20 @@ void serialEvent(Serial port) {
  *        left handed coordinate system.
  */
 void drawRotationCube() {
+  final float theta = 2.0f * acos(quaternion[0]);
+  final float sin_half_theta = sin(theta * 0.5f);
+  
   pushMatrix();
   translate(width / 2, height / 2, 0);
   strokeWeight(2);
   
   // Set the rotation for the entire cube.
-  // Convert the quaternion to axis angle.
-  float theta = 2.0f*acos(quaternion[0]);
+  // Convert the quaternion to axis-angle.
   if (theta != 0.0f) {
     rotate(theta,
-           quaternion[2] / sin(theta*0.5f),
-           quaternion[3] / sin(theta*0.5f),
-           quaternion[1] / sin(theta*0.5f));
+           quaternion[2] / sin_half_theta,
+           quaternion[3] / sin_half_theta,
+           quaternion[1] / sin_half_theta);
   } else {
     rotate(theta, 0.0f, 0.0f, 0.0f);
   }
@@ -358,13 +360,16 @@ void drawUnitCircles() {
  * @note All angles are in radians.
  */
 float[] eulerAnglesToQuaternion(final float[] e) {
-  final float t = 0.5f;
-  final float cr = cos(e[0] * t);
-  final float cp = cos(e[1] * t);
-  final float cy = cos(e[2] * t);
-  final float sr = sin(e[0] * t);
-  final float sp = sin(e[1] * t);
-  final float sy = sin(e[2] * t);
+  final float half_e_0 = e[0] * 0.5f;
+  final float half_e_1 = e[1] * 0.5f;
+  final float half_e_2 = e[2] * 0.5f;
+  
+  final float cr = cos(half_e_0);
+  final float cp = cos(half_e_1);
+  final float cy = cos(half_e_2);
+  final float sr = sin(half_e_0);
+  final float sp = sin(half_e_1);
+  final float sy = sin(half_e_2);
   
   float[] q = new float[4];
   
