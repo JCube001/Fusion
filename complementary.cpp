@@ -25,13 +25,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace fusion {
 
-ComplementaryFilter::ComplementaryFilter()
-  : Filter(),
-    beta_(sqrt(3.0f / 4.0f)),
-    zeta_(0.0f),
-    delta_time_(0.0f),
-    Eb_hat_(Quaternion(0.0f, 1.0f, 0.0f, 0.0f)),
-    SEq_hat_(Quaternion::identity()) {}
+ComplementaryFilter::ComplementaryFilter() {
+  // Filter
+  orientation = Quaternion::identity();
+  accelerometer_data_ = Vector3(0.0f, 0.0f, 0.0f);
+  gyroscope_data_ = Vector3(0.0f, 0.0f, 0.0f);
+  magnetometer_data_ = Vector3(0.0f, 0.0f, 0.0f);
+
+  // ComplementaryFilter
+  beta_ = sqrt(3.0f / 4.0f);
+  zeta_ = 0.0f;
+  delta_time_ = 0.0f;
+  Eb_hat_ = Quaternion(0.0f, 1.0f, 0.0f, 0.0f);
+  SEq_hat_ = Quaternion::identity();
+}
 
 ComplementaryFilter::~ComplementaryFilter() {}
 

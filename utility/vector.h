@@ -37,16 +37,22 @@ class Vector3 {
   /**
    * @brief Default constructor.
    */
-  Vector3()
-    : data_ {0.0f, 0.0f, 0.0f} {}
+  Vector3() {
+    data_[0] = 0.0f;
+    data_[1] = 0.0f;
+    data_[2] = 0.0f;
+  }
 
   /**
    * @brief Copy constructor.
    *
    * @param other The vector to copy from.
    */
-  Vector3(const Vector3& other)
-    : data_ {other.x(), other.y(), other.z()} {}
+  Vector3(const Vector3& other) {
+    data_[0] = other.x();
+    data_[1] = other.y();
+    data_[2] = other.z();
+  }
 
   /**
    * @brief Array initialization constructor.
@@ -66,8 +72,11 @@ class Vector3 {
    * @param y The y-value component.
    * @param z The z-value component.
    */
-  Vector3(const float x, const float y, const float z)
-    : data_ {x, y, z} {}
+  Vector3(const float x, const float y, const float z) {
+    data_[0] = x;
+    data_[1] = y;
+    data_[2] = z;
+  }
 
   /**
    * @brief Destructor.

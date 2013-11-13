@@ -25,11 +25,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace fusion {
 
-Filter::Filter()
-  : orientation(Quaternion::identity()),
-    accelerometer_data_(Vector3(0.0f, 0.0f, 0.0f)),
-    gyroscope_data_(Vector3(0.0f, 0.0f, 0.0f)),
-    magnetometer_data_(Vector3(0.0f, 0.0f, 0.0f)) {}
+Filter::Filter() {
+  orientation = Quaternion::identity();
+  accelerometer_data_ = Vector3(0.0f, 0.0f, 0.0f);
+  gyroscope_data_ = Vector3(0.0f, 0.0f, 0.0f);
+  magnetometer_data_ = Vector3(0.0f, 0.0f, 0.0f);
+}
 
 Filter::~Filter() {}
 

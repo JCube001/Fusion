@@ -47,15 +47,24 @@ class Quaternion {
   /**
    * @brief Default constructor.
    */
-  Quaternion() : data_ {0.0f, 0.0f, 0.0f, 0.0f} {}
+  Quaternion() {
+    data_[0] = 0.0f;
+    data_[1] = 0.0f;
+    data_[2] = 0.0f;
+    data_[3] = 0.0f;
+  }
 
   /**
    * @brief Copy constructor.
    *
    * @param other The quaternion to copy from.
    */
-  Quaternion(const Quaternion& other)
-    : data_ {other.w(), other.x(), other.y(), other.z()} {}
+  Quaternion(const Quaternion& other) {
+    data_[0] = other.w();
+    data_[1] = other.x();
+    data_[2] = other.y();
+    data_[3] = other.z();
+  }
 
   /**
    * @brief Component initialization constructor.
@@ -63,8 +72,12 @@ class Quaternion {
    * @param s The scalar real component.
    * @param p The imaginary vectorial component.
    */
-  Quaternion(const float s, const Vector3& p)
-    : data_ {s, p.x(), p.y(), p.z()} {}
+  Quaternion(const float s, const Vector3& p) {
+    data_[0] = s;
+    data_[1] = p.x();
+    data_[2] = p.y();
+    data_[3] = p.z();
+  }
 
   /**
    * @brief Array initialization constructor.
@@ -86,8 +99,12 @@ class Quaternion {
    * @param y The y-value of the imaginary vector component.
    * @param z The z-value of the imaginary vector component.
    */
-  Quaternion(const float w, const float x, const float y, const float z)
-    : data_ {w, x, y, z} {}
+  Quaternion(const float w, const float x, const float y, const float z) {
+    data_[0] = w;
+    data_[1] = x;
+    data_[2] = y;
+    data_[3] = z;
+  }
 
   /**
    * @brief Destructor.
