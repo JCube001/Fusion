@@ -30,7 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace fusion {
 
 /**
- * @brief Vector, three dimensional.
+ * @brief Vector. Three dimensional vector.
  */
 class Vector3 {
  public:
@@ -72,7 +72,7 @@ class Vector3 {
    * @param y The y-value component.
    * @param z The z-value component.
    */
-  Vector3(const float x, const float y, const float z) {
+  Vector3(float x, float y, float z) {
     data_[0] = x;
     data_[1] = y;
     data_[2] = z;
@@ -82,6 +82,19 @@ class Vector3 {
    * @brief Destructor.
    */
   ~Vector3() {}
+
+  /**
+   * @brief Mutate all components.
+   *
+   * @param x The new vector x-component.
+   * @param y The new vector y-component.
+   * @param z The new vector z-component.
+   */
+  void set(float x, float y, float z) {
+    data_[0] = x;
+    data_[1] = y;
+    data_[2] = z;
+  }
 
   /**
    * @brief Return the vector x-component.
@@ -105,84 +118,24 @@ class Vector3 {
   float z() const { return data_[2]; }
 
   /**
-   * @brief Subscript.
-   *
-   * @param i The index of the vector component to access.
-   * @return The value of the vector component stored at the index.
-   */
-  inline float operator[](const int i) const {
-    return data_[i];
-  }
-
-  /**
    * @brief Assignment.
    *
    * @param rhs The right hand side vector to assign.
    * @return The assigned vector.
    */
-  inline Vector3 operator=(const Vector3 rhs) const {
-    return Vector3(rhs.x(), rhs.y(), rhs.z());
+  Vector3& operator=(Vector3 rhs) {
+    swap(*this, rhs);
+    return *this;
   }
 
   /**
-   * @brief Unary negation.
+   * @brief Subscript.
    *
-   * @return The negated vector.
+   * @param i The index of the vector component to access.
+   * @return The value of the vector component stored at the index.
    */
-  inline Vector3 operator-() const {
-    return Vector3(-x(), -y(), -z());
-  }
-
-  /**
-   * @brief Addition.
-   *
-   * @param rhs The right hand side vector to add.
-   * @return The sum of the vectors.
-   */
-  Vector3 operator+(const Vector3& rhs) const {
-    return Vector3(x() + rhs.x(), y() + rhs.y(), z() + rhs.z());
-  }
-
-  /**
-   * @brief Subtraction.
-   *
-   * @param rhs The right hand side vector to subtract by.
-   * @return The difference of the vectors.
-   */
-  Vector3 operator-(const Vector3& rhs) const {
-    return Vector3(x() - rhs.x(), y() - rhs.y(), z() - rhs.z());
-  }
-
-  /**
-   * @brief Cross product multiplication.
-   *
-   * @param rhs The right hand side vector to multiply by.
-   * @return The cross product of the vectors.
-   */
-  Vector3 operator*(const Vector3& rhs) const {
-    return Vector3(y()*rhs.z() - z()*rhs.y(),
-                   z()*rhs.x() - x()*rhs.z(),
-                   x()*rhs.y() - y()*rhs.x());
-  }
-
-  /**
-   * @brief Scalar multiplication.
-   *
-   * @param rhs The right hand side scalar value to multiply by.
-   * @return The product of the vector times the scalar.
-   */
-  Vector3 operator*(const float rhs) const {
-    return Vector3(x()*rhs, y()*rhs, z()*rhs);
-  }
-
-  /**
-   * @brief Scalar division.
-   *
-   * @param rhs The right hand side scalar value to divide by.
-   * @return The quotient of the vector divided by the scalar.
-   */
-  Vector3 operator/(const float rhs) const {
-    return Vector3(x() / rhs, y() / rhs, z() / rhs);
+  float operator[](int i) {
+    return data_[i];
   }
 
   /**
@@ -191,8 +144,11 @@ class Vector3 {
    * @param rhs The right hand side vector to add.
    * @return The sum of the vectors.
    */
-  Vector3 operator+=(const Vector3& rhs) const {
-    return (*this) + rhs;
+  Vector3& operator+=(const Vector3& rhs) {
+    *this.data_[0] += rhs.x();
+    *this.data_[1] += rhs.y();
+    *this.data_[2] += rhs.z();
+    return *this;
   }
 
   /**
@@ -201,18 +157,11 @@ class Vector3 {
    * @param rhs The right hand side vector to subtract by.
    * @return The difference of the vectors.
    */
-  Vector3 operator-=(const Vector3& rhs) const {
-    return (*this) - rhs;
-  }
-
-  /**
-   * @brief Compound cross product multiplication.
-   *
-   * @param rhs The right hand side vector to multiply by.
-   * @return The cross product of the vectors.
-   */
-  Vector3 operator*=(const Vector3& rhs) const {
-    return (*this) * rhs;
+  Vector3& operator-=(const Vector3& rhs) {
+    *this.data_[0] -= rhs.x();
+    *this.data_[1] -= rhs.y();
+    *this.data_[2] -= rhs.z();
+    return *this;
   }
 
   /**
@@ -221,8 +170,24 @@ class Vector3 {
    * @param rhs The right hand side scalar value to multiply by.
    * @return The product of the vector times the scalar.
    */
-  Vector3 operator*=(const float rhs) const {
-    return (*this) * rhs;
+  Vector3& operator*=(const float rhs) {
+    *this.data_[0] *= rhs;
+    *this.data_[1] *= rhs;
+    *this.data_[2] *= rhs;
+    return *this;
+  }
+
+  /**
+   * @brief Compound cross product multiplication.
+   *
+   * @param rhs The right hand side vector to multiply by.
+   * @return The cross product of the vectors.
+   */
+  Vector3& operator*=(const Vector3& rhs) {
+    *this.data_[0] = y()*rhs.z() - z()*rhs.y();
+    *this.data_[1] = z()*rhs.x() - x()*rhs.z();
+    *this.data_[2] = x()*rhs.y() - y()*rhs.x();
+    return *this;
   }
 
   /**
@@ -231,74 +196,11 @@ class Vector3 {
    * @param rhs The right hand side scalar value to divide by.
    * @return The quotient of the vector divided by the scalar.
    */
-  Vector3 operator/=(const float rhs) const {
-    return (*this) / rhs;
-  }
-
-  /**
-   * @brief Equal to.
-   *
-   * @param rhs The right hand side vector.
-   * @return True if both vectors are equal, otherwise false.
-   */
-  inline bool operator==(const Vector3& rhs) const {
-    return ((x() == rhs.x()) &&
-            (y() == rhs.y()) &&
-            (z() == rhs.z()));
-  }
-
-  /**
-   * @brief Not equal to.
-   *
-   * @param rhs The right hand side vector.
-   * @return True if both vectors are not equal, otherwise false.
-   */
-  inline bool operator!=(const Vector3& rhs) const {
-    return !((*this) == rhs);
-  }
-
-  /**
-   * @brief Less than.
-   *
-   * @param rhs The right hand side vector.
-   * @return True if the left hand side norm is less than the right hand side
-   *         norm, otherwise false.
-   */
-  inline bool operator<(const Vector3& rhs) const {
-    return (norm() < rhs.norm());
-  }
-
-  /**
-   * @brief Greater than.
-   *
-   * @param rhs The right hand side vector.
-   * @return True if the left hand side norm is greater than the right hand side
-   *         norm, otherwise false.
-   */
-  inline bool operator>(const Vector3& rhs) const {
-    return (rhs < (*this));
-  }
-
-  /**
-   * @brief Less than or equal to.
-   *
-   * @param rhs The right hand side vector.
-   * @return True if the left hand side norm is less than or equal to the right
-   *         hand side norm, otherwise false. 
-   */
-  inline bool operator<=(const Vector3& rhs) const {
-    return !((*this) > rhs);
-  }
-
-  /**
-   * @brief Greater than or equal to.
-   *
-   * @param rhs The right hand side vector.
-   * @return True if the left hand side norm is greater than or equal to the
-   *         right hand side norm, otherwise false. 
-   */
-  inline bool operator>=(const Vector3& rhs) const {
-    return !((*this) < rhs);
+  Vector3& operator/=(const float rhs) {
+    *this.data_[0] /= rhs;
+    *this.data_[1] /= rhs;
+    *this.data_[2] /= rhs;
+    return *this;
   }
 
   /**
@@ -313,6 +215,16 @@ class Vector3 {
   }
 
   /**
+   * @brief Normalizes the vector.
+   *
+   * @note Makes use of the inverse square root to be able to avoid division
+   *       operations entirely.
+   */
+  void fastNormalize() {
+    *this *= invSqrt(x()*x() + y()*y() + z()*z());
+  }
+
+  /**
    * @brief Returns a normalized (unit) vector.
    *
    * @return The normalized vector.
@@ -320,8 +232,8 @@ class Vector3 {
    * @note Makes use of the inverse square root to be able to avoid division
    *       operations entirely.
    */
-  Vector3 fastNormalize() const {
-    return (*this) * invSqrt(x()*x() + y()*y() + z()*z());
+  Vector3 fastNormalized() const {
+    return *this * invSqrt(x()*x() + y()*y() + z()*z());
   }
 
   /**
@@ -358,7 +270,7 @@ class Vector3 {
    * @return The normalized linear interpolation between two vectors.
    */
   static Vector3 nlerp(const Vector3& p0, const Vector3& p1, const float t) {
-    return Vector3::lerp(p0, p1, t).normalize();
+    return Vector3::lerp(p0, p1, t).normalized();
   }
 
   /**
@@ -371,12 +283,19 @@ class Vector3 {
   }
 
   /**
+   * @brief Normalizes the vector.
+   */
+  void normalize() {
+    *this /= norm();
+  }
+
+  /**
    * @brief Returns a normalized (unit) vector.
    *
    * @return The normalized vector.
    */
-  Vector3 normalize() const {
-    return (*this) / norm();
+  Vector3 normalized() const {
+    return *this / norm();
   }
 
   /**
@@ -409,6 +328,31 @@ class Vector3 {
 
     // The angle is too small, use Lerp.
     return Vector3::lerp(pp0, pp1, t);
+  }
+
+  /**
+   * @brief Swap the states between two vectors.
+   *
+   * @param p0 The first vector.
+   * @param p1 The vector to swap with.
+   */
+  friend void swap(Vector3& p0, Vector3& p1) {
+    Vector3 temp;
+    
+    // Set temp equal to the state of p0.
+    temp.data_[0] = p0.data_[0];
+    temp.data_[1] = p0.data_[1];
+    temp.data_[2] = p0.data_[2];
+    
+    // Set p0 equal to the state of p1.
+    p0.data_[0] = p1.data_[0];
+    p0.data_[1] = p1.data_[1];
+    p0.data_[2] = p1.data_[2];
+    
+    // Set p1 equal to the state of temp.
+    p1.data_[0] = temp.data_[0];
+    p1.data_[1] = temp.data_[1];
+    p1.data_[2] = temp.data_[2];
   }
 
  protected:
