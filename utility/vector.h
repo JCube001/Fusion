@@ -129,9 +129,19 @@ class Vector3 {
   }
 
   /**
-   * @brief Subscript.
+   * @brief Subscript accessor.
    *
    * @param i The index of the vector component to access.
+   * @return The value of the vector component stored at the index.
+   */
+  const float operator[](int i) const {
+    return data_[i];
+  }
+
+  /**
+   * @brief Subscript mutator.
+   *
+   * @param i The index of the vector component to mutate.
    * @return The value of the vector component stored at the index.
    */
   float operator[](int i) {
