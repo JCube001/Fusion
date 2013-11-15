@@ -145,9 +145,9 @@ class Vector3 {
    * @return The sum of the vectors.
    */
   Vector3& operator+=(const Vector3& rhs) {
-    *this.data_[0] += rhs.x();
-    *this.data_[1] += rhs.y();
-    *this.data_[2] += rhs.z();
+    this->data_[0] += rhs.x();
+    this->data_[1] += rhs.y();
+    this->data_[2] += rhs.z();
     return *this;
   }
 
@@ -158,9 +158,9 @@ class Vector3 {
    * @return The difference of the vectors.
    */
   Vector3& operator-=(const Vector3& rhs) {
-    *this.data_[0] -= rhs.x();
-    *this.data_[1] -= rhs.y();
-    *this.data_[2] -= rhs.z();
+    this->data_[0] -= rhs.x();
+    this->data_[1] -= rhs.y();
+    this->data_[2] -= rhs.z();
     return *this;
   }
 
@@ -171,9 +171,9 @@ class Vector3 {
    * @return The product of the vector times the scalar.
    */
   Vector3& operator*=(const float rhs) {
-    *this.data_[0] *= rhs;
-    *this.data_[1] *= rhs;
-    *this.data_[2] *= rhs;
+    this->data_[0] *= rhs;
+    this->data_[1] *= rhs;
+    this->data_[2] *= rhs;
     return *this;
   }
 
@@ -184,9 +184,9 @@ class Vector3 {
    * @return The cross product of the vectors.
    */
   Vector3& operator*=(const Vector3& rhs) {
-    *this.data_[0] = y()*rhs.z() - z()*rhs.y();
-    *this.data_[1] = z()*rhs.x() - x()*rhs.z();
-    *this.data_[2] = x()*rhs.y() - y()*rhs.x();
+    this->data_[0] = y()*rhs.z() - z()*rhs.y();
+    this->data_[1] = z()*rhs.x() - x()*rhs.z();
+    this->data_[2] = x()*rhs.y() - y()*rhs.x();
     return *this;
   }
 
@@ -197,11 +197,26 @@ class Vector3 {
    * @return The quotient of the vector divided by the scalar.
    */
   Vector3& operator/=(const float rhs) {
-    *this.data_[0] /= rhs;
-    *this.data_[1] /= rhs;
-    *this.data_[2] /= rhs;
+    this->data_[0] /= rhs;
+    this->data_[1] /= rhs;
+    this->data_[2] /= rhs;
     return *this;
   }
+
+  // Related non-member functions.
+  friend Vector3 operator+(Vector3 lhs, const Vector3& rhs);
+  friend Vector3 operator-(Vector3 lhs, const Vector3& rhs);
+  friend Vector3 operator-(const Vector3& rhs);
+  friend Vector3 operator*(float lhs, Vector3 rhs);
+  friend Vector3 operator*(Vector3 lhs, float rhs);
+  friend Vector3 operator*(Vector3 lhs, const Vector3& rhs);
+  friend Vector3 operator/(Vector3 lhs, float rhs);
+  friend bool operator==(const Vector3& lhs, const Vector3& rhs);
+  friend bool operator!=(const Vector3& lhs, const Vector3& rhs);
+  friend bool operator<(const Vector3& lhs, const Vector3& rhs);
+  friend bool operator>(const Vector3& lhs, const Vector3& rhs);
+  friend bool operator<=(const Vector3& lhs, const Vector3& rhs);
+  friend bool operator>=(const Vector3& lhs, const Vector3& rhs);
 
   /**
    * @brief Dot product multiplication.
@@ -305,14 +320,14 @@ class Vector3 {
    * @param p1 The end vector.
    * @param t A value between 0 and 1 indicating the weight of the end vector.
    * @return The spherical linear interpolation between two vectors defined as
-   *         Slerp(p0, p1; t) = (sin((1-t)o) / sin(o))(p0 cap) +
-   *         (sin(to) / sin(o))(p1 cap) where o = acos(cos(o)) =
-   *         acos((p0 cap).(p1 cap)).
+   *         Slerp(p0, p1; t) = (sin((1-t)o) / sin(o))(p0 hat) +
+   *         (sin(to) / sin(o))(p1 hat) where o = acos(cos(o)) =
+   *         acos((p0 hat).(p1 hat)).
    */
   static Vector3 slerp(const Vector3& p0, const Vector3& p1, const float t) {
     // Vectors must be normalized to work with angle calculations.
-    const Vector3 pp0 = p0.normalize();
-    const Vector3 pp1 = p1.normalize();
+    Vector3 pp0 = p0.normalized();
+    Vector3 pp1 = p1.normalized();
 
     // Calculate omega (the angle between p0 and p1).
     const float o = acos(Vector3::dot(pp0, pp1));
@@ -323,7 +338,7 @@ class Vector3 {
     // Check if omega is approaching zero before performing the Slerp.
     if (!(-lim <= o && o <= lim)) {
       const float so = sin(o);
-      return pp0*(sin((1.0f - t)*o) / so) + pp1*(sin(t*o) / so);
+      return (sin((1.0f - t)*o) / so)*pp0 + (sin(t*o) / so)*pp1;
     }
 
     // The angle is too small, use Lerp.
@@ -338,17 +353,17 @@ class Vector3 {
    */
   friend void swap(Vector3& p0, Vector3& p1) {
     Vector3 temp;
-    
+
     // Set temp equal to the state of p0.
     temp.data_[0] = p0.data_[0];
     temp.data_[1] = p0.data_[1];
     temp.data_[2] = p0.data_[2];
-    
+
     // Set p0 equal to the state of p1.
     p0.data_[0] = p1.data_[0];
     p0.data_[1] = p1.data_[1];
     p0.data_[2] = p1.data_[2];
-    
+
     // Set p1 equal to the state of temp.
     p1.data_[0] = temp.data_[0];
     p1.data_[1] = temp.data_[1];
