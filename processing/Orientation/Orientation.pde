@@ -254,8 +254,10 @@ void serialEvent(Serial port) {
  *        left handed coordinate system.
  */
 void drawRotationCube() {
-  final float theta = 2.0f * acos(quaternion[0]);
-  final float sin_half_theta = sin(theta * 0.5f);
+  final float p_norm = sqrt(quaternion[1]*quaternion[1] +
+                            quaternion[2]*quaternion[2] +
+                            quaternion[3]*quaternion[3]);
+  final float theta = 2.0f*atan2(p_norm, quaternion[0]);
   
   pushMatrix();
   translate(width / 2, height / 2, 0);
@@ -265,9 +267,9 @@ void drawRotationCube() {
   // Convert the quaternion to axis-angle.
   if (theta != 0.0f) {
     rotate(theta,
-           quaternion[2] / sin_half_theta,
-           quaternion[3] / sin_half_theta,
-           quaternion[1] / sin_half_theta);
+           quaternion[2] / p_norm,
+           quaternion[3] / p_norm,
+           quaternion[1] / p_norm);
   } else {
     rotate(theta, 0.0f, 0.0f, 0.0f);
   }
@@ -292,7 +294,7 @@ void drawRotationCube() {
   stroke(0, 255, 0);
   line(-100, 0, 0, 100, 0, 0);
   pushMatrix();
-  translate(-100, 0, 0);
+  translate(100, 0, 0);
   box(10);
   popMatrix();
   
