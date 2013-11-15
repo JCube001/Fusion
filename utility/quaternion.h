@@ -48,7 +48,7 @@ class Quaternion {
    * @brief Default constructor.
    */
   Quaternion() {
-    data_[0] = 0.0f;
+    data_[0] = 1.0f;
     data_[1] = 0.0f;
     data_[2] = 0.0f;
     data_[3] = 0.0f;
@@ -72,7 +72,7 @@ class Quaternion {
    * @param s The scalar real component.
    * @param p The imaginary vectorial component.
    */
-  Quaternion(const float s, const Vector3& p) {
+  Quaternion(float s, const Vector3& p) {
     data_[0] = s;
     data_[1] = p.x();
     data_[2] = p.y();
@@ -99,7 +99,7 @@ class Quaternion {
    * @param y The y-value of the imaginary vector component.
    * @param z The z-value of the imaginary vector component.
    */
-  Quaternion(const float w, const float x, const float y, const float z) {
+  Quaternion(float w, float x, float y, float z) {
     data_[0] = w;
     data_[1] = x;
     data_[2] = y;
@@ -147,11 +147,6 @@ class Quaternion {
   float scalar() const { return data_[0]; }
 
   /**
-   * @brief Set the quaternion scalar component.
-   */
-  void scalar(const float s) { data_[0] = s; }
-
-  /**
    * @brief Return the quaternion vector component.
    *
    * @return The quaternion vector component.
@@ -159,22 +154,17 @@ class Quaternion {
   Vector3 vector() const { return Vector3(data_ + 1); }
 
   /**
-   * @brief Set the quaternion vector component.
+   * @brief Set the quaternion scalar component.
    */
-  void vector(const Vector3& v) {
-    for (int i = 1; i < 4; i++) {
-      data_[i] = v[i];
-    }
-  }
+  void setScalar(float s) { data_[0] = s; }
 
   /**
-   * @brief Subscript.
-   *
-   * @param i The index of the quaternion component to access.
-   * @return The value of the quaternion component stored at the index.
+   * @brief Set the quaternion vector component.
    */
-  inline float operator[](const int i) const {
-    return data_[i];
+  void setVector(const Vector3& p) {
+    for (int i = 1; i < 4; i++) {
+      data_[i] = p[i];
+    }
   }
 
   /**
@@ -183,82 +173,29 @@ class Quaternion {
    * @param rhs The right hand side quaternion to assign.
    * @return The assigned quaternion.
    */
-  inline Quaternion operator=(const Quaternion& rhs) const {
-    return Quaternion(rhs.scalar(), rhs.vector());
+  Quaternion& operator=(Quaternion rhs) {
+    swap(*this, rhs);
+    return *this;
   }
 
   /**
-   * @brief Unary negation.
+   * @brief Subscript accessor.
    *
-   * @return The negated quaternion.
-   * @note A negated quaternion represents the same orientation.
+   * @param i The index of the quaternion component to access.
+   * @return The value of the quaternion component stored at the index.
    */
-  inline Quaternion operator-() const {
-    return Quaternion(-scalar(), -vector());
+  const float operator[](int i) const {
+    return data_[i];
   }
 
   /**
-   * @brief Addition.
+   * @brief Subscript mutator.
    *
-   * @param rhs The right hand side quaternion to add.
-   * @return The sum of the quaternions.
+   * @param i The index of the quaternion component to mutate.
+   * @return The value of the quaternion component stored at the index.
    */
-  Quaternion operator+(const Quaternion& rhs) const {
-    return Quaternion(scalar() + rhs.scalar(), vector() + rhs.vector());
-  }
-
-  /**
-   * @brief Subtraction.
-   *
-   * @param rhs The right hand side quaternion to subtract by.
-   * @return The difference of the quaternions.
-   */
-  Quaternion operator-(const Quaternion& rhs) const {
-    return Quaternion(scalar() - rhs.scalar(), vector() - rhs.vector());
-  }
-
-  /**
-   * @brief Cross product multiplication.
-   *
-   * @param rhs The right hand side quaternion to multiply by.
-   * @return The cross product of the quaternions defined as
-   *         q0q1 = [s0s1 - v0.v1, v1s0 + v0s1 + v0v1].
-   */
-  Quaternion operator*(const Quaternion& rhs) const {
-    return Quaternion(scalar()*rhs.scalar() - Vector3::dot(vector(),
-                      rhs.vector()),
-                      rhs.vector()*scalar() + vector()*rhs.scalar() +
-                      vector()*rhs.vector());
-  }
-
-  /**
-   * @brief Scalar multiplication.
-   *
-   * @param rhs The right hand side scalar value to multiply by.
-   * @return The product of the quaternion times the scalar.
-   */
-  Quaternion operator*(const float rhs) const {
-    return Quaternion(scalar()*rhs, vector()*rhs);
-  }
-
-  /**
-   * @brief Division.
-   *
-   * @param rhs The right hand side quaternion to divide by.
-   * @return The quotient of the quaternions defined as q0 / q1 = q0q1^-1.
-   */
-  Quaternion operator/(const Quaternion& rhs) const {
-    return (*this) * rhs.inverse();
-  }
-
-  /**
-   * @brief Scalar division.
-   *
-   * @param rhs The right hand side scalar value to divide by.
-   * @return The quotient of the quaternion divided by the scalar.
-   */
-  Quaternion operator/(const float rhs) const {
-    return Quaternion(scalar() / rhs, vector() / rhs);
+  float operator[](int i) {
+    return data_[i];
   }
 
   /**
@@ -267,8 +204,10 @@ class Quaternion {
    * @param rhs The right hand side quaternion to add.
    * @return The sum of the quaternions.
    */
-  Quaternion operator+=(const Quaternion& rhs) const {
-    return (*this) + rhs;
+  Quaternion& operator+=(const Quaternion& rhs) {
+    setScalar(scalar() + rhs.scalar());
+    setVector(vector() + rhs.vector());
+    return *this;
   }
 
   /**
@@ -277,18 +216,10 @@ class Quaternion {
    * @param rhs The right hand side quaternion to subtract by.
    * @return The difference of the quaternions.
    */
-  Quaternion operator-=(const Quaternion& rhs) const {
-    return (*this) - rhs;
-  }
-
-  /**
-   * @brief Compound cross product multiplication.
-   *
-   * @param rhs The right hand side quaternion to multiply by.
-   * @return The cross product of the quaternions.
-   */
-  Quaternion operator*=(const Quaternion& rhs) const {
-    return (*this) * rhs;
+  Quaternion& operator-=(const Quaternion& rhs) {
+    setScalar(scalar() - rhs.scalar());
+    setVector(vector() - rhs.vector());
+    return *this;
   }
 
   /**
@@ -297,18 +228,24 @@ class Quaternion {
    * @param rhs The right hand side scalar value to multiply by.
    * @return The product of the quaternion times the scalar.
    */
-  Quaternion operator*=(const float rhs) const {
-    return (*this) * rhs;
+  Quaternion& operator*=(const float rhs) {
+    setScalar(scalar()*rhs);
+    setVector(vector()*rhs);
+    return *this;
   }
 
   /**
-   * @brief Compound division.
+   * @brief Compound cross product multiplication.
    *
-   * @param rhs The right hand side quaternion to divide by.
-   * @return The quotient of the quaternions.
+   * @param rhs The right hand side quaternion to multiply by.
+   * @return The cross product of the quaternions defined as
+   *         q0q1 = [s0s1 - v0.v1, s0v1 + s1v0 + v0v1].
    */
-  Quaternion operator/=(const Quaternion& rhs) const {
-    return (*this) / rhs;
+  Quaternion& operator*=(const Quaternion& rhs) {
+    setScalar(scalar()*rhs.scalar() - Vector3::dot(vector(), rhs.vector()));
+    setVector(scalar()*rhs.vector() + rhs.scalar()*vector() +
+              vector()*rhs.vector());
+    return *this;
   }
 
   /**
@@ -317,29 +254,34 @@ class Quaternion {
    * @param rhs The right hand side scalar value to divide by.
    * @return The quotient of the quaternion divided by the scalar.
    */
-  Quaternion operator/=(const float rhs) const {
-    return (*this) / rhs;
+  Quaternion& operator/=(const float rhs) {
+    setScalar(scalar() / rhs);
+    setVector(vector() / rhs);
+    return *this;
   }
 
   /**
-   * @brief Equal to.
+   * @brief Compound division.
    *
-   * @param rhs The right hand side quaternion.
-   * @return True if both quaternions are equal, otherwise false.
+   * @param rhs The right hand side quaternion to divide by.
+   * @return The quotient of the quaternions defined as q0 / q1 = q0q1^-1.
    */
-  inline bool operator==(const Quaternion& rhs) const {
-    return ((scalar() == rhs.scalar()) && (vector() == rhs.vector()));
+  Quaternion& operator/=(const Quaternion& rhs) {
+    *this *= rhs.inverse();
+    return *this;
   }
 
-  /**
-   * @brief Not equal to.
-   *
-   * @param rhs The right hand side quaternion.
-   * @return True if both quaternions are not equal, otherwise false.
-   */
-  inline bool operator!=(const Quaternion& rhs) const {
-    return !((*this) == rhs);
-  }
+  // Related non-member functions.
+  friend Quaternion operator+(Quaternion lhs, const Quaternion& rhs);
+  friend Quaternion operator-(Quaternion lhs, const Quaternion& rhs);
+  friend Quaternion operator-(const Quaternion& rhs);
+  friend Quaternion operator*(float lhs, Quaternion& rhs);
+  friend Quaternion operator*(Quaternion lhs, float rhs);
+  friend Quaternion operator*(Quaternion lhs, const Quaternion& rhs);
+  friend Quaternion operator/(Quaternion lhs, float rhs);
+  friend Quaternion operator/(Quaternion lhs, const Quaternion& rhs);
+  friend bool operator==(const Quaternion& lhs, const Quaternion& rhs);
+  friend bool operator!=(const Quaternion& lhs, const Quaternion& rhs);
 
   /**
    * @brief Returns the quaternion conjugate.
@@ -361,8 +303,8 @@ class Quaternion {
    */
   static Quaternion convertFromAxisAngle(const float angle,
                                          const Vector3& axis) {
-    const float half = 0.5f;
-    return Quaternion(cos(angle*half), axis*sin(angle*half));
+    const float half_angle = angle*0.5f;
+    return Quaternion(cos(half_angle), axis*sin(half_angle));
   }
 
   /**
@@ -378,13 +320,15 @@ class Quaternion {
    */
   static Quaternion convertFromEulerAngles(const float roll, const float pitch,
                                            const float yaw) {
-    const float half = 0.5f;
-    const float sr = sin(roll*half);
-    const float cr = cos(roll*half);
-    const float sp = sin(pitch*half);
-    const float cp = cos(pitch*half);
-    const float sy = sin(yaw*half);
-    const float cy = cos(yaw*half);
+    const float half_roll = roll*0.5f;
+    const float half_pitch = pitch*0.5f;
+    const float half_yaw = yaw*0.5f;
+    const float sr = sin(half_roll);
+    const float sp = sin(half_pitch);
+    const float sy = sin(half_yaw);
+    const float cr = cos(half_roll);
+    const float cp = cos(half_pitch);
+    const float cy = cos(half_yaw);
 
     return Quaternion(cr*cp*cy + sr*sp*sy, sr*cp*cy - cr*sp*sy,
                       cr*sp*cy + sr*cp*sy, cr*cp*sy - sr*sp*cy);
@@ -402,7 +346,7 @@ class Quaternion {
    */
   static float* convertToAxisAngle(const Quaternion& q) {
     const float pn = q.vector().norm();
-    const float theta = 2*atan2(pn, q.w());
+    const float theta = 2.0f*atan2(pn, q.w());
     static float a[4];
 
     // Store the angle.
@@ -460,7 +404,17 @@ class Quaternion {
    * @return The scalar product of two quaternions.
    */
   static float dot(const Quaternion& q0, const Quaternion& q1) {
-    return Vector3::dot(q0.vector(), q1.vector()) + q0.scalar()*q1.scalar();
+    return q0.scalar()*q1.scalar() + Vector3::dot(q0.vector(), q1.vector());
+  }
+
+  /**
+   * @brief Normalizes the quaternion.
+   *
+   * @note Makes use of the inverse square root to be able to avoid division
+   *       operations entirely.
+   */
+  void fastNormalize() {
+    *this *= invSqrt(w()*w() + x()*x() + y()*y() + z()*z());
   }
 
   /**
@@ -471,8 +425,8 @@ class Quaternion {
    * @note Makes use of the inverse square root to be able to avoid division
    *       operations entirely.
    */
-  Quaternion fastNormalize() const {
-    return (*this) * invSqrt(w()*w() + x()*x() + y()*y() + z()*z());
+  Quaternion fastNormalized() const {
+    return *this * invSqrt(w()*w() + x()*x() + y()*y() + z()*z());
   }
 
   /**
@@ -533,7 +487,7 @@ class Quaternion {
    */
   static Quaternion nlerp(const Quaternion& q0, const Quaternion& q1,
                           const float t) {
-    return Quaternion::lerp(q0, q1, t).normalize();
+    return Quaternion::lerp(q0, q1, t).normalized();
   }
 
   /**
@@ -546,11 +500,18 @@ class Quaternion {
   }
 
   /**
+   * @brief Normalizes the quaternion.
+   */
+  void normalize() {
+    *this /= norm();
+  }
+
+  /**
    * @brief Returns the normalized (unit) quaternion.
    *
    * @return The normalized quaternion defined as q' = q / ||q||.
    */
-  Quaternion normalize() const {
+  Quaternion normalized() const {
     return (*this) / norm();
   }
 
@@ -561,7 +522,7 @@ class Quaternion {
    * @return The rotated three dimensional vector defined as p' = qpq^-1.
    */
   Vector3 rotateVector(const Vector3& p) const {
-    return ((*this) * Quaternion(0, p) * inverse()).vector();
+    return (*this * Quaternion(0.0f, p) * inverse()).vector();
   }
 
   /**
@@ -580,8 +541,8 @@ class Quaternion {
                           const float t) {
     // Quaternions must be normalized to work with angle calculations.
     // Quaternion qq1 is kept mutable because it may need to be negated later.
-    const Quaternion qq0 = q0.normalize();
-    Quaternion qq1 = q1.normalize();
+    const Quaternion qq0 = q0.normalized();
+    Quaternion qq1 = q1.normalized();
 
     // Calculate omega (the angle between q0 and q1)
     const float co = Quaternion::dot(qq0, qq1);
@@ -626,6 +587,34 @@ class Quaternion {
                           const float t) {
     return Quaternion::slerp(Quaternion::slerp(q0, q1, t),
                              Quaternion::slerp(q2, q3, t), 2.0f*t*(1.0f - t));
+  }
+
+  /**
+   * @brief Swap the states between two quaternions.
+   *
+   * @param q0 The first quaternion.
+   * @param q1 The quaternion to swap with.
+   */
+  friend void swap(Quaternion& q0, Quaternion& q1) {
+    Quaternion temp;
+
+    // Set temp equal to the state of q0.
+    temp.data_[0] = q0.data_[0];
+    temp.data_[1] = q0.data_[1];
+    temp.data_[2] = q0.data_[2];
+    temp.data_[3] = q0.data_[3];
+
+    // Set q0 equal to the state of q1.
+    q0.data_[0] = q1.data_[0];
+    q0.data_[1] = q1.data_[1];
+    q0.data_[2] = q1.data_[2];
+    q0.data_[3] = q1.data_[3];
+
+    // Set q1 equal to the state of temp.
+    q1.data_[0] = temp.data_[0];
+    q1.data_[1] = temp.data_[1];
+    q1.data_[2] = temp.data_[2];
+    q1.data_[3] = temp.data_[3];
   }
 
  protected:
