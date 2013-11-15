@@ -52,6 +52,7 @@ inline Vector3 operator-(Vector3 lhs, const Vector3& rhs) {
 /**
  * @brief Unary negation.
  *
+ * @param rhs The vector to negate.
  * @return The negated vector.
  */
 inline Vector3 operator-(const Vector3& rhs) {
