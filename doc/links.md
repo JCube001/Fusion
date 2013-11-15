@@ -38,6 +38,7 @@ These are all websites which were used to help create this library.
 * http://www.horstmann.com/ccj2/ccjapp3.html
 * http://stackoverflow.com/questions/8682296/how-to-initialize-array-elements-by-using-initializer-list
 * http://stackoverflow.com/questions/12005959/static-const-versus-const-static
+* http://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom
 
 ## Doxygen
 
