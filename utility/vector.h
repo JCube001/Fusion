@@ -211,9 +211,10 @@ class Vector3 {
    * @return The cross product of the vectors.
    */
   Vector3& operator*=(const Vector3& rhs) {
-    this->data_[0] = y()*rhs.z() - z()*rhs.y();
-    this->data_[1] = z()*rhs.x() - x()*rhs.z();
-    this->data_[2] = x()*rhs.y() - y()*rhs.x();
+    Vector3 lhs = *this;
+    this->data_[0] = lhs.y()*rhs.z() - lhs.z()*rhs.y();
+    this->data_[1] = lhs.z()*rhs.x() - lhs.x()*rhs.z();
+    this->data_[2] = lhs.x()*rhs.y() - lhs.y()*rhs.x();
     return *this;
   }
 
