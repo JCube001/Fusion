@@ -33,8 +33,8 @@ ComplementaryFilter::ComplementaryFilter() {
   magnetometer_data_ = Vector3(0.0f, 0.0f, 0.0f);
 
   // ComplementaryFilter
-  beta_ = sqrt(3.0f / 4.0f);
-  zeta_ = 0.0f;
+  beta_ = 1.0f;
+  zeta_ = 1.0f;
   delta_time_ = 0.0f;
   Eb_hat_ = Quaternion(0.0f, 1.0f, 0.0f, 0.0f);
   SEq_hat_ = Quaternion::identity();
@@ -74,7 +74,7 @@ void ComplementaryFilter::update() {
   Quaternion two_SEq = SEq_hat_ * 2.0f;
 
   // Normalize the accelerometer measurements.
-  Sa_hat = Quaternion(0.0f, accelerometer_data_).fastNormalize();
+  Sa_hat = Quaternion(0.0f, accelerometer_data_).fastNormalized();
 
   // Compute the objective function.
   f_g = SEq_hat_.conjugate() * Eg_hat_ * SEq_hat_ - Sa_hat;
@@ -100,7 +100,7 @@ void ComplementaryFilter::update() {
     Quaternion two_Eb_z_SEq = two_SEq * Eb_hat_.z();
 
     // Normalize the magnetometer measurements.
-    Sm_hat = Quaternion(0.0f, magnetometer_data_).fastNormalize();
+    Sm_hat = Quaternion(0.0f, magnetometer_data_).fastNormalized();
 
     // Compute the objective function.
     f_b = SEq_hat_.conjugate() * Eb_hat_ * SEq_hat_ - Sm_hat;
@@ -131,7 +131,7 @@ void ComplementaryFilter::update() {
   }
 
   // Normalize the gradient to estimate the direction of gyroscope error.
-  SEq_hat_dot = SEq_hat_dot.fastNormalize();
+  SEq_hat_dot.fastNormalize();
 
   // Set the gyroscope measurements.
   Sw = Quaternion(0.0f, gyroscope_data_);
@@ -151,7 +151,7 @@ void ComplementaryFilter::update() {
   SEq_hat_ += (SEq_dot_omega - (SEq_hat_dot*beta_)) * delta_time_;
 
   // Normalize the quaternion.
-  SEq_hat_ = SEq_hat_.fastNormalize();
+  SEq_hat_.fastNormalize();
 
   // Set orientation to the current quaternion estimate.
   orientation = SEq_hat_;
