@@ -100,7 +100,7 @@ math_extra_unittest.o : $(USER_DIR)/math_extra_unittest.cpp \
                         $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/math_extra_unittest.cpp
 
-math_extra_unittest : math_extra.o gtest_main.a
+math_extra_unittest : math_extra.o math_extra_unittest.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # Builds the unit tests for vectors.
