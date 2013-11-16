@@ -177,7 +177,7 @@ class Quaternion {
    */
   void setVector(const Vector3& p) {
     for (int i = 1; i < 4; i++) {
-      data_[i] = p[i];
+      data_[i] = p[i - 1];
     }
   }
 
@@ -256,9 +256,11 @@ class Quaternion {
    *         q0q1 = [s0s1 - v0.v1, s0v1 + s1v0 + v0v1].
    */
   Quaternion& operator*=(const Quaternion& rhs) {
-    setScalar(scalar()*rhs.scalar() - Vector3::dot(vector(), rhs.vector()));
-    setVector(scalar()*rhs.vector() + rhs.scalar()*vector() +
-              vector()*rhs.vector());
+    Quaternion lhs = *this;
+    setScalar(lhs.scalar()*rhs.scalar() -
+              Vector3::dot(lhs.vector(), rhs.vector()));
+    setVector(lhs.scalar()*rhs.vector() + rhs.scalar()*lhs.vector() +
+              lhs.vector()*rhs.vector());
     return *this;
   }
 
@@ -299,11 +301,18 @@ class Quaternion {
   friend void swap(Quaternion& q0, Quaternion& q1);
 
   /**
+   * @brief Conjugate the quaternion.
+   */
+  void conjugate() {
+    setVector(-vector());
+  }
+
+  /**
    * @brief Returns the quaternion conjugate.
    *
    * @return The conjugate of the quaternion defined as q* = [s, -v].
    */
-  Quaternion conjugate() const {
+  Quaternion conjugated() const {
     return Quaternion(scalar(), -vector());
   }
 
@@ -470,10 +479,25 @@ class Quaternion {
     if (n == 0.0f) {
       return Quaternion::identity();
     } else if (n == 1.0f) {
-      return conjugate();
+      return conjugated();
     }
 
-    return conjugate() / (n*n);
+    return conjugated() / (n*n);
+  }
+
+  /**
+   * @brief Inverts the quaternion.
+   */
+  void invert() {
+    const float n = norm();
+
+    if (n == 0.0f) {
+      *this = Quaternion::identity();
+    } else if (n == 1.0f) {
+      *this = conjugated();
+    }
+
+    *this = conjugated() / (n*n);
   }
 
   /**
