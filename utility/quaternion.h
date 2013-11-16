@@ -35,7 +35,7 @@ class Quaternion;
 inline Quaternion operator+(Quaternion lhs, const Quaternion& rhs);
 inline Quaternion operator-(Quaternion lhs, const Quaternion& rhs);
 inline Quaternion operator-(const Quaternion& rhs);
-inline Quaternion operator*(float lhs, Quaternion& rhs);
+inline Quaternion operator*(float lhs, Quaternion rhs);
 inline Quaternion operator*(Quaternion lhs, float rhs);
 inline Quaternion operator*(Quaternion lhs, const Quaternion& rhs);
 inline Quaternion operator/(Quaternion lhs, float rhs);
@@ -289,7 +289,7 @@ class Quaternion {
   friend inline Quaternion operator+(Quaternion lhs, const Quaternion& rhs);
   friend inline Quaternion operator-(Quaternion lhs, const Quaternion& rhs);
   friend inline Quaternion operator-(const Quaternion& rhs);
-  friend inline Quaternion operator*(float lhs, Quaternion& rhs);
+  friend inline Quaternion operator*(float lhs, Quaternion rhs);
   friend inline Quaternion operator*(Quaternion lhs, float rhs);
   friend inline Quaternion operator*(Quaternion lhs, const Quaternion& rhs);
   friend inline Quaternion operator/(Quaternion lhs, float rhs);
