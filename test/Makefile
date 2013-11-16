@@ -29,7 +29,7 @@ CPPFLAGS += -I$(USER_DIR) -I$(SRC_DIR) -I$(SRC_UTIL_DIR)
 # Flags passed to the C++ compiler.
 # The first line is required by Google Test.
 CXXFLAGS += -g -Wall -Wextra
-CXXFLAGS += -std=c++11
+CXXFLAGS += -std=c++03
 
 # Flags passed to the linker.
 # The first line is required by Google Test.
@@ -42,7 +42,8 @@ ARFLAGS = rcs
 # All tests produced by this Makefile. Remember to add new tests you
 # created to the list. Also remember to include a suffix of '_unittest'
 # to each test you name.
-TESTS = vector_unittest        \
+TESTS = math_extra_unittest    \
+        vector_unittest        \
         quaternion_unittest    \
         filter_unittest        \
         complementary_unittest \
@@ -87,32 +88,62 @@ gtest.a : gtest-all.o
 gtest_main.a : gtest-all.o gtest_main.o
 	$(AR) $(ARFLAGS) $@ $^
 
+# Builds the unit tests for math extra.
+
+math_extra.o : $(SRC_UTIL_DIR)/math_extra.cpp \
+               $(SRC_UTIL_DIR)/math_extra.h \
+               $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_UTIL_DIR)/math_extra.cpp
+
+math_extra_unittest.o : $(USER_DIR)/math_extra_unittest.cpp \
+                        $(SRC_UTIL_DIR)/math_extra.h \
+                        $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/math_extra_unittest.cpp
+
+math_extra_unittest : math_extra.o gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
 # Builds the unit tests for vectors.
 
+vector.o : $(SRC_UTIL_DIR)/vector.cpp \
+           $(SRC_UTIL_DIR)/vector.h \
+           $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_UTIL_DIR)/vector.cpp
+
 vector_unittest.o : $(USER_DIR)/vector_unittest.cpp \
-                    $(SRC_UTIL_DIR)/vector.h $(GTEST_HEADERS)
+                    $(SRC_UTIL_DIR)/vector.h \
+                    $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/vector_unittest.cpp
 
-vector_unittest : vector_unittest.o gtest_main.a
+vector_unittest : math_extra.o vector.o vector_unittest.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # Builds the unit tests for quaternions.
 
+quaternion.o : $(SRC_UTIL_DIR)/quaternion.cpp \
+               $(SRC_UTIL_DIR)/quaternion.h \
+               $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_UTIL_DIR)/quaternion.cpp
+
 quaternion_unittest.o : $(USER_DIR)/quaternion_unittest.cpp \
-                        $(SRC_UTIL_DIR)/quaternion.h $(GTEST_HEADERS)
+                        $(SRC_UTIL_DIR)/quaternion.h \
+                        $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/quaternion_unittest.cpp
 
-quaternion_unittest : quaternion_unittest.o gtest_main.a
+quaternion_unittest : math_extra.o quaternion.o quaternion_unittest.o \
+                      gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # Builds the unit tests for the filter interface.
 
-filter.o : $(SRC_DIR)/filter.cpp $(SRC_DIR)/filter.h \
+filter.o : $(SRC_DIR)/filter.cpp \
+           $(SRC_DIR)/filter.h \
            $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_DIR)/filter.cpp
 
 filter_unittest.o : $(USER_DIR)/filter_unittest.cpp \
-                    $(SRC_DIR)/filter.h $(GTEST_HEADERS)
+                    $(SRC_DIR)/filter.h \
+                    $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/filter_unittest.cpp
 
 filter_unittest : filter.o filter_unittest.o gtest_main.a
@@ -120,7 +151,8 @@ filter_unittest : filter.o filter_unittest.o gtest_main.a
 
 # Builds the unit tests for the complementary filters.
 
-complementary.o : $(SRC_DIR)/complementary.cpp $(SRC_DIR)/complementary.h \
+complementary.o : $(SRC_DIR)/complementary.cpp \
+                  $(SRC_DIR)/complementary.h \
                   $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_DIR)/complementary.cpp
 
@@ -134,7 +166,8 @@ complementary_unittest : complementary.o complementary_unittest.o filter.o \
 
 # Builds the unit tests for the Kalman filters.
 
-kalman.o : $(SRC_DIR)/kalman.cpp $(SRC_DIR)/kalman.h \
+kalman.o : $(SRC_DIR)/kalman.cpp \
+           $(SRC_DIR)/kalman.h \
            $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_DIR)/kalman.cpp
 
