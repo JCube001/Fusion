@@ -26,121 +26,31 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace fusion {
 
 /**
- * @brief Addition.
+ * @brief Swap the states between two quaternions.
  *
- * @param lhs The left hand side quaternion.
- * @param rhs The right hand side quaternion to add.
- * @return The sum of the quaternions.
+ * @param q0 The first quaternion.
+ * @param q1 The quaternion to swap with.
  */
-inline Quaternion operator+(Quaternion lhs, const Quaternion& rhs) {
-  lhs += rhs;
-  return lhs;
-}
+void swap(Quaternion& q0, Quaternion& q1) {
+  Quaternion temp;
 
-/**
- * @brief Subtraction.
- *
- * @param lhs The left hand side quaternion.
- * @param rhs The right hand side quaternion to subtract by.
- * @return The difference of the quaternions.
- */
-inline Quaternion operator-(Quaternion lhs, const Quaternion& rhs) {
-  lhs -= rhs;
-  return lhs;
-}
+  // Set temp equal to the state of q0.
+  temp.data_[0] = q0.data_[0];
+  temp.data_[1] = q0.data_[1];
+  temp.data_[2] = q0.data_[2];
+  temp.data_[3] = q0.data_[3];
 
-/**
- * @brief Unary negation.
- *
- * @param rhs The quaternion to negate.
- * @return The negated quaternion.
- *
- * @note A negated quaternion represents the same orientation.
- */
-inline Quaternion operator-(const Quaternion& rhs) {
-  return Quaternion(-rhs.scalar(), -rhs.vector());
-}
+  // Set q0 equal to the state of q1.
+  q0.data_[0] = q1.data_[0];
+  q0.data_[1] = q1.data_[1];
+  q0.data_[2] = q1.data_[2];
+  q0.data_[3] = q1.data_[3];
 
-/**
- * @brief Scalar multiplication.
- *
- * @param lhs The left hand side scalar.
- * @param rhs The right hand side quaternion to multiply by.
- * @return The product of the quaternion times the scalar.
- */
-inline Quaternion operator*(float lhs, Quaternion rhs) {
-  rhs *= lhs;
-  return rhs;
-}
-
-/**
- * @brief Scalar multiplication.
- *
- * @param lhs The left hand side quaternion.
- * @param rhs The right hand side scalar to multiply by.
- * @return The product of the quaternion times the scalar.
- */
-inline Quaternion operator*(Quaternion lhs, float rhs) {
-  lhs *= rhs;
-  return lhs;
-}
-
-/**
- * @brief Cross product multiplication.
- *
- * @param lhs The left hand side quaternion.
- * @param rhs The right hand side quaternion to multiply by.
- * @return The cross product of the quaternions.
- */
-inline Quaternion operator*(Quaternion lhs, const Quaternion& rhs) {
-  lhs *= rhs;
-  return lhs;
-}
-
-/**
- * @brief Scalar division.
- *
- * @param lhs The left hand side quaternion.
- * @param rhs The right hand side scalar value to divide by.
- * @return The quotient of the quaternion divided by the scalar.
- */
-inline Quaternion operator/(Quaternion lhs, float rhs) {
-  lhs /= rhs;
-  return lhs;
-}
-
-/**
- * @brief Division.
- *
- * @param lhs The left hand side quaternion.
- * @param rhs The right hand side quaternion to divide by.
- * @return The quotient of the quaternions.
- */
-inline Quaternion operator/(Quaternion lhs, const Quaternion& rhs) {
-  lhs /= rhs;
-  return lhs;
-}
-
-/**
- * @brief Equal to.
- *
- * @param lhs The left hand side quaternion.
- * @param rhs The right hand side quaternion.
- * @return True if both quaternions are equal, otherwise false.
- */
-inline bool operator==(const Quaternion& lhs, const Quaternion& rhs) {
-  return ((lhs.scalar() == rhs.scalar()) && (lhs.vector() == rhs.vector()));
-}
-
-/**
- * @brief Not equal to.
- *
- * @param lhs The left hand side quaternion.
- * @param rhs The right hand side quaternion.
- * @return True if both quaternions are not equal, otherwise false.
- */
-inline bool operator!=(const Quaternion& lhs, const Quaternion& rhs) {
-  return !operator==(lhs, rhs);
+  // Set q1 equal to the state of temp.
+  q1.data_[0] = temp.data_[0];
+  q1.data_[1] = temp.data_[1];
+  q1.data_[2] = temp.data_[2];
+  q1.data_[3] = temp.data_[3];
 }
 
 }  // namespace fusion

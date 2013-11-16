@@ -26,157 +26,28 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace fusion {
 
 /**
- * @brief Addition.
+ * @brief Swap the states between two vectors.
  *
- * @param lhs The left hand side vector.
- * @param rhs The right hand side vector to add.
- * @return The sum of the vectors.
+ * @param p0 The first vector.
+ * @param p1 The vector to swap with.
  */
-inline Vector3 operator+(Vector3 lhs, const Vector3& rhs) {
-  lhs += rhs;
-  return lhs;
-}
+void swap(Vector3& p0, Vector3& p1) {
+  Vector3 temp;
 
-/**
- * @brief Subtraction.
- *
- * @param lhs The left hand side vector.
- * @param rhs The right hand side vector to subtract by.
- * @return The difference of the vectors.
- */
-inline Vector3 operator-(Vector3 lhs, const Vector3& rhs) {
-  lhs -= rhs;
-  return lhs;
-}
+  // Set temp equal to the state of p0.
+  temp.data_[0] = p0.data_[0];
+  temp.data_[1] = p0.data_[1];
+  temp.data_[2] = p0.data_[2];
 
-/**
- * @brief Unary negation.
- *
- * @param rhs The vector to negate.
- * @return The negated vector.
- */
-inline Vector3 operator-(const Vector3& rhs) {
-  return Vector3(-rhs.x(), -rhs.y(), -rhs.z());
-}
+  // Set p0 equal to the state of p1.
+  p0.data_[0] = p1.data_[0];
+  p0.data_[1] = p1.data_[1];
+  p0.data_[2] = p1.data_[2];
 
-/**
- * @brief Scalar multiplication.
- *
- * @param lhs The left hand side scalar to multiply by.
- * @param rhs The right hand side vector.
- * @return The product of the vector times the scalar.
- */
-inline Vector3 operator*(float lhs, Vector3 rhs) {
-  rhs *= lhs;
-  return rhs;
-}
-
-/**
- * @brief Scalar multiplication.
- *
- * @param lhs The left hand side vector.
- * @param rhs The right hand side scalar to multiply by.
- * @return The product of the vector times the scalar.
- */
-inline Vector3 operator*(Vector3 lhs, float rhs) {
-  lhs *= rhs;
-  return lhs;
-}
-
-/**
- * @brief Cross product multiplication.
- *
- * @param lhs The left hand side vector.
- * @param rhs The right hand side vector to multiply by.
- * @return The cross product of the vectors.
- */
-inline Vector3 operator*(Vector3 lhs, const Vector3& rhs) {
-  lhs *= rhs;
-  return lhs;
-}
-
-/**
- * @brief Scalar division.
- *
- * @param lhs The left hand side vector.
- * @param rhs The right hand side scalar value to divide by.
- * @return The quotient of the vector divided by the scalar.
- */
-inline Vector3 operator/(Vector3 lhs, float rhs) {
-  lhs /= rhs;
-  return lhs;
-}
-
-/**
- * @brief Equal to.
- *
- * @param lhs The left hand side vector.
- * @param rhs The right hand side vector.
- * @return True if both vectors are equal, otherwise false.
- */
-inline bool operator==(const Vector3& lhs, const Vector3& rhs) {
-  return ((lhs.x() == rhs.x()) &&
-          (lhs.y() == rhs.y()) &&
-          (lhs.z() == rhs.z()));
-}
-
-/**
- * @brief Not equal to.
- *
- * @param lhs The left hand side vector.
- * @param rhs The right hand side vector.
- * @return True if both vectors are not equal, otherwise false.
- */
-inline bool operator!=(const Vector3& lhs, const Vector3& rhs) {
-  return !operator==(lhs, rhs);
-}
-
-/**
- * @brief Less than.
- *
- * @param lhs The left hand side vector.
- * @param rhs The right hand side vector.
- * @return True if the left hand side norm is less than the right hand side
- *         norm, otherwise false.
- */
-inline bool operator<(const Vector3& lhs, const Vector3& rhs) {
-  return (lhs.norm() < rhs.norm());
-}
-
-/**
- * @brief Greater than.
- *
- * @param lhs The left hand side vector.
- * @param rhs The right hand side vector.
- * @return True if the left hand side norm is greater than the right hand side
- *         norm, otherwise false.
- */
-inline bool operator>(const Vector3& lhs, const Vector3& rhs) {
-  return operator<(rhs, lhs);
-}
-
-/**
- * @brief Less than or equal to.
- *
- * @param lhs The left hand side vector.
- * @param rhs The right hand side vector.
- * @return True if the left hand side norm is less than or equal to the right
- *         hand side norm, otherwise false. 
- */
-inline bool operator<=(const Vector3& lhs, const Vector3& rhs) {
-  return !operator>(lhs, rhs);
-}
-
-/**
- * @brief Greater than or equal to.
- *
- * @param lhs The left hand side vector.
- * @param rhs The right hand side vector.
- * @return True if the left hand side norm is greater than or equal to the
- *         right hand side norm, otherwise false. 
- */
-inline bool operator>=(const Vector3& lhs, const Vector3& rhs) {
-  return !operator<(lhs, rhs);
+  // Set p1 equal to the state of temp.
+  p1.data_[0] = temp.data_[0];
+  p1.data_[1] = temp.data_[1];
+  p1.data_[2] = temp.data_[2];
 }
 
 }  // namespace fusion
