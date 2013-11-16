@@ -28,407 +28,342 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class Vector3Test : public ::testing::Test {
  protected:
   virtual void SetUp() {
-    p0.set(1.0f, 2.0f, 3.0f);
-    p1.set(4.0f, 5.0f, 6.0f);
+    p1.set(1.0f, 2.0f, 3.0f);
+    p2.set(4.0f, 5.0f, 6.0f);
+    p3.set(1.0f, 2.0f, 3.0f);
   }
-  
+
   virtual void TearDown() {
   }
-  
+
+  void assert_p1_unmodified() {
+    ASSERT_FLOAT_EQ(1.0f, p1.x());
+    ASSERT_FLOAT_EQ(2.0f, p1.y());
+    ASSERT_FLOAT_EQ(3.0f, p1.z());
+  }
+
+  void assert_p2_unmodified() {
+    ASSERT_FLOAT_EQ(4.0f, p2.x());
+    ASSERT_FLOAT_EQ(5.0f, p2.y());
+    ASSERT_FLOAT_EQ(6.0f, p2.z());
+  }
+
   fusion::Vector3 p0;
   fusion::Vector3 p1;
+  fusion::Vector3 p2;
+  fusion::Vector3 p3;
 };
 
+TEST_F(Vector3Test, DefaultConstructor) {
+  ASSERT_FLOAT_EQ(0.0f, p0.x());
+  ASSERT_FLOAT_EQ(0.0f, p0.y());
+  ASSERT_FLOAT_EQ(0.0f, p0.z());
+}
+
+TEST_F(Vector3Test, CopyConstructor) {
+  fusion::Vector3 t(p1);
+
+  ASSERT_FLOAT_EQ(p1.x(), t.x());
+  ASSERT_FLOAT_EQ(p1.y(), t.y());
+  ASSERT_FLOAT_EQ(p1.z(), t.z());
+}
+
+TEST_F(Vector3Test, ArrayInitializationConstructor) {
+  float arr[3] = {100.0f, 200.0f, 300.0f};
+  fusion::Vector3 t(arr);
+
+  ASSERT_FLOAT_EQ(arr[0], t.x());
+  ASSERT_FLOAT_EQ(arr[1], t.y());
+  ASSERT_FLOAT_EQ(arr[2], t.z());
+}
+
+TEST_F(Vector3Test, InitializationConstructor) {
+  fusion::Vector3 t(100.0f, 200.0f, 300.0f);
+
+  ASSERT_FLOAT_EQ(100.0f, t.x());
+  ASSERT_FLOAT_EQ(200.0f, t.y());
+  ASSERT_FLOAT_EQ(300.0f, t.z());
+}
+
+TEST_F(Vector3Test, MutatorMethods) {
+  p1.set(100.0f, 200.0f, 300.0f);
+
+  ASSERT_FLOAT_EQ(100.0f, p1.x());
+  ASSERT_FLOAT_EQ(200.0f, p1.y());
+  ASSERT_FLOAT_EQ(300.0f, p1.z());
+}
+
 TEST_F(Vector3Test, AccessorMethods) {
-  EXPECT_FLOAT_EQ(1.0f, p0.x());
-  EXPECT_FLOAT_EQ(2.0f, p0.y());
-  EXPECT_FLOAT_EQ(3.0f, p0.z());
+  ASSERT_FLOAT_EQ(1.0f, p1.x());
+  ASSERT_FLOAT_EQ(2.0f, p1.y());
+  ASSERT_FLOAT_EQ(3.0f, p1.z());
 }
 
 TEST_F(Vector3Test, AssignmentOperator) {
-  p0 = p1;
+  p1 = p2;
 
-  EXPECT_FLOAT_EQ(p1.x(), p0.x());
-  EXPECT_FLOAT_EQ(p1.y(), p0.y());
-  EXPECT_FLOAT_EQ(p1.z(), p0.z());
+  ASSERT_FLOAT_EQ(p2.x(), p1.x());
+  ASSERT_FLOAT_EQ(p2.y(), p1.y());
+  ASSERT_FLOAT_EQ(p2.z(), p1.z());
 }
 
 TEST_F(Vector3Test, SubscriptAccessorOperator) {
-  EXPECT_FLOAT_EQ(1.0f, p0[0]);
-  EXPECT_FLOAT_EQ(2.0f, p0[1]);
-  EXPECT_FLOAT_EQ(3.0f, p0[2]);
+  ASSERT_FLOAT_EQ(1.0f, p1[0]);
+  ASSERT_FLOAT_EQ(2.0f, p1[1]);
+  ASSERT_FLOAT_EQ(3.0f, p1[2]);
 }
 
 TEST_F(Vector3Test, SubscriptMutatorOperator) {
-  p0[0] = 100.0f;
-  p0[1] = 200.0f;
-  p0[2] = 300.0f;
+  p1[0] = 100.0f;
+  p1[1] = 200.0f;
+  p1[2] = 300.0f;
 
-  EXPECT_FLOAT_EQ(100.0f, p0[0]);
-  EXPECT_FLOAT_EQ(200.0f, p0[1]);
-  EXPECT_FLOAT_EQ(300.0f, p0[2]);
+  ASSERT_FLOAT_EQ(100.0f, p1[0]);
+  ASSERT_FLOAT_EQ(200.0f, p1[1]);
+  ASSERT_FLOAT_EQ(300.0f, p1[2]);
 }
 
 TEST_F(Vector3Test, CompoundAdditionOperator) {
-  p0 += p1;
+  p1 += p2;
 
-  // p0 = p0 + p1
-  EXPECT_FLOAT_EQ(1.0f + 4.0f, p0.x());
-  EXPECT_FLOAT_EQ(2.0f + 5.0f, p0.y());
-  EXPECT_FLOAT_EQ(3.0f + 6.0f, p0.z());
-  
-  // p1 unchanged
-  EXPECT_FLOAT_EQ(4.0f, p1.x());
-  EXPECT_FLOAT_EQ(5.0f, p1.y());
-  EXPECT_FLOAT_EQ(6.0f, p1.z());
+  ASSERT_FLOAT_EQ(1.0f + 4.0f, p1.x());
+  ASSERT_FLOAT_EQ(2.0f + 5.0f, p1.y());
+  ASSERT_FLOAT_EQ(3.0f + 6.0f, p1.z());
+
+  assert_p2_unmodified();
 }
 
 TEST_F(Vector3Test, CompoundSubtractionOperator) {
-  p0 -= p1;
+  p1 -= p2;
 
-  // p0 = p0 - p1
-  EXPECT_FLOAT_EQ(1.0f - 4.0f, p0.x());
-  EXPECT_FLOAT_EQ(2.0f - 5.0f, p0.y());
-  EXPECT_FLOAT_EQ(3.0f - 6.0f, p0.z());
-  
-  // p1 unchanged
-  EXPECT_FLOAT_EQ(4.0f, p1.x());
-  EXPECT_FLOAT_EQ(5.0f, p1.y());
-  EXPECT_FLOAT_EQ(6.0f, p1.z());
+  ASSERT_FLOAT_EQ(1.0f - 4.0f, p1.x());
+  ASSERT_FLOAT_EQ(2.0f - 5.0f, p1.y());
+  ASSERT_FLOAT_EQ(3.0f - 6.0f, p1.z());
+
+  assert_p2_unmodified();
 }
 
 TEST_F(Vector3Test, CompoundScalarMultiplicationOperator) {
-  p0 *= 2.0f;
+  p1 *= 2.0f;
 
-  // p0 = p0 * 2
-  EXPECT_FLOAT_EQ(1.0f * 2.0f, p0.x());
-  EXPECT_FLOAT_EQ(2.0f * 2.0f, p0.y());
-  EXPECT_FLOAT_EQ(3.0f * 2.0f, p0.z());
+  ASSERT_FLOAT_EQ(1.0f * 2.0f, p1.x());
+  ASSERT_FLOAT_EQ(2.0f * 2.0f, p1.y());
+  ASSERT_FLOAT_EQ(3.0f * 2.0f, p1.z());
 }
 
 TEST_F(Vector3Test, CompoundVectorMultiplicationOperator) {
-  p0 *= p1;
+  p1 *= p2;
 
-  // p0 = p0 * p1
-  EXPECT_FLOAT_EQ(-3.0f, p0.x());
-  EXPECT_FLOAT_EQ(6.0f, p0.y());
-  EXPECT_FLOAT_EQ(-3.0f, p0.z());
-  
-  // p1 unchanged
+  ASSERT_FLOAT_EQ(-3.0f, p1.x());
+  ASSERT_FLOAT_EQ(6.0f, p1.y());
+  ASSERT_FLOAT_EQ(-3.0f, p1.z());
+
+  assert_p2_unmodified();
+}
+
+TEST_F(Vector3Test, CompoundScalarDivisionOperator) {
+  p1 /= 2.0f;
+
+  ASSERT_FLOAT_EQ(1.0f / 2.0f, p1.x());
+  ASSERT_FLOAT_EQ(2.0f / 2.0f, p1.y());
+  ASSERT_FLOAT_EQ(3.0f / 2.0f, p1.z());
+}
+
+TEST_F(Vector3Test, VectorAdditionOperator) {
+  p0 = p1 + p2;
+
+  ASSERT_FLOAT_EQ(1.0f + 4.0f, p0.x());
+  ASSERT_FLOAT_EQ(2.0f + 5.0f, p0.y());
+  ASSERT_FLOAT_EQ(3.0f + 6.0f, p0.z());
+
+  assert_p1_unmodified();
+  assert_p2_unmodified();
+}
+
+TEST_F(Vector3Test, VectorSubtractionOperator) {
+  p0 = p1 - p2;
+
+  ASSERT_FLOAT_EQ(1.0f - 4.0f, p0.x());
+  ASSERT_FLOAT_EQ(2.0f - 5.0f, p0.y());
+  ASSERT_FLOAT_EQ(3.0f - 6.0f, p0.z());
+
+  assert_p1_unmodified();
+  assert_p2_unmodified();
+}
+
+TEST_F(Vector3Test, UnaryNegationOperator) {
+  p0 = -p1;
+
+  ASSERT_FLOAT_EQ(-1.0f, p0.x());
+  ASSERT_FLOAT_EQ(-2.0f, p0.y());
+  ASSERT_FLOAT_EQ(-3.0f, p0.z());
+
+  assert_p1_unmodified();
+}
+
+TEST_F(Vector3Test, ScalarLeftMultiplicationOperator) {
+  p0 = 2.0f * p1;
+
+  ASSERT_FLOAT_EQ(2.0f * 1.0f, p0.x());
+  ASSERT_FLOAT_EQ(2.0f * 2.0f, p0.y());
+  ASSERT_FLOAT_EQ(2.0f * 3.0f, p0.z());
+
+  assert_p1_unmodified();
+}
+
+TEST_F(Vector3Test, ScalarRightMultiplicationOperator) {
+  p0 = p1 * 2.0f;
+
+  ASSERT_FLOAT_EQ(1.0f * 2.0f, p0.x());
+  ASSERT_FLOAT_EQ(2.0f * 2.0f, p0.y());
+  ASSERT_FLOAT_EQ(3.0f * 2.0f, p0.z());
+
+  assert_p1_unmodified();
+}
+
+TEST_F(Vector3Test, VectorMultiplicationOperator) {
+  p0 = p1 * p2;
+
+  ASSERT_FLOAT_EQ(-3.0f, p0.x());
+  ASSERT_FLOAT_EQ(6.0f, p0.y());
+  ASSERT_FLOAT_EQ(-3.0f, p0.z());
+
+  assert_p1_unmodified();
+  assert_p2_unmodified();
+}
+
+TEST_F(Vector3Test, ScalarDivisionOperator) {
+  p0 = p1 / 2.0f;
+
+  ASSERT_FLOAT_EQ(1.0f / 2.0f, p0.x());
+  ASSERT_FLOAT_EQ(2.0f / 2.0f, p0.y());
+  ASSERT_FLOAT_EQ(3.0f / 2.0f, p0.z());
+
+  assert_p1_unmodified();
+}
+
+TEST_F(Vector3Test, EqualToOperator) {
+  ASSERT_TRUE(p1 == p3);
+  ASSERT_FALSE(p1 == p2);
+}
+
+TEST_F(Vector3Test, NotEqualToOperator) {
+  ASSERT_TRUE(p1 != p2);
+  ASSERT_FALSE(p1 != p3);
+}
+
+TEST_F(Vector3Test, LessThanOperator) {
+  ASSERT_TRUE(p1 < p2);
+  ASSERT_FALSE(p2 < p1);
+}
+
+TEST_F(Vector3Test, GreaterThanOperator) {
+  ASSERT_TRUE(p2 > p1);
+  ASSERT_FALSE(p1 > p2);
+}
+
+TEST_F(Vector3Test, LessThanOrEqualToOperator) {
+  ASSERT_TRUE(p1 <= p2);
+  ASSERT_TRUE(p1 <= p3);
+  ASSERT_FALSE(p2 <= p1);
+}
+
+TEST_F(Vector3Test, GreaterThanOrEqualToOperator) {
+  ASSERT_TRUE(p2 >= p1);
+  ASSERT_TRUE(p1 >= p3);
+  ASSERT_FALSE(p1 >= p2);
+}
+
+TEST_F(Vector3Test, VectorDotProduct) {
+  float r = fusion::Vector3::dot(p1, p2);
+
+  ASSERT_FLOAT_EQ(1.0f*4.0f + 2.0f*5.0f + 3.0f*6.0f, r);
+}
+
+TEST_F(Vector3Test, FastNormalize) {
+  p1.fastNormalize();
+
+  ASSERT_GE(1.0f, p1.x());
+  ASSERT_GE(1.0f, p1.y());
+  ASSERT_GE(1.0f, p1.z());
+
+  EXPECT_NEAR(1.0f / sqrt(14.0f), p1.x(), 1.0e-3f);
+  EXPECT_NEAR(sqrt(2.0f / 7.0f), p1.y(), 1.0e-3f);
+  EXPECT_NEAR(3.0f / sqrt(14.0f), p1.z(), 1.0e-3f);
+}
+
+TEST_F(Vector3Test, FastNormalized) {
+  p0 = p1.fastNormalized();
+
+  assert_p1_unmodified();
+
+  ASSERT_GE(1.0f, p0.x());
+  ASSERT_GE(1.0f, p0.y());
+  ASSERT_GE(1.0f, p0.z());
+
+  EXPECT_NEAR(1.0f / sqrt(14.0f), p0.x(), 1.0e-3f);
+  EXPECT_NEAR(sqrt(2.0f / 7.0f), p0.y(), 1.0e-3f);
+  EXPECT_NEAR(3.0f / sqrt(14.0f), p0.z(), 1.0e-3f);
+}
+
+// TODO(JCube001): Lerp
+TEST_F(Vector3Test, DISABLED_Lerp) {
+}
+
+// TODO(JCube001): TripleProduct
+TEST_F(Vector3Test, DISABLED_TripleProduct) {
+}
+
+// TODO(JCube001): Nlerp
+TEST_F(Vector3Test, DISABLED_Nlerp) {
+}
+
+TEST_F(Vector3Test, Norm) {
+  float r = p1.norm();
+
+  ASSERT_FLOAT_EQ(sqrt(1.0f*1.0f + 2.0f*2.0f + 3.0f*3.0f), r);
+}
+
+TEST_F(Vector3Test, Normalize) {
+  p1.normalize();
+
+  ASSERT_GE(1.0f, p1.x());
+  ASSERT_GE(1.0f, p1.y());
+  ASSERT_GE(1.0f, p1.z());
+
+  EXPECT_NEAR(1.0f / sqrt(14.0f), p1.x(), 1.0e-3f);
+  EXPECT_NEAR(sqrt(2.0f / 7.0f), p1.y(), 1.0e-3f);
+  EXPECT_NEAR(3.0f / sqrt(14.0f), p1.z(), 1.0e-3f);
+}
+
+TEST_F(Vector3Test, Normalized) {
+  p0 = p1.normalized();
+
+  assert_p1_unmodified();
+
+  ASSERT_GE(1.0f, p0.x());
+  ASSERT_GE(1.0f, p0.y());
+  ASSERT_GE(1.0f, p0.z());
+
+  EXPECT_NEAR(1.0f / sqrt(14.0f), p0.x(), 1.0e-3f);
+  EXPECT_NEAR(sqrt(2.0f / 7.0f), p0.y(), 1.0e-3f);
+  EXPECT_NEAR(3.0f / sqrt(14.0f), p0.z(), 1.0e-3f);
+}
+
+// TODO(JCube001): Slerp
+TEST_F(Vector3Test, DISABLED_Slerp) {
+}
+
+TEST_F(Vector3Test, Swap) {
+  fusion::swap(p1, p2);
+
+  ASSERT_FALSE(p1 == p2);
+
   EXPECT_FLOAT_EQ(4.0f, p1.x());
   EXPECT_FLOAT_EQ(5.0f, p1.y());
   EXPECT_FLOAT_EQ(6.0f, p1.z());
+
+  EXPECT_FLOAT_EQ(1.0f, p2.x());
+  EXPECT_FLOAT_EQ(2.0f, p2.y());
+  EXPECT_FLOAT_EQ(3.0f, p2.z());
 }
-
-#if 0
-TEST(Vector3Test, DefaultConstructor) {
-  const Vector3 v;
-
-  EXPECT_FLOAT_EQ(0.0f, v.x());
-  EXPECT_FLOAT_EQ(0.0f, v.y());
-  EXPECT_FLOAT_EQ(0.0f, v.z());
-}
-
-TEST(Vector3Test, CopyConstructor) {
-  const Vector3 v1(1.0f, 2.0f, 3.0f);
-  const Vector3 v2(v1);
-
-  EXPECT_FLOAT_EQ(v1.x(), v2.x());
-  EXPECT_FLOAT_EQ(v1.y(), v2.y());
-  EXPECT_FLOAT_EQ(v1.z(), v2.z());
-}
-
-TEST(Vector3Test, ArrayInitializationConstructor) {
-  const float a[] = {1.0f, 2.0f, 3.0f};
-  const Vector3 v(a);
-
-  EXPECT_FLOAT_EQ(a[0], v.x());
-  EXPECT_FLOAT_EQ(a[1], v.y());
-  EXPECT_FLOAT_EQ(a[2], v.z());
-}
-
-TEST(Vector3Test, InitializationConstructor) {
-  const float x = 1.0f;
-  const float y = 2.0f;
-  const float z = 3.0f;
-  const Vector3 v(x, y, z);
-
-  EXPECT_FLOAT_EQ(x, v.x());
-  EXPECT_FLOAT_EQ(y, v.y());
-  EXPECT_FLOAT_EQ(z, v.z());
-}
-
-TEST(Vector3Test, GetX) {
-  const float x = 1.0f;
-  const Vector3 v(x, 99.99f, 99.99f);
-
-  EXPECT_FLOAT_EQ(x, v.x());
-}
-
-TEST(Vector3Test, GetY) {
-  const float y = 1.0f;
-  const Vector3 v(99.99f, y, 99.99f);
-
-  EXPECT_FLOAT_EQ(y, v.y());
-}
-
-TEST(Vector3Test, GetZ) {
-  const float z = 1.0f;
-  const Vector3 v(99.99f, 99.99f, z);
-
-  EXPECT_FLOAT_EQ(z, v.z());
-}
-
-TEST(Vector3Test, SubscriptOperator) {
-  const float x = 1.0f;
-  const float y = 2.0f;
-  const float z = 3.0f;
-  const Vector3 v(x, y, z);
-
-  EXPECT_FLOAT_EQ(x, v[0]);
-  EXPECT_FLOAT_EQ(y, v[1]);
-  EXPECT_FLOAT_EQ(z, v[2]);
-}
-
-TEST(Vector3Test, AssignmentOperator) {
-  const Vector3 v1(1.0f, 2.0f, 3.0f);
-  const Vector3 v2 = v1;
-
-  EXPECT_FLOAT_EQ(v1.x(), v2.x());
-  EXPECT_FLOAT_EQ(v1.y(), v2.y());
-  EXPECT_FLOAT_EQ(v1.z(), v2.z());
-}
-
-TEST(Vector3Test, UnaryNegationOperator) {
-  const Vector3 v1(1.0f, 2.0f, 3.0f);
-  const Vector3 v2(-v1);
-
-  EXPECT_FLOAT_EQ(-v1.x(), v2.x());
-  EXPECT_FLOAT_EQ(-v1.y(), v2.y());
-  EXPECT_FLOAT_EQ(-v1.z(), v2.z());
-}
-
-TEST(Vector3Test, AdditionOperator) {
-  const Vector3 v1(1.0f, 2.0f, 3.0f);
-  const Vector3 v2(4.0f, 5.0f, 6.0f);
-  const Vector3 v3 = v1 + v2;
-
-  EXPECT_FLOAT_EQ(5.0f, v3.x());
-  EXPECT_FLOAT_EQ(7.0f, v3.y());
-  EXPECT_FLOAT_EQ(9.0f, v3.z());
-}
-
-TEST(Vector3Test, SubtractionOperator) {
-  const Vector3 v1(1.0f, 2.0f, 3.0f);
-  const Vector3 v2(4.0f, 5.0f, 6.0f);
-  const Vector3 v3 = v1 - v2;
-
-  EXPECT_FLOAT_EQ(-3.0f, v3.x());
-  EXPECT_FLOAT_EQ(-3.0f, v3.y());
-  EXPECT_FLOAT_EQ(-3.0f, v3.z());
-}
-
-TEST(Vector3Test, VectorMultiplicationOperator) {
-  const Vector3 v1(1.0f, 2.0f, 3.0f);
-  const Vector3 v2(4.0f, 5.0f, 6.0f);
-  const Vector3 v3 = v1 * v2;
-  const Vector3 v4 = v2 * v1;
-
-  EXPECT_FLOAT_EQ(-3.0f, v3.x());
-  EXPECT_FLOAT_EQ(6.0f, v3.y());
-  EXPECT_FLOAT_EQ(-3.0f, v3.z());
-
-  EXPECT_FLOAT_EQ(3.0f, v4.x());
-  EXPECT_FLOAT_EQ(-6.0f, v4.y());
-  EXPECT_FLOAT_EQ(3.0f, v4.z());
-}
-
-TEST(Vector3Test, ScalarMultiplicationOperator) {
-  const float s = 2.0f;
-  const Vector3 v1(1.0f, 2.0f, 3.0f);
-  const Vector3 v2 = v1 * s;
-
-  EXPECT_FLOAT_EQ(2.0f, v2.x());
-  EXPECT_FLOAT_EQ(4.0f, v2.y());
-  EXPECT_FLOAT_EQ(6.0f, v2.z());
-}
-
-TEST(Vector3Test, ScalarDivisionOperator) {
-  const float s = 2.0f;
-  const Vector3 v1(1.0f, 2.0f, 3.0f);
-  const Vector3 v2 = v1 / s;
-
-  EXPECT_FLOAT_EQ(0.5f, v2.x());
-  EXPECT_FLOAT_EQ(1.0f, v2.y());
-  EXPECT_FLOAT_EQ(1.5f, v2.z());
-}
-
-TEST(Vector3Test, EqualToOperator) {
-  const float x = 1.0f;
-  const float y = 2.0f;
-  const float z = 3.0f;
-  const Vector3 v1(x, y, z);
-  const Vector3 v2(x, y, z);
-  const Vector3 v3(x, y, 99.99f);
-
-  EXPECT_TRUE(v1 == v2);
-  EXPECT_FALSE(v1 == v3);
-}
-
-TEST(Vector3Test, NotEqualToOperator) {
-  const float x = 1.0f;
-  const float y = 2.0f;
-  const float z = 3.0f;
-  const Vector3 v1(x, y, z);
-  const Vector3 v2(x, y, z);
-  const Vector3 v3(x, y, 99.99f);
-
-  EXPECT_TRUE(v1 != v3);
-  EXPECT_FALSE(v1 != v2);
-}
-
-TEST(Vector3Test, LessThanOperator) {
-  const Vector3 v1(1.0f, 2.0f, 3.0f);
-  const Vector3 v2(4.0f, 5.0f, 6.0f);
-
-  EXPECT_TRUE(v1 < v2);
-  EXPECT_FALSE(v2 < v1);
-  EXPECT_FALSE(v1 < v1);
-}
-
-TEST(Vector3Test, GreaterThanOperator) {
-  const Vector3 v1(1.0f, 2.0f, 3.0f);
-  const Vector3 v2(4.0f, 5.0f, 6.0f);
-
-  EXPECT_TRUE(v2 > v1);
-  EXPECT_FALSE(v1 > v2);
-  EXPECT_FALSE(v1 > v1);
-}
-
-TEST(Vector3Test, LessThanOrEqualToOperator) {
-  const Vector3 v1(1.0f, 2.0f, 3.0f);
-  const Vector3 v2(4.0f, 5.0f, 6.0f);
-
-  EXPECT_TRUE(v1 <= v1);
-  EXPECT_TRUE(v1 <= v2);
-  EXPECT_FALSE(v2 <= v1);
-}
-
-TEST(Vector3Test, GreaterThanOrEqualToOperator) {
-  const Vector3 v1(1.0f, 2.0f, 3.0f);
-  const Vector3 v2(4.0f, 5.0f, 6.0f);
-
-  EXPECT_TRUE(v2 >= v1);
-  EXPECT_TRUE(v2 >= v2);
-  EXPECT_FALSE(v1 >= v2);
-}
-
-TEST(Vector3Test, DotProductMultiplication) {
-  const Vector3 v1(1.0f, 2.0f, 3.0f);
-  const Vector3 v2(4.0f, 5.0f, 6.0f);
-
-  EXPECT_FLOAT_EQ(32.0f, Vector3::dot(v1, v2));
-  EXPECT_FLOAT_EQ(32.0f, Vector3::dot(v2, v1));
-}
-
-TEST(Vector3Test, Lerp) {
-  const float a1 = 0.0f;
-  const float a2 = 0.5f;
-  const float a3 = 1.0f;
-  const Vector3 v1(1.0f, 2.0f, 3.0f);
-  const Vector3 v2(4.0f, 5.0f, 6.0f);
-  const Vector3 v3(2.5f, 3.5f, 4.5f);
-  const Vector3 v4(Vector3::lerp(v1, v2, a1));
-  const Vector3 v5(Vector3::lerp(v1, v2, a2));
-  const Vector3 v6(Vector3::lerp(v1, v2, a3));
-
-  EXPECT_FLOAT_EQ(v1.x(), v4.x());
-  EXPECT_FLOAT_EQ(v1.y(), v4.y());
-  EXPECT_FLOAT_EQ(v1.z(), v4.z());
-
-  EXPECT_FLOAT_EQ(v3.x(), v5.x());
-  EXPECT_FLOAT_EQ(v3.y(), v5.y());
-  EXPECT_FLOAT_EQ(v3.z(), v5.z());
-
-  EXPECT_FLOAT_EQ(v2.x(), v6.x());
-  EXPECT_FLOAT_EQ(v2.y(), v6.y());
-  EXPECT_FLOAT_EQ(v2.z(), v6.z());
-}
-
-TEST(Vector3Test, TripleProductMultiplication) {
-  const Vector3 v1(1.0f, 2.0f, 3.0f);
-  const Vector3 v2(4.0f, 5.0f, 6.0f);
-  const Vector3 v3(7.0f, 8.0f, 9.0f);
-
-  EXPECT_FLOAT_EQ(0.0f, Vector3::tripleProduct(v1, v2, v3));
-}
-
-TEST(Vector3Test, Nlerp) {
-  const float a1 = 0.0f;
-  const float a2 = 0.5f;
-  const float a3 = 1.0f;
-  const float v1_norm = static_cast<float>(sqrt(14.0f));
-  const float v2_norm = static_cast<float>(sqrt(77.0f));
-  const float v3_norm = static_cast<float>(sqrt(38.75f));
-  const Vector3 v1(1.0f, 2.0f, 3.0f);
-  const Vector3 v2(4.0f, 5.0f, 6.0f);
-  const Vector3 v3(2.5f, 3.5f, 4.5f);
-  const Vector3 v4(Vector3::nlerp(v1, v2, a1));
-  const Vector3 v5(Vector3::nlerp(v1, v2, a2));
-  const Vector3 v6(Vector3::nlerp(v1, v2, a3));
-
-  EXPECT_FLOAT_EQ(v1.x() / v1_norm, v4.x());
-  EXPECT_FLOAT_EQ(v1.y() / v1_norm, v4.y());
-  EXPECT_FLOAT_EQ(v1.z() / v1_norm, v4.z());
-
-  EXPECT_FLOAT_EQ(v3.x() / v3_norm, v5.x());
-  EXPECT_FLOAT_EQ(v3.y() / v3_norm, v5.y());
-  EXPECT_FLOAT_EQ(v3.z() / v3_norm, v5.z());
-
-  EXPECT_FLOAT_EQ(v2.x() / v2_norm, v6.x());
-  EXPECT_FLOAT_EQ(v2.y() / v2_norm, v6.y());
-  EXPECT_FLOAT_EQ(v2.z() / v2_norm, v6.z());
-}
-
-TEST(Vector3Test, Norm) {
-  const Vector3 v(1.0f, 2.0f, 3.0f);
-
-  EXPECT_FLOAT_EQ(static_cast<float>(sqrt(14.0f)), v.norm());
-}
-
-TEST(Vector3Test, Normalize) {
-  const float v1_norm = static_cast<float>(sqrt(14.0f));
-  const Vector3 v1(1.0f, 2.0f, 3.0f);
-  const Vector3 v2(v1.normalize());
-
-  EXPECT_FLOAT_EQ(v1.x() / v1_norm, v2.x());
-  EXPECT_FLOAT_EQ(v1.y() / v1_norm, v2.y());
-  EXPECT_FLOAT_EQ(v1.z() / v1_norm, v2.z());
-}
-
-TEST(Vector3Test, Slerp) {
-  const float a1 = 0.0f;
-  const float a2 = 0.75f;
-  const float a3 = 1.0f;
-  const float v1_norm = static_cast<float>(sqrt(14.0f));
-  const float v2_norm = static_cast<float>(sqrt(77.0f));
-  const Vector3 v1(1.0f, 2.0f, 3.0f);
-  const Vector3 v2(4.0f, 5.0f, 6.0f);
-  const Vector3 v3(0.41050804f, 0.56364781f, 0.71678758f);
-  const Vector3 v4(Vector3::slerp(v1, v2, a1));
-  const Vector3 v5(Vector3::slerp(v1, v2, a2));
-  const Vector3 v6(Vector3::slerp(v1, v2, a3));
-
-  EXPECT_FLOAT_EQ(v1.x() / v1_norm, v4.x());
-  EXPECT_FLOAT_EQ(v1.y() / v1_norm, v4.y());
-  EXPECT_FLOAT_EQ(v1.z() / v1_norm, v4.z());
-
-  EXPECT_FLOAT_EQ(v3.x(), v5.x());
-  EXPECT_FLOAT_EQ(v3.y(), v5.y());
-  EXPECT_FLOAT_EQ(v3.z(), v5.z());
-
-  EXPECT_FLOAT_EQ(v2.x() / v2_norm, v6.x());
-  EXPECT_FLOAT_EQ(v2.y() / v2_norm, v6.y());
-  EXPECT_FLOAT_EQ(v2.z() / v2_norm, v6.z());
-}
-#endif
