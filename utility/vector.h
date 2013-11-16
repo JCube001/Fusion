@@ -151,7 +151,7 @@ class Vector3 {
    * @param i The index of the vector component to access.
    * @return The value of the vector component stored at the index.
    */
-  const float operator[](int i) const {
+  const float& operator[](int i) const {
     return data_[i];
   }
 
@@ -161,7 +161,7 @@ class Vector3 {
    * @param i The index of the vector component to mutate.
    * @return The value of the vector component stored at the index.
    */
-  float operator[](int i) {
+  float& operator[](int i) {
     return data_[i];
   }
 

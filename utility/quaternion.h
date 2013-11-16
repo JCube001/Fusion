@@ -198,7 +198,7 @@ class Quaternion {
    * @param i The index of the quaternion component to access.
    * @return The value of the quaternion component stored at the index.
    */
-  const float operator[](int i) const {
+  const float& operator[](int i) const {
     return data_[i];
   }
 
@@ -208,7 +208,7 @@ class Quaternion {
    * @param i The index of the quaternion component to mutate.
    * @return The value of the quaternion component stored at the index.
    */
-  float operator[](int i) {
+  float& operator[](int i) {
     return data_[i];
   }
 
