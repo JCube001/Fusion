@@ -77,7 +77,7 @@ void ComplementaryFilter::update() {
   Sa_hat = Quaternion(0.0f, accelerometer_data_).fastNormalized();
 
   // Compute the objective function.
-  f_g = SEq_hat_.conjugate() * Eg_hat_ * SEq_hat_ - Sa_hat;
+  f_g = SEq_hat_.conjugated() * Eg_hat_ * SEq_hat_ - Sa_hat;
 
   // Compute the Jacobian matrix.
   J_g[0][0] = -two_SEq.y();
@@ -103,7 +103,7 @@ void ComplementaryFilter::update() {
     Sm_hat = Quaternion(0.0f, magnetometer_data_).fastNormalized();
 
     // Compute the objective function.
-    f_b = SEq_hat_.conjugate() * Eb_hat_ * SEq_hat_ - Sm_hat;
+    f_b = SEq_hat_.conjugated() * Eb_hat_ * SEq_hat_ - Sm_hat;
 
     // Compute the Jacobian matrix.
     J_b[0][0] = -two_Eb_z_SEq.y();
@@ -158,7 +158,7 @@ void ComplementaryFilter::update() {
 
   if (has_magnetometer_data) {
     // Compute magnetic flux in the earth frame.
-    Eh_hat = SEq_hat_ * Sm_hat * SEq_hat_.conjugate();
+    Eh_hat = SEq_hat_ * Sm_hat * SEq_hat_.conjugated();
 
     // Normalize the flux vector to have only x and z components.
     Eb_hat_ = Quaternion(0.0f,
