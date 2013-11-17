@@ -91,22 +91,30 @@ void loop() {
   printFloat(filter.orientation.z(), 5); Serial.println();
   
   // Do not print out too fast
-  delay(50);
+  delay(10);
 }
 
-void printFloat(const float n, const int places) {
-  int integer = (int)floor(n);
-  float decimals = n - integer;
+void printFloat(float n, int places) {
+  int integer;
+  float decimals;
+  
+  // Check if n is negative
+  // Print a minus sign and convert n to a positive value if it is
+  if (n < 0.0f) {
+    n = fabs(n);
+    Serial.print('-');
+  }
   
   // Print the integer component and a decimal point character
+  integer = (int)floor(n);
+  decimals = n - integer;
   Serial.print(integer); Serial.print('.');
   
   // Print the decimal place components
   for (int i = 0; i < places; i++) {
-    decimals *= 10;
+    decimals *= 10.0f;
     integer = (int)floor(decimals);
     decimals -= integer;
-    
     Serial.print(integer);
   }
 }
