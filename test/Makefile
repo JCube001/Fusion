@@ -45,7 +45,6 @@ ARFLAGS = rcs
 TESTS = math_extra_unittest    \
         vector_unittest        \
         quaternion_unittest    \
-        filter_unittest        \
         complementary_unittest \
         kalman_unittest
 
@@ -134,20 +133,11 @@ quaternion_unittest : math_extra.o quaternion.o quaternion_unittest.o \
                       gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
-# Builds the unit tests for the filter interface.
+# Builds the filter unit.
 
 filter.o : $(SRC_DIR)/filter.cpp \
-           $(SRC_DIR)/filter.h \
-           $(GTEST_HEADERS)
+           $(SRC_DIR)/filter.h
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_DIR)/filter.cpp
-
-filter_unittest.o : $(USER_DIR)/filter_unittest.cpp \
-                    $(SRC_DIR)/filter.h \
-                    $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/filter_unittest.cpp
-
-filter_unittest : filter.o filter_unittest.o gtest_main.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # Builds the unit tests for the complementary filters.
 
@@ -160,7 +150,8 @@ complementary_unittest.o : $(USER_DIR)/complementary_unittest.cpp \
                            $(SRC_DIR)/complementary.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/complementary_unittest.cpp
 
-complementary_unittest : complementary.o complementary_unittest.o filter.o \
+complementary_unittest : filter.o complementary.o complementary_unittest.o \
+                         vector.o quaternion.o math_extra.o \
                          gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
@@ -175,7 +166,8 @@ kalman_unittest.o : $(USER_DIR)/kalman_unittest.cpp \
                     $(SRC_DIR)/kalman.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/kalman_unittest.cpp
 
-kalman_unittest : kalman.o kalman_unittest.o filter.o \
+kalman_unittest : filter.o kalman.o kalman_unittest.o \
+                  vector.o quaternion.o math_extra.o \
                   gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
