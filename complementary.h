@@ -70,8 +70,6 @@ class ComplementaryFilter : public Filter {
   virtual void update();
 
  protected:
-  const Quaternion Eg_hat_ = Quaternion(0.0f, 0.0f, 0.0f, 1.0f);  /**<*/
-    /**< Reference direction of gravity in the earth frame. */
   float beta_;          /**< Gyroscope error filter gain. */
   float zeta_;          /**< Gyroscope drift filter gain. */
   float delta_time_;    /**< Sample rate. */

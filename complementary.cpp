@@ -51,6 +51,7 @@ void ComplementaryFilter::deltaTime(float dt) {
 }
 
 void ComplementaryFilter::update() {
+  const Quaternion Eg_hat_ = Quaternion(0.0f, 0.0f, 0.0f, 1.0f);  // Gravity.
   float J_g[3][4];    // Accelerometer objective function's Jacobian matrix.
   float J_b[3][4];    // Magnetometer objective function's Jacobian matrix.
   Quaternion Sw;      // Gyroscope measurements in rad/s.
