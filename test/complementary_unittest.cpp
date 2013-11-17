@@ -23,3 +23,53 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "../complementary.h"
 #include <gtest/gtest.h>
+
+class ComplementaryFilterTest : public ::testing::Test {
+ protected:
+  virtual void SetUp() {
+    f0.deltaTime(1.0f);
+    f0.accelerometer(0.0f, 0.0f, 0.0f);
+    f0.gyroscope(0.0f, 0.0f, 0.0f);
+    f0.magnetometer(0.0f, 0.0f, 0.0f);
+  }
+  
+  virtual void TearDown() {
+  }
+  
+  fusion::ComplementaryFilter f0;
+};
+
+/**
+ * @brief Test that updating on no data yields no rotation (the identity).
+ */
+TEST_F(ComplementaryFilterTest, NoData) {
+  f0.update();
+
+  ASSERT_FLOAT_EQ(1.0f, f0.orientation.w());
+  ASSERT_FLOAT_EQ(0.0f, f0.orientation.x());
+  ASSERT_FLOAT_EQ(0.0f, f0.orientation.y());
+  ASSERT_FLOAT_EQ(0.0f, f0.orientation.z());
+}
+
+/**
+ * @brief Test control flow is valid for when no magnetometer data is set.
+ */
+TEST_F(ComplementaryFilterTest, UpdateWithoutMagnetometer) {
+  f0.accelerometer(0.0f, 0.0f, 9.82f);  // Gravity.
+  f0.gyroscope(0.0f, 0.0f, 1.570796f);  // 90 degrees in radians.
+  f0.update();
+  
+  // Expected output is a 90 degree rotation about the z-axis.
+  EXPECT_NEAR(-0.7071f, f0.orientation.w(), 1.0e-3f) <<
+    "W: " << f0.orientation.w();
+  EXPECT_FLOAT_EQ(0.0f, f0.orientation.x()) << "X: " << f0.orientation.x();
+  EXPECT_FLOAT_EQ(0.0f, f0.orientation.y()) << "Y: " << f0.orientation.y();
+  EXPECT_NEAR(-0.7071f, f0.orientation.z(), 1.0e-3f) <<
+    "Z: " << f0.orientation.z();
+}
+
+/**
+ * @brief Test control flow is valid when magnetometer data is set.
+ */
+TEST_F(ComplementaryFilterTest, DISABLED_UpdateWithMagnetometer) {
+}
