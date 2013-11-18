@@ -32,10 +32,10 @@ class ComplementaryFilterTest : public ::testing::Test {
     f0.gyroscope(0.0f, 0.0f, 0.0f);
     f0.magnetometer(0.0f, 0.0f, 0.0f);
   }
-  
+
   virtual void TearDown() {
   }
-  
+
   fusion::ComplementaryFilter f0;
 };
 
@@ -58,7 +58,7 @@ TEST_F(ComplementaryFilterTest, UpdateWithoutMagnetometer) {
   f0.accelerometer(0.0f, 0.0f, 9.82f);  // Gravity.
   f0.gyroscope(0.0f, 0.0f, 1.570796f);  // 90 degrees in radians.
   f0.update();
-  
+
   // Expected output is a 90 degree rotation about the z-axis.
   EXPECT_NEAR(-0.7071f, f0.orientation.w(), 1.0e-3f) <<
     "W: " << f0.orientation.w();

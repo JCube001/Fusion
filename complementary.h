@@ -66,7 +66,7 @@ class ComplementaryFilter : public Filter {
    * @note Input must be in radians per second.
    */
   void setGyroscopeError(float error);
-  
+
   /**
    * @brief Sets the zeta filter gain using the known value for bias.
    *
