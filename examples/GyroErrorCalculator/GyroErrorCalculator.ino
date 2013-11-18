@@ -50,7 +50,7 @@ void setup() {
   
   // Print the baseline error
   Serial.print("Mean error: ");
-  printFloat(mean / 1000.0f, 6);
+  printFloat(fabs(mean / 1000.0f), 6);
   Serial.println(" rad/s");
   
   // Reset the mean to zero
@@ -88,7 +88,7 @@ void setup() {
   
   // Print out the bias
   Serial.print("Mean bias: ");
-  printFloat(mean / 1000.0f, 6);
+  printFloat(fabs(mean / 1000.0f), 6);
   Serial.println(" rad/s/s");
   
   // Bye
