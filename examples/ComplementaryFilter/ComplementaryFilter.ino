@@ -27,6 +27,10 @@ Adafruit_LSM303_Mag mag(12345);
 // The filter we will use
 fusion::ComplementaryFilter filter;
 
+// Change these values based on your own gyroscope's error
+const float error = 0.015074;  // rad/s
+const float drift = 0.000264;  // rad/s/s
+
 void setup() {
   Serial.begin(9600);
   
@@ -47,6 +51,10 @@ void setup() {
     Serial.println("LSM303 (mag) failed to initialize!");
     while (true);
   }
+  
+  // Set known error values
+  filter.setGyroscopeError(error);
+  filter.setGyroscopeDrift(drift);
   
   delay(10);
 }
