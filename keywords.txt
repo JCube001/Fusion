@@ -7,14 +7,15 @@
 #######################################
 
 Filter	KEYWORD1
-setAccelXYZ	KEYWORD2
-setCompassXYZ	KEYWORD2
-setGyroXYZ	KEYWORD2
-process	KEYWORD2
+accelerometer	KEYWORD2
+magnetometer	KEYWORD2
+gyroscope	KEYWORD2
+update	KEYWORD2
 
 ComplementaryFilter	KEYWORD1
-setAlpha	KEYWORD2
-setDeltaTime	KEYWORD2
+deltaTime	KEYWORD2
+setGyroscopeError	KEYWORD2
+setGyroscopeDrift	KEYWORD2
 
 KalmanFilter	KEYWORD1
 
