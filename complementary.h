@@ -53,12 +53,12 @@ class ComplementaryFilter : public Filter {
   /**
    * @brief Sets the sample rate.
    *
-   * @param dt The sample rate.
+   * @param rate The sample rate.
    *
-   * @note If dt is zero or a negative number, then no delta time is set and
+   * @note If rate is zero or a negative number, then no delta time is set and
    *       update() will not run.
    */
-  void deltaTime(float dt);
+  void setSampleRate(float rate);
 
   /**
    * @brief Sets the beta filter gain using the known value for error.

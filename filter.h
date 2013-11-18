@@ -58,7 +58,7 @@ class Filter {
    * @param y The y-axis acceleration value.
    * @param z The z-axis acceleration value.
    */
-  void accelerometer(const float x, const float y, const float z);
+  void setAccelerometer(const float x, const float y, const float z);
 
   /**
    * @brief Store triple axis gyroscope data.
@@ -68,7 +68,7 @@ class Filter {
    * @param z The z-axis rotation acceleration in radians per second.
    * @note All values are in radians per second.
    */
-  void gyroscope(const float x, const float y, const float z);
+  void setGyroscope(const float x, const float y, const float z);
 
   /**
    * @brief Store triple axis magnetometer data.
@@ -77,7 +77,7 @@ class Filter {
    * @param y The y-axis magnetic field strength value.
    * @param z The z-axis magnetic field strength value.
    */
-  void magnetometer(const float x, const float y, const float z);
+  void setMagnetometer(const float x, const float y, const float z);
 
   /**
    * @brief Sensor fusion algorithm interface.

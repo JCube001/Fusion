@@ -7,13 +7,13 @@
 #######################################
 
 Filter	KEYWORD1
-accelerometer	KEYWORD2
-magnetometer	KEYWORD2
-gyroscope	KEYWORD2
+setAccelerometer	KEYWORD2
+setGyroscope	KEYWORD2
+setMagnetometer	KEYWORD2
 update	KEYWORD2
 
 ComplementaryFilter	KEYWORD1
-deltaTime	KEYWORD2
+setSampleRate	KEYWORD2
 setGyroscopeError	KEYWORD2
 setGyroscopeDrift	KEYWORD2
 

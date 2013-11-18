@@ -34,15 +34,15 @@ Filter::Filter() {
 
 Filter::~Filter() {}
 
-void Filter::accelerometer(const float x, const float y, const float z) {
+void Filter::setAccelerometer(const float x, const float y, const float z) {
   accelerometer_data_ = Vector3(x, y, z);
 }
 
-void Filter::gyroscope(const float x, const float y, const float z) {
+void Filter::setGyroscope(const float x, const float y, const float z) {
   gyroscope_data_ = Vector3(x, y, z);
 }
 
-void Filter::magnetometer(const float x, const float y, const float z) {
+void Filter::setMagnetometer(const float x, const float y, const float z) {
   magnetometer_data_ = Vector3(x, y, z);
 }
 

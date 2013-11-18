@@ -42,9 +42,9 @@ ComplementaryFilter::ComplementaryFilter() {
 
 ComplementaryFilter::~ComplementaryFilter() {}
 
-void ComplementaryFilter::deltaTime(float dt) {
-  if (dt > 0.0f) {
-    delta_time_ = dt;
+void ComplementaryFilter::setSampleRate(float rate) {
+  if (rate > 0.0f) {
+    delta_time_ = rate;
   } else {
     delta_time_ = 0.0f;
   }

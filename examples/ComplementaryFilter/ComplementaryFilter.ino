@@ -72,22 +72,22 @@ void loop() {
   
   // Determine the difference between this time to the time of the last sensor
   // reading, then convert to seconds
-  filter.deltaTime((float)(time_now - time_last) / 1000.0f);
+  filter.setSampleRate((float)(time_now - time_last) / 1000.0f);
   time_last = time_now;
   
   // Store sensor data (again, modify input values as needed)
   // Note also that the gyroscope input must be in radians per second
-  filter.accelerometer(accel_event.acceleration.x,
-                       accel_event.acceleration.y,
-                       accel_event.acceleration.z);
+  filter.setAccelerometer(accel_event.acceleration.x,
+                          accel_event.acceleration.y,
+                          accel_event.acceleration.z);
   
-  filter.gyroscope(gyro.data.x * L3GD20_DPS_TO_RADS,
-                   gyro.data.y * L3GD20_DPS_TO_RADS,
-                   gyro.data.z * L3GD20_DPS_TO_RADS);
+  filter.setGyroscope(gyro.data.x * L3GD20_DPS_TO_RADS,
+                      gyro.data.y * L3GD20_DPS_TO_RADS,
+                      gyro.data.z * L3GD20_DPS_TO_RADS);
   
-  filter.magnetometer(mag_event.magnetic.x,
-                      mag_event.magnetic.y,
-                      mag_event.magnetic.z);
+  filter.setMagnetometer(mag_event.magnetic.x,
+                         mag_event.magnetic.y,
+                         mag_event.magnetic.z);
   
   // Process the sensor data
   filter.update();

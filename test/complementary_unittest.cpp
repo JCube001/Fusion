@@ -27,10 +27,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class ComplementaryFilterTest : public ::testing::Test {
  protected:
   virtual void SetUp() {
-    f0.deltaTime(1.0f);
-    f0.accelerometer(0.0f, 0.0f, 0.0f);
-    f0.gyroscope(0.0f, 0.0f, 0.0f);
-    f0.magnetometer(0.0f, 0.0f, 0.0f);
+    f0.setSampleRate(1.0f);
+    f0.setAccelerometer(0.0f, 0.0f, 0.0f);
+    f0.setGyroscope(0.0f, 0.0f, 0.0f);
+    f0.setMagnetometer(0.0f, 0.0f, 0.0f);
   }
 
   virtual void TearDown() {
@@ -55,8 +55,8 @@ TEST_F(ComplementaryFilterTest, NoData) {
  * @brief Test control flow is valid for when no magnetometer data is set.
  */
 TEST_F(ComplementaryFilterTest, UpdateWithoutMagnetometer) {
-  f0.accelerometer(0.0f, 0.0f, 9.82f);  // Gravity.
-  f0.gyroscope(0.0f, 0.0f, 1.570796f);  // 90 degrees in radians.
+  f0.setAccelerometer(0.0f, 0.0f, 9.82f);  // Gravity.
+  f0.setGyroscope(0.0f, 0.0f, 1.570796f);  // 90 degrees in radians.
   f0.update();
 
   // Expected output is a 90 degree rotation about the z-axis.
@@ -72,4 +72,5 @@ TEST_F(ComplementaryFilterTest, UpdateWithoutMagnetometer) {
  * @brief Test control flow is valid when magnetometer data is set.
  */
 TEST_F(ComplementaryFilterTest, DISABLED_UpdateWithMagnetometer) {
+  // TODO(JCube001): Implement
 }
