@@ -61,6 +61,20 @@ class ComplementaryFilter : public Filter {
   void deltaTime(float dt);
 
   /**
+   * @brief Sets the beta filter gain using the known value for error.
+   *
+   * @note Input must be in radians per second.
+   */
+  void setGyroscopeError(float error);
+  
+  /**
+   * @brief Sets the zeta filter gain using the known value for bias.
+   *
+   * @note Input must be in radians per second squared.
+   */
+  void setGyroscopeDrift(float drift);
+
+  /**
    * @brief The complementary filter algorithm. This implementation can handle
    *        both IMU (6 DoF) and MARG (9 DoF) Attitude and Heading Reference
    *        Systems (AHRS). This is accomplished by checking to see which

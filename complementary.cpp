@@ -50,6 +50,14 @@ void ComplementaryFilter::deltaTime(float dt) {
   }
 }
 
+void ComplementaryFilter::setGyroscopeError(float error) {
+  beta_ = sqrt(3.0f / 4.0f) * error;
+}
+
+void ComplementaryFilter::setGyroscopeDrift(float drift) {
+  zeta_ = sqrt(3.0f / 4.0f) * drift;
+}
+
 void ComplementaryFilter::update() {
   const Quaternion Eg_hat_ = Quaternion(0.0f, 0.0f, 0.0f, 1.0f);  // Gravity.
   float J_g[3][4];    // Accelerometer objective function's Jacobian matrix.
