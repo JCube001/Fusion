@@ -78,7 +78,7 @@ void ComplementaryFilter::update() {
     return;
   }
 
-  // Auxilliary variables to avoid redundant arithematic/function calls.
+  // Auxiliary variables to avoid redundant arithmetic/function calls.
   bool has_magnetometer_data = hasData(magnetometer_data_);
   Quaternion two_SEq = SEq_hat_ * 2.0f;
 
@@ -104,7 +104,7 @@ void ComplementaryFilter::update() {
 
   // Use the magnetometer if it is available (MARG).
   if (has_magnetometer_data) {
-    // Auxilliary variables to avoid redundant arithematic/function calls.
+    // Auxiliary variables to avoid redundant arithmetic/function calls.
     Quaternion two_Eb_x_SEq = two_SEq * Eb_hat_.x();
     Quaternion two_Eb_z_SEq = two_SEq * Eb_hat_.z();
 
