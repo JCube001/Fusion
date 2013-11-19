@@ -63,11 +63,14 @@ void ComplementaryFilter::update() {
   float J_g[3][4];    // Accelerometer objective function's Jacobian matrix.
   float J_b[3][4];    // Magnetometer objective function's Jacobian matrix.
   Quaternion Sw;      // Gyroscope measurements in rad/s.
+  Quaternion Sw_err;  // Angular estimated direction of gyroscope error.
+  Quaternion Sw_b;    // The gyroscope biases.
   Quaternion Sa_hat;  // Accelerometer measurements in sensor frame.
   Quaternion Sm_hat;  // Magnetometer measurements in sensor frame.
   Quaternion Eh_hat;  // Computed flux in the earth frame.
   Quaternion f_g;     // Result of the accelerometer objective function.
   Quaternion f_b;     // Result of the magnetometer objective function.
+  Quaternion gradient_b;     // The gradient descent of magnetometer data.
   Quaternion SEq_dot_omega;  // Quaternion rate from gyroscope elements.
   Quaternion SEq_hat_dot;    // Estimated direction of gyroscope error.
 
@@ -80,7 +83,7 @@ void ComplementaryFilter::update() {
 
   // Auxiliary variables to avoid redundant arithmetic/function calls.
   bool has_magnetometer_data = hasData(magnetometer_data_);
-  Quaternion two_SEq = SEq_hat_ * 2.0f;
+  Quaternion two_SEq = 2.0f * SEq_hat_;
 
   // Normalize the accelerometer measurements.
   Sa_hat = Quaternion(0.0f, accelerometer_data_).fastNormalized();
@@ -101,6 +104,13 @@ void ComplementaryFilter::update() {
   J_g[2][1] = -2.0f * two_SEq.x();
   J_g[2][2] = -2.0f * two_SEq.y();
   J_g[2][3] = 0.0f;
+
+  // Compute the gradient (matrix multiplication: JT_g * f_g).
+  SEq_hat_dot =
+    Quaternion(J_g[0][0]*f_g[1] + J_g[1][0]*f_g[2] + J_g[2][0]*f_g[3],
+               J_g[0][1]*f_g[1] + J_g[1][1]*f_g[2] + J_g[2][1]*f_g[3],
+               J_g[0][2]*f_g[1] + J_g[1][2]*f_g[2] + J_g[2][2]*f_g[3],
+               J_g[0][3]*f_g[1] + J_g[1][3]*f_g[2] + J_g[2][3]*f_g[3]);
 
   // Use the magnetometer if it is available (MARG).
   if (has_magnetometer_data) {
@@ -128,15 +138,15 @@ void ComplementaryFilter::update() {
     J_b[2][2] = two_Eb_x_SEq.w() - 2.0f * two_Eb_z_SEq.y();
     J_b[2][3] = two_Eb_x_SEq.x();
 
-    // Compute the gradient (matrix multiplication: JT_gb * f_gb)
-    SEq_hat_dot = Quaternion();  // TODO(JCube001): Finish
-  } else {
-    // Compute the gradient (matrix multiplication: JT_g * f_g)
-    SEq_hat_dot =
-      Quaternion(J_g[0][0]*f_g[1] + J_g[1][0]*f_g[2] + J_g[2][0]*f_g[3],
-                 J_g[0][1]*f_g[1] + J_g[1][1]*f_g[2] + J_g[2][1]*f_g[3],
-                 J_g[0][2]*f_g[1] + J_g[1][2]*f_g[2] + J_g[2][2]*f_g[3],
-                 J_g[0][3]*f_g[1] + J_g[1][3]*f_g[2] + J_g[2][3]*f_g[3]);
+    // Compute the gradient (matrix multiplication: JT_b * f_b).
+    gradient_b =
+      Quaternion(J_b[0][0]*f_b[1] + J_b[1][0]*f_b[2] + J_b[2][0]*f_b[3],
+                 J_b[0][1]*f_b[1] + J_b[1][1]*f_b[2] + J_b[2][1]*f_b[3],
+                 J_b[0][2]*f_b[1] + J_b[1][2]*f_b[2] + J_b[2][2]*f_b[3],
+                 J_b[0][3]*f_b[1] + J_b[1][3]*f_b[2] + J_b[2][3]*f_b[3]);
+
+    // Compute the gradient (matrix multiplication: JT_gb * f_gb).
+    SEq_hat_dot += gradient_b;
   }
 
   // Normalize the gradient to estimate the direction of gyroscope error.
@@ -145,16 +155,15 @@ void ComplementaryFilter::update() {
   // Set the gyroscope measurements.
   Sw = Quaternion(0.0f, gyroscope_data_);
 
-  if (has_magnetometer_data) {
-    // Compute angular estimated direction of gyroscope error.
-    // TODO(JCube001): Finish
+  // Compute angular estimated direction of gyroscope error.
+  Sw_err = two_SEq.conjugated() * SEq_hat_dot;
 
-    // Compute and remove the gyroscope bias.
-    // TODO(JCube001): Finish
-  }
+  // Compute and remove the gyroscope biases.
+  Sw_b += Sw_err * delta_time_ * zeta_;
+  Sw -= Sw_b;
 
   // Compute the quaternion rate measured by the gyroscope.
-  SEq_dot_omega = (SEq_hat_ * Sw) * 0.5f;
+  SEq_dot_omega = 0.5f * SEq_hat_ * Sw;
 
   // Compute then integrate the estimated quaternion rate.
   SEq_hat_ += (SEq_dot_omega - (SEq_hat_dot*beta_)) * delta_time_;
