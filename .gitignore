@@ -5,3 +5,7 @@
 test/*.o
 test/*.a
 test/*test
+
+# Doxygen output
+doc/html
+doc/latex
