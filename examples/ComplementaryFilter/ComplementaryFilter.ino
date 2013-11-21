@@ -28,8 +28,8 @@ Adafruit_LSM303_Mag mag(12345);
 fusion::ComplementaryFilter filter;
 
 // Change these values based on your own gyroscope's error
-const float error = 0.015074;  // rad/s
-const float drift = 0.000264;  // rad/s/s
+const float error = 0.015074f;  // rad/s
+const float drift = 0.000264f;  // rad/s/s
 
 void setup() {
   Serial.begin(9600);
@@ -70,6 +70,9 @@ void loop() {
   // Get the time of when data was read
   time_now = millis();
   
+  // Disable interrupts for time critical code
+  noInterrupts();
+  
   // Determine the difference between this time to the time of the last sensor
   // reading, then convert to seconds
   filter.setSampleRate((float)(time_now - time_last) / 1000.0f);
@@ -91,6 +94,9 @@ void loop() {
   
   // Process the sensor data
   filter.update();
+  
+  // Reenable interrupts
+  interrupts();
   
   // Send out the now up-to-date quaternion
   printFloat(filter.orientation.w(), 5); Serial.print(',');
