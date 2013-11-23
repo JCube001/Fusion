@@ -47,7 +47,7 @@ inline bool operator>=(const Vector3& lhs, const Vector3& rhs);
 void swap(Vector3& p0, Vector3& p1);
 
 /**
- * @brief Vector. Three dimensional vector.
+ * @brief Three dimensional vector.
  */
 class Vector3 {
  public:
@@ -288,9 +288,7 @@ class Vector3 {
    * @param t A value between 0 and 1 indicating the weight of the end vector.
    * @return The linear interpolation between two vectors.
    */
-  static Vector3 lerp(const Vector3& p0, const Vector3& p1, const float t) {
-    return p0*(1.0f - t) + p1*t;
-  }
+  static Vector3 lerp(const Vector3& p0, const Vector3& p1, const float t);
 
   /**
    * @brief Scalar triple product multiplication.
@@ -313,9 +311,7 @@ class Vector3 {
    * @param t A value between 0 and 1 indicating the weight of the end vector.
    * @return The normalized linear interpolation between two vectors.
    */
-  static Vector3 nlerp(const Vector3& p0, const Vector3& p1, const float t) {
-    return Vector3::lerp(p0, p1, t).normalized();
-  }
+  static Vector3 nlerp(const Vector3& p0, const Vector3& p1, const float t);
 
   /**
    * @brief Returns the norm (magnitude) of the vector.
@@ -353,29 +349,10 @@ class Vector3 {
    *         (sin(to) / sin(o))(p1 hat) where o = acos(cos(o)) =
    *         acos((p0 hat).(p1 hat)).
    */
-  static Vector3 slerp(const Vector3& p0, const Vector3& p1, const float t) {
-    // Vectors must be normalized to work with angle calculations.
-    Vector3 pp0 = p0.normalized();
-    Vector3 pp1 = p1.normalized();
-
-    // Calculate omega (the angle between p0 and p1).
-    const float o = acos(Vector3::dot(pp0, pp1));
-
-    // A number approaching zero.
-    const float lim = 1.0e-5f;
-
-    // Check if omega is approaching zero before performing the Slerp.
-    if (!(-lim <= o && o <= lim)) {
-      const float so = sin(o);
-      return (sin((1.0f - t)*o) / so)*pp0 + (sin(t*o) / so)*pp1;
-    }
-
-    // The angle is too small, use Lerp.
-    return Vector3::lerp(pp0, pp1, t);
-  }
+  static Vector3 slerp(const Vector3& p0, const Vector3& p1, const float t);
 
  protected:
-  float data_[3];
+  float data_[3];  /**< Internal vector components. */
 };
 
 /**

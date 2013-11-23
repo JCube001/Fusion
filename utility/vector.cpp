@@ -25,6 +25,35 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace fusion {
 
+Vector3 Vector3::lerp(const Vector3& p0, const Vector3& p1, const float t) {
+  return p0*(1.0f - t) + p1*t;
+}
+
+Vector3 Vector3::nlerp(const Vector3& p0, const Vector3& p1, const float t) {
+  return Vector3::lerp(p0, p1, t).normalized();
+}
+
+Vector3 Vector3::slerp(const Vector3& p0, const Vector3& p1, const float t) {
+  // Vectors must be normalized to work with angle calculations.
+  Vector3 pp0 = p0.normalized();
+  Vector3 pp1 = p1.normalized();
+
+  // Calculate omega (the angle between p0 and p1).
+  const float o = acos(Vector3::dot(pp0, pp1));
+
+  // A number approaching zero.
+  const float lim = 1.0e-5f;
+
+  // Check if omega is approaching zero before performing the Slerp.
+  if (!(-lim <= o && o <= lim)) {
+    const float so = sin(o);
+    return (sin((1.0f - t)*o) / so)*pp0 + (sin(t*o) / so)*pp1;
+  }
+
+  // The angle is too small, use Lerp.
+  return Vector3::lerp(pp0, pp1, t);
+}
+
 /**
  * @brief Swap the states between two vectors.
  *

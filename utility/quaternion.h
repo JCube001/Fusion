@@ -45,9 +45,9 @@ inline bool operator!=(const Quaternion& lhs, const Quaternion& rhs);
 void swap(Quaternion& q0, Quaternion& q1);
 
 /**
- * @brief Quaternion. A structure composed of three imaginary vectorial
- *        components and one real component. The vector represents the axis
- *        while the scalar represents the angle of rotation about that axis.
+ * @brief A structure composed of three imaginary vectorial components and one
+ *        real component. The vector represents the axis while the scalar
+ *        represents the angle of rotation about that axis.
  *
  * @note There are two common ways to store the structure of a quaternion. They
  *       are [w, x, y, z] and [x, y, z, w] where w is the real component and
@@ -326,10 +326,7 @@ class Quaternion {
    * @note All angles are in radians.
    */
   static Quaternion convertFromAxisAngle(const float angle,
-                                         const Vector3& axis) {
-    const float half_angle = angle*0.5f;
-    return Quaternion(cos(half_angle), axis*sin(half_angle));
-  }
+                                         const Vector3& axis);
 
   /**
    * @brief Returns a unit quaternion converted from Euler angles.
@@ -343,20 +340,7 @@ class Quaternion {
    * @note All angles are in radians.
    */
   static Quaternion convertFromEulerAngles(const float roll, const float pitch,
-                                           const float yaw) {
-    const float half_roll = roll*0.5f;
-    const float half_pitch = pitch*0.5f;
-    const float half_yaw = yaw*0.5f;
-    const float sr = sin(half_roll);
-    const float sp = sin(half_pitch);
-    const float sy = sin(half_yaw);
-    const float cr = cos(half_roll);
-    const float cp = cos(half_pitch);
-    const float cy = cos(half_yaw);
-
-    return Quaternion(cr*cp*cy + sr*sp*sy, sr*cp*cy - cr*sp*sy,
-                      cr*sp*cy + sr*cp*sy, cr*cp*sy - sr*sp*cy);
-  }
+                                           const float yaw);
 
   /**
    * @brief Returns an axis-angle representation of a unit quaternion.
@@ -368,28 +352,7 @@ class Quaternion {
    *
    * @note All angles are in radians.
    */
-  static float* convertToAxisAngle(const Quaternion& q) {
-    const float pn = q.vector().norm();
-    const float theta = 2.0f*atan2(pn, q.w());
-    static float a[4];
-
-    // Store the angle.
-    a[0] = theta;
-
-    // If the angle is zero, then that means the vector component must have a
-    // norm of zero. The result will therefore be a zero quaternion.
-    if (theta != 0.0f) {
-      a[1] = q.x() / pn;
-      a[2] = q.y() / pn;
-      a[3] = q.z() / pn;
-    } else {
-      a[1] = 0.0f;
-      a[2] = 0.0f;
-      a[3] = 0.0f;
-    }
-
-    return a;
-  }
+  static float* convertToAxisAngle(const Quaternion& q);
 
   /**
    * @brief Returns an array containing Euler angles converted from a
@@ -408,17 +371,7 @@ class Quaternion {
    *       take place is when displaying a rotation as human readable angle
    *       values.
    */
-  static float* convertToEulerAngles(const Quaternion& q) {
-    static float e[3];
-
-    e[0] = atan2(2.0f*(q.w()*q.x() + q.y()*q.z()),
-                 1.0f - 2.0f*(q.x()*q.x() + q.y()*q.y()));
-    e[1] = asin(2.0f*(q.w()*q.y() - q.z()*q.x()));
-    e[2] = atan2(2.0f*(q.w()*q.z() + q.x()*q.y()),
-                 1.0f - 2.0f*(q.y()*q.y() + q.z()*q.z()));
-
-    return e;
-  }
+  static float* convertToEulerAngles(const Quaternion& q);
 
   /**
    * @brief Dot product multiplication.
@@ -510,9 +463,7 @@ class Quaternion {
    * @return The linear interpolation between two quaternions.
    */
   static Quaternion lerp(const Quaternion& q0, const Quaternion& q1,
-                         const float t) {
-    return q0*(1.0f - t) + q1*t;
-  }
+                         const float t);
 
   /**
    * @brief Performs a normalized linear interpolation between two
@@ -525,9 +476,7 @@ class Quaternion {
    * @return The normalized linear interpolation between two quaternions.
    */
   static Quaternion nlerp(const Quaternion& q0, const Quaternion& q1,
-                          const float t) {
-    return Quaternion::lerp(q0, q1, t).normalized();
-  }
+                          const float t);
 
   /**
    * @brief Returns the norm (magnitude) of the quaternion.
@@ -577,35 +526,7 @@ class Quaternion {
    *         acos((q0 cap).(q1 cap)).
    */
   static Quaternion slerp(const Quaternion& q0, const Quaternion& q1,
-                          const float t) {
-    // Quaternions must be normalized to work with angle calculations.
-    // Quaternion qq1 is kept mutable because it may need to be negated later.
-    const Quaternion qq0 = q0.normalized();
-    Quaternion qq1 = q1.normalized();
-
-    // Calculate omega (the angle between q0 and q1)
-    const float co = Quaternion::dot(qq0, qq1);
-    const float o = acos(co);
-
-    // Check if the dot product (cosine omega) resulted in a negative value.
-    // If it did, then negate one end quaternion to prevent taking the long way
-    // around during the interpolation.
-    if (co < 0.0f) {
-      qq1 = -qq1;
-    }
-
-    // A number approaching zero.
-    const float lim = 1.0e-5f;
-
-    // Check if omega is approaching zero before performing the Slerp.
-    if (!(-lim <= o && o <= lim)) {
-      const float so = sin(o);
-      return qq0*(sin((1.0f - t)*o) / so) + qq1*(sin(t*o) / so);
-    }
-
-    // The angle is too small, use Lerp.
-    return Quaternion::lerp(qq0, qq1, t);
-  }
+                          const float t);
 
   /**
    * @brief Performs a spherical and quadrangle interpolation between four
@@ -623,13 +544,10 @@ class Quaternion {
    */
   static Quaternion squad(const Quaternion& q0, const Quaternion& q1,
                           const Quaternion& q2, const Quaternion& q3,
-                          const float t) {
-    return Quaternion::slerp(Quaternion::slerp(q0, q1, t),
-                             Quaternion::slerp(q2, q3, t), 2.0f*t*(1.0f - t));
-  }
+                          const float t);
 
  protected:
-  float data_[4];
+  float data_[4];  /**< Internal quaternion components. */
 };
 
 /**
