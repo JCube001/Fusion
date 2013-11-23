@@ -50,6 +50,7 @@ final String PORTNAME = "/dev/ttyACM0";
 // Global states and storage.
 boolean paused = false;
 boolean testing = false;
+long frame = 0;
 float[] quaternion = {1.0f, 0.0f, 0.0f, 0.0f};
 float[] euler = {0.0f, 0.0f, 0.0f};
 Serial port;
@@ -122,12 +123,13 @@ void draw() {
   textAlign(RIGHT, TOP);
   text(orientation, width - 10, 10);
   
+  textAlign(CENTER, TOP);
   if (testing) {
-    textAlign(CENTER, TOP);
     text("TEST MODE", width / 2, 10);
   } else if (paused) {
-    textAlign(CENTER, TOP);
     text("PAUSED", width / 2, 10);
+  } else {
+    text(String.format("Frame\n%d", ++frame), width / 2, 10);
   }
 }
 
