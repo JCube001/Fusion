@@ -15,7 +15,7 @@ implementations.
 All you will need to include in your Arduino sketch is the fusion.h header file.
 You may then instantiate and use a filter. The following is an example of this.
 
-```C++
+~~~~~~~~~~~~~~~{.cpp}
 #include <fusion.h>
 
 // Any other includes, globals, or objects
@@ -64,7 +64,7 @@ void loop() {
   Serial.print(filter.orientation.y()); Serial.print(',');
   Serial.print(filter.orientation.z()); Serial.println();
 }
-```
+~~~~~~~~~~~~~~~
 
 Note: All angular values are in radians.
 
@@ -77,11 +77,11 @@ If you would like to run the tests yourself, you will need the package
 libgtest-dev. The following script should be enough to create the tests on a
 Debian based Linux system.
 
-```Bash
+~~~~~~~~~~~~~~~{.sh}
 sudo apt-get install libgtest-dev
 cd test
 make
-```
+~~~~~~~~~~~~~~~
 
 ## TODO
 
