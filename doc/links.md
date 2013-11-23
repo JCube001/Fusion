@@ -51,7 +51,7 @@ These are all websites which were used to help create this library.
 
 ### AHRS / MARG
 
-* http://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=2&ved=0CDEQFjAB&url=http%3A%2F%2Fsharenet-wii-motion-trac.googlecode.com%2Ffiles%2FAn_efficient_orientation_filter_for_inertial_and_inertialmagnetic_sensor_arrays.pdf&ei=bml6Utf5OsTiyAHnzICIBA&usg=AFQjCNEBfCip2CAVZhCKjxP1HYvVvWruYw&sig2=nlrT60sY1wPnCxDvpEipRw&bvm=bv.55980276,d.aWc&cad=rja
+* http://www.x-io.co.uk/res/doc/madgwick_internal_report.pdf
 * https://github.com/xioTechnologies/Open-Source-AHRS-With-x-IMU
 
 ### Complementary filter
