@@ -31,10 +31,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace fusion {
 
 /**
- * @brief Filter. Abstract class for storing sensor readings.
+ * @brief Abstract class for storing sensor readings.
  *
  * @note Any class which inherits this class must implement the method
- *       process(). This is the method which actually performs the sensor
+ *       update(). This is the method which actually performs the sensor
  *       fusion and determines the orientation of the sensors.
  * @note Orientation should be considered as being relative to the plane of the
  *       surface of the Earth.
