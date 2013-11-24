@@ -36,7 +36,8 @@ namespace fusion {
  *        processed as quaternions. Magnetic distortion compensation and
  *        gyroscope bias drift compensation are also accounted for.
  *
- * @note See http://www.x-io.co.uk/res/doc/madgwick_internal_report.pdf
+ * @see http://www.x-io.co.uk/res/doc/madgwick_internal_report.pdf
+ * @see https://github.com/xioTechnologies/Open-Source-AHRS-With-x-IMU/
  */
 class ComplementaryFilter : public Filter {
  public:
