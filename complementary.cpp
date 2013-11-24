@@ -38,6 +38,12 @@ ComplementaryFilter::ComplementaryFilter() {
   delta_time_ = 0.0f;
   Eb_hat_ = Quaternion(0.0f, 1.0f, 0.0f, 0.0f);
   SEq_hat_ = Quaternion::identity();
+  
+  // Testing
+  k_i_ = 0.0f;
+  k_p_ = 1.0f;
+  e_i_ = Vector3(0.0f, 0.0f, 0.0f);
+  q_ = Quaternion::identity();
 }
 
 ComplementaryFilter::~ComplementaryFilter() {}
@@ -182,6 +188,104 @@ void ComplementaryFilter::update() {
     Eb_hat_ = Quaternion(0.0f,
       sqrt(Eh_hat.x()*Eh_hat.x() + Eh_hat.y()*Eh_hat.y()), 0.0f, Eh_hat.z());
   }
+}
+
+
+// Testing below this point
+
+void ComplementaryFilter::setIntegralGain(float k_i) {
+  k_i_ = k_i;
+}
+
+void ComplementaryFilter::setProportionalGain(float k_p) {
+  k_p_ = k_p;
+}
+
+void ComplementaryFilter::update_mahony() {
+  // Short name local variables.
+  Vector3 a = accelerometer_data_;
+  Vector3 g = gyroscope_data_;
+  Vector3 m = magnetometer_data_;
+
+  // Auxiliary variables to avoid redundant arithematic.
+  float q1q1 = q_.w() * q_.w();
+  float q1q2 = q_.w() * q_.x();
+  float q1q3 = q_.w() * q_.y();
+  float q1q4 = q_.w() * q_.z();
+
+  float q2q2 = q_.x() * q_.x();
+  float q2q3 = q_.x() * q_.y();
+  float q2q4 = q_.x() * q_.z();
+
+  float q3q3 = q_.y() * q_.y();
+  float q3q4 = q_.y() * q_.z();
+
+  float q4q4 = q_.z() * q_.z();
+
+  // Normalize the accelerometer measurements.
+  a.fastNormalize();
+
+  // Noramlize the magnetometer measurements.
+  m.fastNormalize();
+
+  // Reference the direction of earth's magnetic field.
+  Vector3 h(2.0f*m.x()*(0.5f - q3q3 - q4q4) +
+            2.0f*m.y()*(q2q3 - q1q4) +
+            2.0f*m.z()*(q2q4 + q1q3),
+            2.0f*m.x()*(q2q3 + q1q4) +
+            2.0f*m.y()*(0.5f - q2q2 - q4q4) +
+            2.0f*m.z()*(q3q4 - q1q2),
+            0.0f);
+
+  Vector3 b(sqrt(h.x()*h.x() + h.y()*h.y()),
+            0.0f,
+            2.0f*m.x()*(q2q4 - q1q3) +
+            2.0f*m.y()*(q3q4 + q1q2) +
+            2.0f*m.z()*(0.5f - q2q2 - q3q3));
+
+  // Estimate the direction of gravity.
+  Vector3 v(2.0f*(q2q4 - q1q3),
+            2.0f*(q1q2 + q3q4),
+            q1q1 - q2q2 - q3q3 + q4q4);
+
+  // Estimate the direction of earth's magnetic field.
+  Vector3 w(2.0f*b.x()*(0.5f - q3q3 - q4q4) +
+            2.0f*b.z()*(q2q4 - q1q3),
+            2.0f*b.x()*(q2q3 - q1q4) +
+            2.0f*b.z()*(q1q2 + q3q4),
+            2.0f*b.x()*(q1q3 + q2q4) +
+            2.0f*b.z()*(0.5f - q2q2 - q3q3));
+
+  // Compute the error as the cross product between the estimated and measured
+  // direction of gravity.
+  Vector3 e(a*v + m*w);
+
+  if (k_i_ > 0.0f) {
+    e_i_ += e;
+  } else {
+    e_i_ = Vector3(0.0f, 0.0f, 0.0f);
+  }
+
+  // Apply feedback terms to the gyroscope measurements.
+  g += k_p_*e + k_i_*e_i_;
+
+  // Integrate the rate of change of the quaternion.
+  //q_ += (???) * (0.5f*delta_time_);
+  float pa = q_.x();
+  float pb = q_.y();
+  float pc = q_.z();
+  q_ = Quaternion(
+    q_.w() + (-q_.y()*g.x() - q_.y()*g.y() - q_.z()*g.z()) * (0.5f*delta_time_),
+    pa + (q_.w()*g.x() + pb*g.z() - pc*g.y()) * (0.5f*delta_time_),
+    pb + (q_.w()*g.y() - pa*g.z() + pc*g.x()) * (0.5f*delta_time_),
+    pc + (q_.w()*g.z() + pa*g.y() - pb*g.x()) * (0.5f*delta_time_));
+  
+
+  // Normalize the quaternion.
+  q_.fastNormalize();
+  
+  // Set the output quaternion to the current orientation estimate.
+  orientation = q_;
 }
 
 }  // namespace fusion

@@ -36,7 +36,8 @@ namespace fusion {
  *        processed as quaternions. Magnetic distortion compensation and
  *        gyroscope bias drift compensation are also accounted for.
  *
- * @note See http://www.x-io.co.uk/res/doc/madgwick_internal_report.pdf
+ * @see http://www.x-io.co.uk/res/doc/madgwick_internal_report.pdf
+ * @see https://github.com/xioTechnologies/Open-Source-AHRS-With-x-IMU/
  */
 class ComplementaryFilter : public Filter {
  public:
@@ -74,14 +75,23 @@ class ComplementaryFilter : public Filter {
    */
   void setGyroscopeDrift(float drift);
 
+  // Testing
+  void setIntegralGain(float k_i);
+  void setProportionalGain(float k_p);
+
   /**
    * @brief The complementary filter algorithm. This implementation can handle
    *        both IMU (6 DoF) and MARG (9 DoF) Attitude and Heading Reference
    *        Systems (AHRS). This is accomplished by checking to see which
    *        values were stored in the filter for each sensor prior to update()
    *        being called.
+   *
+   * @note This implementation is based on Mahony's AHRS algorithm.
    */
   virtual void update();
+  
+  // Testing
+  void update_mahony();
 
  protected:
   float beta_;          /**< Gyroscope error filter gain. */
@@ -89,6 +99,12 @@ class ComplementaryFilter : public Filter {
   float delta_time_;    /**< Sample rate. */
   Quaternion Eb_hat_;   /**< Reference direction of flux in earth frame. */
   Quaternion SEq_hat_;  /**< Estimated orientation */
+  
+  // Testing
+  float k_i_;
+  float k_p_;
+  Vector3 e_i_;
+  Quaternion q_;
 };
 
 }  // namespace fusion
