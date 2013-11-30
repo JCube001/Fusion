@@ -51,8 +51,8 @@ final String PORTNAME = "/dev/ttyACM0";
 boolean paused = false;
 boolean testing = false;
 long frame = 0;
-float[] quaternion = {1.0f, 0.0f, 0.0f, 0.0f};
 float[] euler = {0.0f, 0.0f, 0.0f};
+Quaternion quat = new Quaternion();
 Serial port;
 
 /**
@@ -91,9 +91,9 @@ void draw() {
   
   // Update global information.
   if (testing) {
-    quaternion = eulerAnglesToQuaternion(euler);
+    quat = convertFromEulerAngles(euler);
   } else {
-    euler = quaternionToEulerAngles(quaternion);
+    euler = convertToEulerAngles(quat);
   }
   
   // Keep Euler angles within the unit circle.
@@ -112,8 +112,8 @@ void draw() {
   // Display data as human readable text.
   fill(255);
   
-  orientation = "Quaternion\nW: " + quaternion[0] + "\nX: " + quaternion[1] +
-    "\nY: " + quaternion[2] + "\nZ: " + quaternion[3];
+  orientation = "Quaternion\nW: " + quat.w() + "\nX: " + quat.x() +
+    "\nY: " + quat.y() + "\nZ: " + quat.z();
   textAlign(LEFT, TOP);
   text(orientation, 10, 10);
   
@@ -193,8 +193,8 @@ void keyReleased() {
     // Toggle test mode, also pauses.
     testing = !testing;
     paused = true;
-    quaternion = new float[] {1.0f, 0.0f, 0.0f, 0.0f};
     euler = new float[] {0.0f, 0.0f, 0.0f};
+    quat = new Quaternion();
     try {
       port.clear();
     } catch (Exception e) {
@@ -214,8 +214,8 @@ void keyReleased() {
   case 'H':
   case 'h':
     // Return to home position.
-    quaternion = new float[] {1.0f, 0.0f, 0.0f, 0.0f};
     euler = new float[] {0.0f, 0.0f, 0.0f};
+    quat = new Quaternion();
     break;
   default:
     break;
@@ -240,11 +240,11 @@ void serialEvent(Serial port) {
   try {
     String buffer = port.readString();
     String[] input = splitTokens(buffer, ",");
-    
-    for (int i = 0; i < input.length; i++) {
-      quaternion[i] = float(input[i]);
-    }
-    
+    quat.set(
+      float(input[0]),
+      float(input[1]),
+      float(input[2]),
+      float(input[3]));
     redraw();
   } catch (Exception e) {
     println(e);
@@ -256,25 +256,15 @@ void serialEvent(Serial port) {
  *        left handed coordinate system.
  */
 void drawRotationCube() {
-  final float p_norm = sqrt(quaternion[1]*quaternion[1] +
-                            quaternion[2]*quaternion[2] +
-                            quaternion[3]*quaternion[3]);
-  final float theta = 2.0f*atan2(p_norm, quaternion[0]);
+  float[] aa = new float[4];
   
   pushMatrix();
   translate(width / 2, height / 2, 0);
   strokeWeight(2);
   
   // Set the rotation for the entire cube.
-  // Convert the quaternion to axis-angle.
-  if (theta != 0.0f) {
-    rotate(theta,
-           quaternion[2] / p_norm,
-           quaternion[3] / p_norm,
-           quaternion[1] / p_norm);
-  } else {
-    rotate(theta, 0.0f, 0.0f, 0.0f);
-  }
+  aa = convertToAxisAngle(quat);
+  rotate(aa[0], aa[2], aa[3], aa[1]);
   
   // Cube
   stroke(0, 153, 153);
@@ -351,59 +341,4 @@ void drawUnitCircles() {
   popMatrix();
   
   popMatrix();
-}
-
-/**
- * @brief Converts Euler angles to a quaternion.
- *
- * @param e The Euler angles to convert, in radians.
- * @return An array of size four which contains the converted
- *         unit quaternion. The format of the array is
- *         [W, X, Y, Z].
- *
- * @note All angles are in radians.
- */
-float[] eulerAnglesToQuaternion(final float[] e) {
-  final float half_e_0 = e[0] * 0.5f;
-  final float half_e_1 = e[1] * 0.5f;
-  final float half_e_2 = e[2] * 0.5f;
-  
-  final float cr = cos(half_e_0);
-  final float cp = cos(half_e_1);
-  final float cy = cos(half_e_2);
-  final float sr = sin(half_e_0);
-  final float sp = sin(half_e_1);
-  final float sy = sin(half_e_2);
-  
-  float[] q = new float[4];
-  
-  q[0] = cr*cp*cy + sr*sp*sy;
-  q[1] = sr*cp*cy - cr*sp*sy;
-  q[2] = cr*sp*cy + sr*cp*sy;
-  q[3] = cr*cp*sy - sr*sp*cy;
-  
-  return q;
-}
-
-/**
- * @brief Converts a quaternion to Euler angles.
- *
- * @param q The unit quaternion to convert.
- * @return An array of size three which contains the converted
- *         Euler angles in radians. The format of the array is
- *         [phi, theta, psi].
- *
- * @note All angles are in radians.
- * @note The quaternion for input must be a unit quaternion.
- */
-float[] quaternionToEulerAngles(final float[] q) {
-  float[] e = new float[3];
-  
-  e[0] = atan2(2.0f*(q[0]*q[1] + q[2]*q[3]),
-               1.0f - 2.0f*(q[1]*q[1] + q[2]*q[2]));
-  e[1] = asin(2.0f*(q[0]*q[2] - q[3]*q[1]));
-  e[2] = atan2(2.0f*(q[0]*q[3] + q[1]*q[2]),
-               1.0f - 2.0f*(q[2]*q[2] + q[3]*q[3]));
-  
-  return e;
 }
