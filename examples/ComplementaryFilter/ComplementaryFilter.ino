@@ -99,36 +99,11 @@ void loop() {
   interrupts();
   
   // Send out the now up-to-date quaternion
-  printFloat(filter.orientation.w(), 5); Serial.print(',');
-  printFloat(filter.orientation.x(), 5); Serial.print(',');
-  printFloat(filter.orientation.y(), 5); Serial.print(',');
-  printFloat(filter.orientation.z(), 5); Serial.println();
+  Serial.print(filter.orientation.w(), 5); Serial.print(',');
+  Serial.print(filter.orientation.x(), 5); Serial.print(',');
+  Serial.print(filter.orientation.y(), 5); Serial.print(',');
+  Serial.print(filter.orientation.z(), 5); Serial.println();
   
   // Do not print out too fast
   delay(10);
-}
-
-void printFloat(float n, int places) {
-  int integer;
-  float decimals;
-  
-  // Check if n is negative
-  // Print a minus sign and convert n to a positive value if it is
-  if (n < 0.0f) {
-    n = fabs(n);
-    Serial.print('-');
-  }
-  
-  // Print the integer component and a decimal point character
-  integer = (int)floor(n);
-  decimals = n - integer;
-  Serial.print(integer); Serial.print('.');
-  
-  // Print the decimal place components
-  for (int i = 0; i < places; i++) {
-    decimals *= 10.0f;
-    integer = (int)floor(decimals);
-    decimals -= integer;
-    Serial.print(integer);
-  }
 }

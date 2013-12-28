@@ -50,7 +50,7 @@ void setup() {
   
   // Print the baseline error
   Serial.print("Mean error: ");
-  printFloat(fabs(mean / 1000.0f), 6);
+  Serial.print(fabs(mean / 1000.0f), 6);
   Serial.println(" rad/s");
   
   // Reset the mean to zero
@@ -88,7 +88,7 @@ void setup() {
   
   // Print out the bias
   Serial.print("Mean bias: ");
-  printFloat(fabs(mean / 1000.0f), 6);
+  Serial.print(fabs(mean / 1000.0f), 6);
   Serial.println(" rad/s/s");
   
   // Bye
@@ -97,29 +97,4 @@ void setup() {
 
 void loop() {
   // Do nothing
-}
-
-void printFloat(float n, int places) {
-  int integer;
-  float decimals;
-  
-  // Check if n is negative
-  // Print a minus sign and convert n to a positive value if it is
-  if (n < 0.0f) {
-    n = fabs(n);
-    Serial.print('-');
-  }
-  
-  // Print the integer component and a decimal point character
-  integer = (int)floor(n);
-  decimals = n - integer;
-  Serial.print(integer); Serial.print('.');
-  
-  // Print the decimal place components
-  for (int i = 0; i < places; i++) {
-    decimals *= 10.0f;
-    integer = (int)floor(decimals);
-    decimals -= integer;
-    Serial.print(integer);
-  }
 }
