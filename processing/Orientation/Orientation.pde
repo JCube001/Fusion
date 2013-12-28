@@ -51,6 +51,7 @@ final String PORTNAME = "/dev/ttyACM0";
 boolean paused = false;
 boolean testing = false;
 long frame = 0;
+long drops = 0;
 float[] euler = {0.0f, 0.0f, 0.0f};
 Quaternion quat = new Quaternion();
 Serial port;
@@ -247,7 +248,7 @@ void serialEvent(Serial port) {
       float(input[3]));
     redraw();
   } catch (Exception e) {
-    println(e);
+    println("Frames dropped: " + ++drops);
   }
 }
 
