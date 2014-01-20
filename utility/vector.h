@@ -24,7 +24,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef UTILITY_VECTOR_H_
 #define UTILITY_VECTOR_H_
 
+#ifdef ARDUINO
 #include <math.h>
+#else
+#include <cmath>
+#include <algorithm>
+#endif
+
 #include "math_extra.h"
 
 namespace fusion {

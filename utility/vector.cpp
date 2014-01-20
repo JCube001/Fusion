@@ -61,6 +61,7 @@ Vector3 Vector3::slerp(const Vector3& p0, const Vector3& p1, const float t) {
  * @param p1 The vector to swap with.
  */
 void swap(Vector3& p0, Vector3& p1) {
+#ifdef ARDUINO
   Vector3 temp;
 
   // Set temp equal to the state of p0.
@@ -77,6 +78,15 @@ void swap(Vector3& p0, Vector3& p1) {
   p1.data_[0] = temp.data_[0];
   p1.data_[1] = temp.data_[1];
   p1.data_[2] = temp.data_[2];
+
+#else
+
+  using std::swap;
+
+  swap(p0.data_[0], p1.data_[0]);
+  swap(p0.data_[1], p1.data_[1]);
+  swap(p0.data_[2], p1.data_[2]);
+#endif
 }
 
 }  // namespace fusion

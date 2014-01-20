@@ -138,6 +138,7 @@ Quaternion Quaternion::squad(const Quaternion& q0, const Quaternion& q1,
  * @param q1 The quaternion to swap with.
  */
 void swap(Quaternion& q0, Quaternion& q1) {
+#ifdef ARDUINO
   Quaternion temp;
 
   // Set temp equal to the state of q0.
@@ -157,6 +158,16 @@ void swap(Quaternion& q0, Quaternion& q1) {
   q1.data_[1] = temp.data_[1];
   q1.data_[2] = temp.data_[2];
   q1.data_[3] = temp.data_[3];
+
+#else
+
+  using std::swap;
+
+  swap(q0.data_[0], q1.data_[0]);
+  swap(q0.data_[1], q1.data_[1]);
+  swap(q0.data_[2], q1.data_[2]);
+  swap(q0.data_[3], q1.data_[3]);
+#endif
 }
 
 }  // namespace fusion
