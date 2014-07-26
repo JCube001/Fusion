@@ -1,90 +1,24 @@
 # Fusion Library
 
-Arduino library for performing digital sensor fusion using various filter
-implementations.
+Arduino library for performing orientation sensor fusion on either 6DoF or
+9DoF systems. The Madgwick algorithms were used to implement these filters.
 
 ## Install
 
 1.  Download the zip archive of this library.
 2.  Unzip and move the folder into your Arduino libraries folder.
 3.  Rename the folder you just moved to Fusion.
-4.  Done!
 
 ## Usage
 
-All you will need to include in your Arduino sketch is the fusion.h header file.
-You may then instantiate and use a filter. The following is an example of this.
+Include the header of the filter you wish to use, either imu_filter.h or
+marg_filter.h. Set the filter gains and the sample rate. To pass new sensor
+readings to the filter, use the update() function. Orientation is computed as
+a quaternion. This orientation can be either retrieved directly or it can be
+converted to either Euler angles or an axis-angle. Note that all angular values
+will be in radians.
 
-~~~~~~~~~~~~~~~{.cpp}
-#include <fusion.h>
+See the provided examples for information on which objects and functions to
+use. A Processing sketch is also included which can be used to help you verify
+that the Fusion library is setup and working correctly on your system.
 
-// Any other includes, globals, or objects
-// ...
-
-fusion::ComplementaryFilter filter;
-
-// For tracking delta time
-unsigned long time_now = 0;
-unsigned long time_last = 0;
-
-void setup() {
-  Serial.begin(9600);
-  
-  // Initialize your sensors
-  // ...
-  
-  // Set gyroscope errors if you know them
-  filter.setGyroscopeError(error);
-  filter.setGyroscopeDrift(drift);
-}
-
-void loop() {
-  // Read your sensors
-  // ...
-  
-  // Get the time of when data was read
-  time_now = millis();
-  
-  // Determine the difference between this time to the time of the last sensor
-  // reading, then convert to seconds
-  filter.setSampleRate((float)(time_now - time_last) / 1000.0f);
-  time_last = time_now;
-  
-  // Set the values within the filter
-  filter.setAccelerometer(a_x, a_y, a_z);
-  filter.setGyroscope(g_x, g_y, g_z);
-  filter.setMagnetometer(m_x, m_y, m_z);  // Optional, for 9 DoF systems
-  
-  // Process the sensor data
-  filter.update();
-  
-  // Handle quaternion output
-  Serial.print(filter.orientation.w()); Serial.print(',');
-  Serial.print(filter.orientation.x()); Serial.print(',');
-  Serial.print(filter.orientation.y()); Serial.print(',');
-  Serial.print(filter.orientation.z()); Serial.println();
-}
-~~~~~~~~~~~~~~~
-
-Note: All angular values are in radians.
-
-## Testing
-
-The [Google Testing](http://code.google.com/p/googletest/) framework for C++
-unit tests is used to help develop this library.
-
-If you would like to run the tests yourself, you will need the package
-libgtest-dev. The following script should be enough to create the tests on a
-Debian based Linux system.
-
-~~~~~~~~~~~~~~~{.sh}
-sudo apt-get install libgtest-dev
-cd test
-make
-~~~~~~~~~~~~~~~
-
-## TODO
-
-* Finish writing all of the filters.
-* Unit tests for all filters.
-* Flight test.
