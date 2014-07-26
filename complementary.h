@@ -21,6 +21,8 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
+#if 0
+
 #ifndef COMPLEMENTARY_H_
 #define COMPLEMENTARY_H_
 
@@ -95,3 +97,5 @@ class ComplementaryFilter : public Filter {
 }  // namespace fusion
 
 #endif  // COMPLEMENTARY_H_
+
+#endif // Enable/disable
