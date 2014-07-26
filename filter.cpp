@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 Filter::Filter() :
     SEq(Quaternion()),
     beta(0.0f),
-    deltaT(0.0f)
+    deltaTime(0.0f)
 {
 }
 
@@ -48,6 +48,6 @@ void Filter::setGyroErrorGain(const float error)
 
 void Filter::setSampleRate(const float rate)
 {
-    deltaT = rate;
+    deltaTime = rate;
 }
 

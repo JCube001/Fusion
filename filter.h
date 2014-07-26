@@ -38,7 +38,7 @@ public:
 protected:
     Quaternion SEq;
     float beta;
-    float deltaT;
+    float deltaTime;
 };
 
 #endif // FILTER_H
