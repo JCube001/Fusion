@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2013 JCube001
+Copyright (c) 2013, 2014 JCube001
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -23,35 +23,29 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "filter.h"
 
-namespace fusion {
-
-Filter::Filter() {
-  orientation = Quaternion::identity();
-  accelerometer_data_ = Vector3(0.0f, 0.0f, 0.0f);
-  gyroscope_data_ = Vector3(0.0f, 0.0f, 0.0f);
-  magnetometer_data_ = Vector3(0.0f, 0.0f, 0.0f);
+Filter::Filter() :
+    SEq(Quaternion()),
+    beta(0.0f),
+    deltaT(0.0f)
+{
 }
 
-Filter::~Filter() {}
-
-void Filter::setAccelerometer(const float x, const float y, const float z) {
-  accelerometer_data_ = Vector3(x, y, z);
+Filter::~Filter()
+{
 }
 
-void Filter::setGyroscope(const float x, const float y, const float z) {
-  gyroscope_data_ = Vector3(x, y, z);
+Quaternion orientation()
+{
+    return SEq;
 }
 
-void Filter::setMagnetometer(const float x, const float y, const float z) {
-  magnetometer_data_ = Vector3(x, y, z);
+void Filter::setGyroErrorGain(const float error)
+{
+    beta = sqrt(3.0f / 4.0f) * error;
 }
 
-bool Filter::hasData(const Vector3& data) const {
-  if (data != Vector3(0.0f, 0.0f, 0.0f)) {
-    return true;
-  }
-
-  return false;
+void Filter::setSampleRate(const float rate)
+{
+    deltaT = rate;
 }
 
-}  // namespace fusion

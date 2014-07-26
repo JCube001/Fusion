@@ -21,24 +21,24 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
-#ifndef FILTER_H
-#define FILTER_H
+#ifndef MARG_FILTER_H
+#define MARG_FILTER_H
 
-class Quaternion;
+#include "filter.h"
 
-class Filter
+class MARGFilter : public Filter
 {
 public:
-    Filter();
-    virtual ~Filter() = 0;
-    Quaternion orientation();
-    void setGyroErrorGain(const float error);
-    void setSampleRate(const float rate);
+    MARGFilter();
+    ~MARGFilter();
+    void setGyroDriftGain(const float drift);
+    void update(float gx, float gy, float gz,
+                float ax, float ay, float az,
+                float mx, float my, float mz);
 
-protected:
-    Quaternion SEq;
-    float beta;
-    float deltaT;
+private:
+    float zeta;
 };
 
-#endif // FILTER_H
+#endif // MARG_FILTER_H
+

@@ -21,24 +21,19 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
-#ifndef FILTER_H
-#define FILTER_H
+#ifndef IMU_FILTER_H
+#define IMU_FILTER_H
 
-class Quaternion;
+#include "filter.h"
 
-class Filter
+class IMUFilter : public Filter
 {
 public:
-    Filter();
-    virtual ~Filter() = 0;
-    Quaternion orientation();
-    void setGyroErrorGain(const float error);
-    void setSampleRate(const float rate);
-
-protected:
-    Quaternion SEq;
-    float beta;
-    float deltaT;
+    IMUFilter();
+    ~IMUFilter();
+    void update(float gx, float gy, float gz,
+                float ax, float ay, float az);
 };
 
-#endif // FILTER_H
+#endif // IMU_FILTER_H
+

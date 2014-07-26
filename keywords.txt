@@ -6,18 +6,25 @@
 # Constants (LITERAL1)
 #######################################
 
-# Filter
-setAccelerometer	KEYWORD2
-setGyroscope	KEYWORD2
-setMagnetometer	KEYWORD2
-update	KEYWORD2
+# Filter class
+KEYWORD2	orientation
+KEYWORD2	setGyroErrorGain
+KEYWORD2	setGyroDriftGain
+KEYWORD2	setSampleRate
+KEYWORD2	update
 
-ComplementaryFilter	KEYWORD1
-setSampleRate	KEYWORD2
-setGyroscopeError	KEYWORD2
-setGyroscopeDrift	KEYWORD2
+# IMUFilter class
+KEYWORD1	IMUFilter
 
-KalmanFilter	KEYWORD1
+# MARGFilter class
+KEYWORD1	MARGFilter
 
-KalmanExtendedFilter	KEYWORD1
+# Quaternion class
+KEYWORD1	Quaternion
+KEYWORD2	conjugate
+KEYWORD2	dot
+KEYWORD2	inverse
+KEYWORD2	norm
+KEYWORD2	normalize
+KEYWORD2	normalized
 
