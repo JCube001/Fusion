@@ -1,2 +1,0 @@
-# Ignore missing build directories
-cpplint --filter=-build/include <files>
