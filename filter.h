@@ -24,14 +24,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef FILTER_H
 #define FILTER_H
 
-class Quaternion;
+#include <quaternion.h>
 
 class Filter
 {
 public:
     Filter();
     virtual ~Filter() = 0;
-    Quaternion orientation();
+    Quaternion orientation() const;
     void setGyroErrorGain(const float error);
     void setSampleRate(const float rate);
 

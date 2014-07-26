@@ -54,12 +54,27 @@ Quaternion Quaternion::conjugate() const
     return Quaternion(scalar, -x, -y, -z);
 }
 
-float dot(const Quaternion &q) const
+void Quaternion::convertToAxisAngle(float &ax, float &ay, float &az, float &angle)
+{
+    ax = x;
+    ay = y;
+    az = z;
+    angle = 2.0f * acos(scalar);
+}
+
+void Quaternion::convertToEulerAngles(float &roll, float &pitch, float &yaw)
+{
+    roll = atan2(2.0f * ((scalar * x) + (y * z)), 1.0f - (2.0f * ((x * x) + (y * y))));
+    pitch = asin(2.0f * ((scalar * y) - (z * x)));
+    yaw = atan2(2.0f * ((scalar * z) + (x * y)), 1.0f - (2.0f * ((y * y) + (z * z))));
+}
+
+float Quaternion::dot(const Quaternion &q) const
 {
     return (scalar * q.scalar) + (x * q.x) + (y * q.y) + (z * q.z);
 }
 
-Quaternion inverse() const
+Quaternion Quaternion::inverse() const
 {
     const float n = norm();
     if (n == 0.0f)

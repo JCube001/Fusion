@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <math.h>
 
 #include "imu_filter.h"
-#include "utility/quaternion.h"
+#include "quaternion.h"
 
 IMUFilter::IMUFilter() :
     Filter()
