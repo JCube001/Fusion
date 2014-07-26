@@ -64,9 +64,9 @@ void Quaternion::convertToAxisAngle(float &ax, float &ay, float &az, float &angl
 
 void Quaternion::convertToEulerAngles(float &roll, float &pitch, float &yaw)
 {
-    roll = atan2(2.0f * ((scalar * x) + (y * z)), 1.0f - (2.0f * ((x * x) + (y * y))));
-    pitch = asin(2.0f * ((scalar * y) - (z * x)));
-    yaw = atan2(2.0f * ((scalar * z) + (x * y)), 1.0f - (2.0f * ((y * y) + (z * z))));
+    roll = atan2((y * z) + (scalar * x), 0.5f - ((x * x) + (y * y)));
+    pitch = asin(-2.0f * ((x * z) + (scalar * y)));
+    yaw = atan2((x * y) + (scalar * z), 0.5f - ((y * y) + (z * z)));
 }
 
 float Quaternion::dot(const Quaternion &q) const
