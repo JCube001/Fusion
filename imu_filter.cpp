@@ -31,10 +31,6 @@ IMUFilter::IMUFilter() :
 {
 }
 
-IMUFilter::~IMUFilter()
-{
-}
-
 void IMUFilter::update(float gx, float gy, float gz,
                        float ax, float ay, float az)
 {

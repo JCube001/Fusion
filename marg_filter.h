@@ -30,7 +30,6 @@ class MARGFilter : public Filter
 {
 public:
     MARGFilter();
-    ~MARGFilter();
     void setGyroDriftGain(const float drift);
     void update(float gx, float gy, float gz,
                 float ax, float ay, float az,

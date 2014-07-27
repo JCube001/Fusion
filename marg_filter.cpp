@@ -32,10 +32,6 @@ MARGFilter::MARGFilter() :
 {
 }
 
-MARGFilter::~MARGFilter()
-{
-}
-
 void MARGFilter::setGyroDriftGain(const float drift)
 {
     zeta = sqrt(3.0f / 4.0f) * drift;
