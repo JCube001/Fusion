@@ -7,24 +7,26 @@
 #######################################
 
 # Filter class
-KEYWORD2	orientation
-KEYWORD2	setGyroErrorGain
-KEYWORD2	setGyroDriftGain
-KEYWORD2	setSampleRate
-KEYWORD2	update
+orientation	KEYWORD2
+setGyroErrorGain	KEYWORD2
+setGyroDriftGain	KEYWORD2
+setSampleRate	KEYWORD2
+update	KEYWORD2
 
 # IMUFilter class
-KEYWORD1	IMUFilter
+IMUFilter	KEYWORD1
 
 # MARGFilter class
-KEYWORD1	MARGFilter
+MARGFilter	KEYWORD1
 
 # Quaternion class
-KEYWORD1	Quaternion
-KEYWORD2	conjugate
-KEYWORD2	dot
-KEYWORD2	inverse
-KEYWORD2	norm
-KEYWORD2	normalize
-KEYWORD2	normalized
+Quaternion	KEYWORD1
+conjugate	KEYWORD2
+convertToAxisAngle	KEYWORD2
+convertToEulerAngles	KEYWORD2
+dot	KEYWORD2
+inverse	KEYWORD2
+norm	KEYWORD2
+normalize	KEYWORD2
+normalized	KEYWORD2
 
