@@ -54,7 +54,7 @@ Quaternion Quaternion::conjugate() const
     return Quaternion(scalar, -x, -y, -z);
 }
 
-void Quaternion::convertToAxisAngle(float &ax, float &ay, float &az, float &angle)
+void Quaternion::convertToAxisAngle(float &ax, float &ay, float &az, float &angle) const
 {
     ax = x;
     ay = y;
@@ -62,7 +62,7 @@ void Quaternion::convertToAxisAngle(float &ax, float &ay, float &az, float &angl
     angle = 2.0f * acos(scalar);
 }
 
-void Quaternion::convertToEulerAngles(float &roll, float &pitch, float &yaw)
+void Quaternion::convertToEulerAngles(float &roll, float &pitch, float &yaw) const
 {
     roll = atan2((y * z) + (scalar * x), 0.5f - ((x * x) + (y * y)));
     pitch = asin(-2.0f * ((x * z) + (scalar * y)));

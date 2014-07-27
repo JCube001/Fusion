@@ -30,8 +30,8 @@ struct Quaternion
     Quaternion(const Quaternion &q);
     Quaternion(float scalar, float x, float y, float z);
     Quaternion conjugate() const;
-    void convertToAxisAngle(float &ax, float &ay, float &az, float &angle);
-    void convertToEulerAngles(float &roll, float &pitch, float &yaw);
+    void convertToAxisAngle(float &ax, float &ay, float &az, float &angle) const;
+    void convertToEulerAngles(float &roll, float &pitch, float &yaw) const;
     float dot(const Quaternion &q) const;
     Quaternion inverse() const;
     float norm() const;
