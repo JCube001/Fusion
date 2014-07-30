@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "filter.h"
 
 Filter::Filter() :
-    SEq(Quaternion()),
+    SEq_hat(Quaternion()),
     beta(0.0f),
     deltaTime(0.0f)
 {
