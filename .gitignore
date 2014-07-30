@@ -2,9 +2,8 @@
 *~
 
 # Unit test output
-test/*.o
-test/*.a
-test/*test
+test/fusion-test
+*.o
 
 # Doxygen output
 doc/html
