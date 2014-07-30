@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "quaternion.h"
 
 Quaternion::Quaternion() :
-    scalar(1.0f),
+    w(1.0f),
     x(0.0f),
     y(0.0f),
     z(0.0f)
@@ -34,15 +34,15 @@ Quaternion::Quaternion() :
 }
 
 Quaternion::Quaternion(const Quaternion &q) :
-    scalar(q.scalar),
+    w(q.w),
     x(q.x),
     y(q.y),
     z(q.z)
 {
 }
 
-Quaternion::Quaternion(float scalar, float x, float y, float z) :
-    scalar(scalar),
+Quaternion::Quaternion(float w, float x, float y, float z) :
+    w(w),
     x(x),
     y(y),
     z(z)
@@ -51,7 +51,7 @@ Quaternion::Quaternion(float scalar, float x, float y, float z) :
 
 Quaternion Quaternion::conjugate() const
 {
-    return Quaternion(scalar, -x, -y, -z);
+    return Quaternion(w, -x, -y, -z);
 }
 
 void Quaternion::convertToAxisAngle(float &ax, float &ay, float &az, float &angle) const
@@ -59,19 +59,19 @@ void Quaternion::convertToAxisAngle(float &ax, float &ay, float &az, float &angl
     ax = x;
     ay = y;
     az = z;
-    angle = 2.0f * acos(scalar);
+    angle = 2.0f * acos(w);
 }
 
 void Quaternion::convertToEulerAngles(float &roll, float &pitch, float &yaw) const
 {
-    roll = atan2((y * z) + (scalar * x), 0.5f - ((x * x) + (y * y)));
-    pitch = asin(-2.0f * ((x * z) + (scalar * y)));
-    yaw = atan2((x * y) + (scalar * z), 0.5f - ((y * y) + (z * z)));
+    roll = atan2((y * z) + (w * x), 0.5f - ((x * x) + (y * y)));
+    pitch = asin(-2.0f * ((x * z) + (w * y)));
+    yaw = atan2((x * y) + (w * z), 0.5f - ((y * y) + (z * z)));
 }
 
 float Quaternion::dot(const Quaternion &q) const
 {
-    return (scalar * q.scalar) + (x * q.x) + (y * q.y) + (z * q.z);
+    return (w * q.w) + (x * q.x) + (y * q.y) + (z * q.z);
 }
 
 Quaternion Quaternion::inverse() const
@@ -86,7 +86,7 @@ Quaternion Quaternion::inverse() const
 
 float Quaternion::norm() const
 {
-    return sqrt((scalar * scalar) + (x * x) + (y * y) + (z * z));
+    return sqrt((w * w) + (x * x) + (y * y) + (z * z));
 }
 
 void Quaternion::normalize()
@@ -101,7 +101,7 @@ Quaternion Quaternion::normalized() const
 
 Quaternion &Quaternion::operator=(const Quaternion &q)
 {
-    scalar = q.scalar;
+    w = q.w;
     x = q.x;
     y = q.y;
     z = q.z;
@@ -110,7 +110,7 @@ Quaternion &Quaternion::operator=(const Quaternion &q)
 
 Quaternion &Quaternion::operator+=(const Quaternion &q)
 {
-    scalar += q.scalar;
+    w += q.w;
     x += q.x;
     y += q.y;
     z += q.z;
@@ -119,7 +119,7 @@ Quaternion &Quaternion::operator+=(const Quaternion &q)
 
 Quaternion &Quaternion::operator-=(const Quaternion &q)
 {
-    scalar -= q.scalar;
+    w -= q.w;
     x -= q.x;
     y -= q.y;
     z -= q.z;
@@ -128,7 +128,7 @@ Quaternion &Quaternion::operator-=(const Quaternion &q)
 
 Quaternion &Quaternion::operator*=(float factor)
 {
-    scalar *= factor;
+    w *= factor;
     x *= factor;
     y *= factor;
     z *= factor;
@@ -137,15 +137,16 @@ Quaternion &Quaternion::operator*=(float factor)
 
 Quaternion &Quaternion::operator*=(const Quaternion &q)
 {
-    scalar = (scalar * q.scalar) - (x * q.x) - (y * q.y) - (z * q.z);
-    x = (scalar * q.x) + (x * q.scalar) + (y * q.z) - (z * q.y);
-    y = (scalar * q.y) - (x * q.z) + (y * q.scalar) + (z * q.x);
-    z = (scalar * q.z) + (x * q.y) - (y * q.x) + (z * q.scalar);
+    w = (w * q.w) - (x * q.x) - (y * q.y) - (z * q.z);
+    x = (w * q.x) + (x * q.w) + (y * q.z) - (z * q.y);
+    y = (w * q.y) - (x * q.z) + (y * q.w) + (z * q.x);
+    z = (w * q.z) + (x * q.y) - (y * q.x) + (z * q.w);
+    return *this
 }
 
 Quaternion &Quaternion::operator/=(float divisor)
 {
-    scalar /= divisor;
+    w /= divisor;
     x /= divisor;
     y /= divisor;
     z /= divisor;

@@ -28,7 +28,7 @@ struct Quaternion
 {
     Quaternion();
     Quaternion(const Quaternion &q);
-    Quaternion(float scalar, float x, float y, float z);
+    Quaternion(float w, float x, float y, float z);
     Quaternion conjugate() const;
     void convertToAxisAngle(float &ax, float &ay, float &az, float &angle) const;
     void convertToEulerAngles(float &roll, float &pitch, float &yaw) const;
@@ -54,7 +54,7 @@ struct Quaternion
     friend inline const Quaternion operator*(Quaternion q1, const Quaternion &q2);
     friend inline const Quaternion operator/(Quaternion q, float divisor);
 
-    float scalar;
+    float w;
     float x;
     float y;
     float z;
@@ -62,7 +62,7 @@ struct Quaternion
 
 inline bool operator==(const Quaternion &q1, const Quaternion &q2)
 {
-    return (q1.scalar == q2.scalar) && (q1.x == q2.x) && (q1.y == q2.y) && (q1.z == q2.z);
+    return (q1.w == q2.w) && (q1.x == q2.x) && (q1.y == q2.y) && (q1.z == q2.z);
 }
 
 inline bool operator!=(const Quaternion &q1, const Quaternion &q2)
@@ -78,7 +78,7 @@ inline const Quaternion operator+(Quaternion q1, const Quaternion &q2)
 
 inline const Quaternion operator-(const Quaternion &q)
 {
-    return Quaternion(-q.scalar, -q.x, -q.y, -q.z);
+    return Quaternion(-q.w, -q.x, -q.y, -q.z);
 }
 
 inline const Quaternion operator-(Quaternion q1, const Quaternion &q2)
