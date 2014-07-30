@@ -4,7 +4,7 @@
 PROJECT = fusion-test
 
 # Google Test library
-LIBGTEST = lib/libgtest.a
+GTEST = lib/libgtest.a
 
 # C++ compiler
 CXX = g++
@@ -20,7 +20,7 @@ CXXFLAGS += -g -Wall -Wextra -std=c++11
 
 # Linker flags
 # Note that pthread is required by Google Test
-LDFLAGS += -L$(LIBGTEST) -lpthread -lm
+LDFLAGS += -lpthread -lm
 
 # Source files
 SRC = $(wildcard ../*.cpp) $(wildcard src/*.cpp)
@@ -37,7 +37,7 @@ OBJ = $(patsubst %.cpp,%.o,$(SRC))
 all: $(PROJECT)
 
 $(PROJECT): $(OBJ)
-	$(CXX) $^ -o $@ $(LDFLAGS)
+	$(CXX) $^ -o $@ $(GTEST) $(LDFLAGS)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $< -o $@
