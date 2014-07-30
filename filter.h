@@ -36,7 +36,7 @@ public:
     void setSampleRate(const float rate);
 
 protected:
-    Quaternion SEq;
+    Quaternion SEq_hat;
     float beta;
     float deltaTime;
 };

@@ -38,7 +38,7 @@ Filter::~Filter()
 
 Quaternion Filter::orientation() const
 {
-    return SEq;
+    return SEq_hat;
 }
 
 void Filter::setGyroErrorGain(const float error)
