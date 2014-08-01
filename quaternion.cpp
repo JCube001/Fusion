@@ -136,7 +136,7 @@ Quaternion &Quaternion::operator*=(float factor)
 
 Quaternion &Quaternion::operator*=(const Quaternion &q)
 {
-    Quaternion t = *this;
+    const Quaternion t = *this;
     w = (t.w * q.w) - (t.x * q.x) - (t.y * q.y) - (t.z * q.z);
     x = (t.w * q.x) + (t.x * q.w) + (t.y * q.z) - (t.z * q.y);
     y = (t.w * q.y) - (t.x * q.z) + (t.y * q.w) + (t.z * q.x);
