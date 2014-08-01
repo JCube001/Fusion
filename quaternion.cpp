@@ -22,7 +22,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 #include <math.h>
-
 #include "quaternion.h"
 
 Quaternion::Quaternion() :
@@ -137,10 +136,11 @@ Quaternion &Quaternion::operator*=(float factor)
 
 Quaternion &Quaternion::operator*=(const Quaternion &q)
 {
-    w = (w * q.w) - (x * q.x) - (y * q.y) - (z * q.z);
-    x = (w * q.x) + (x * q.w) + (y * q.z) - (z * q.y);
-    y = (w * q.y) - (x * q.z) + (y * q.w) + (z * q.x);
-    z = (w * q.z) + (x * q.y) - (y * q.x) + (z * q.w);
+    Quaternion t = *this;
+    w = (t.w * q.w) - (t.x * q.x) - (t.y * q.y) - (t.z * q.z);
+    x = (t.w * q.x) + (t.x * q.w) + (t.y * q.z) - (t.z * q.y);
+    y = (t.w * q.y) - (t.x * q.z) + (t.y * q.w) + (t.z * q.x);
+    z = (t.w * q.z) + (t.x * q.y) - (t.y * q.x) + (t.z * q.w);
     return *this;
 }
 
