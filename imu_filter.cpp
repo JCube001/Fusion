@@ -22,7 +22,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 #include <math.h>
-
 #include "imu_filter.h"
 #include "quaternion.h"
 
@@ -31,9 +30,39 @@ IMUFilter::IMUFilter() :
 {
 }
 
-void IMUFilter::update(float gx, float gy, float gz,
+void IMUFilter::update(float wx, float wy, float wz,
                        float ax, float ay, float az)
 {
-    // TODO
+    // The direction of gravity in the earth frame
+    static const Quaternion Eg_hat(0.0f, 0.0f, 0.0f, 1.0f);
+
+    // Compute the objective function
+    const Quaternion f_g = SEq_hat.conjugate() * Eg_hat * SEq_hat - Quaternion(0.0f, ax, ay, az).normalized();
+
+    // Compute the Jacobian matrix
+    // Negative elements are negated in matrix multiplication
+    const Quaternion two_SEq = 2.0f * SEq_hat;
+    const float J_11_or_24 = two_SEq.y;
+    const float J_12_or_23 = two_SEq.z;
+    const float J_13_or_22 = two_SEq.w;
+    const float J_14_or_21 = two_SEq.x;
+    const float J_32 = 2.0f * J_14_or_21;
+    const float J_33 = 2.0f * J_11_or_24;
+
+    // Compute the normalized gradient descent (matrix multiplication)
+    const Quaternion SEq_hat_dot
+            = Quaternion(J_14_or_21 * f_g.y - J_11_or_24 * f_g.x,
+                         J_12_or_23 * f_g.x + J_13_or_22 * f_g.y - J_32 * f_g.z,
+                         J_12_or_23 * f_g.y - J_33 * f_g.z - J_13_or_22 * f_g.x,
+                         J_14_or_21 * f_g.x + J_11_or_24 * f_g.y).normalized();
+
+    // Compute the quaternion derivative measured by the gyroscope
+    const Quaternion SEq_dot_omega = 0.5f * SEq_hat * Quaternion(0.0f, wx, wy, wz);
+
+    // Compute then integrate the estimated quaternion derivative
+    SEq_hat += (SEq_dot_omega - (beta * SEq_hat_dot)) * deltaTime;
+
+    // Normalize the output quaternion
+    SEq_hat.normalize();
 }
 

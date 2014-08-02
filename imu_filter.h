@@ -30,7 +30,7 @@ class IMUFilter : public Filter
 {
 public:
     IMUFilter();
-    void update(float gx, float gy, float gz,
+    void update(float wx, float wy, float wz,
                 float ax, float ay, float az);
 };
 
