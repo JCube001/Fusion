@@ -31,11 +31,13 @@ class MARGFilter : public Filter
 public:
     MARGFilter();
     void setGyroDriftGain(const float drift);
-    void update(float gx, float gy, float gz,
+    void update(float wx, float wy, float wz,
                 float ax, float ay, float az,
                 float mx, float my, float mz);
 
 private:
+    Quaternion Eb_hat;
+    Quaternion Sw_b;
     float zeta;
 };
 
