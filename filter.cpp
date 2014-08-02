@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Filter::Filter() :
     SEq_hat(Quaternion()),
-    beta(0.0f),
+    beta(1.0f),
     deltaTime(0.0f)
 {
 }

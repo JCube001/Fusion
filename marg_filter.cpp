@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 MARGFilter::MARGFilter() :
     Filter(),
-    zeta(0.0f)
+    zeta(1.0f)
 {
 }
 
