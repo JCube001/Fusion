@@ -24,6 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <math.h>
 #include "filter.h"
 
+const Quaternion Filter::Eg_hat = Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+
 Filter::Filter() :
     SEq_hat(Quaternion()),
     beta(1.0f),
@@ -47,6 +49,9 @@ void Filter::setGyroErrorGain(const float error)
 
 void Filter::setSampleRate(const float rate)
 {
-    deltaTime = rate;
+    if (rate > 0.0f)
+    {
+        deltaTime = rate;
+    }
 }
 

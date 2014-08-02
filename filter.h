@@ -36,7 +36,8 @@ public:
     void setSampleRate(const float rate);
 
 protected:
-    Quaternion SEq_hat;
+    static const Quaternion Eg_hat; /**< The direction of gravity in the earth frame */
+    Quaternion SEq_hat;             /**< The estimated orientation */
     float beta;
     float deltaTime;
 };
