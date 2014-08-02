@@ -33,15 +33,15 @@ IMUFilter::IMUFilter() :
 void IMUFilter::update(float wx, float wy, float wz,
                        float ax, float ay, float az)
 {
-    // The direction of gravity in the earth frame
-    static const Quaternion Eg_hat(0.0f, 0.0f, 0.0f, 1.0f);
+    // Auxiliary variables to avoid repeated calculations
+    const Quaternion two_SEq = 2.0f * SEq_hat;
 
     // Compute the objective function
-    const Quaternion f_g = SEq_hat.conjugate() * Eg_hat * SEq_hat - Quaternion(0.0f, ax, ay, az).normalized();
+    const Quaternion f_g = SEq_hat.conjugate() * Eg_hat * SEq_hat
+            - Quaternion(0.0f, ax, ay, az).normalized();
 
     // Compute the Jacobian matrix
     // Negative elements are negated in matrix multiplication
-    const Quaternion two_SEq = 2.0f * SEq_hat;
     const float J_11_or_24 = two_SEq.y;
     const float J_12_or_23 = two_SEq.z;
     const float J_13_or_22 = two_SEq.w;
