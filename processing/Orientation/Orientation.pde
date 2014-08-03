@@ -44,7 +44,7 @@ T - Enter test mode. Manual control of the rotation enabled.
 import processing.serial.*;
 
 // Change these to reflect your serial configuration.
-final int BAUDRATE = 9600;
+final int BAUDRATE = 115200;
 final String PORTNAME = "/dev/ttyACM0";
 
 // Global states and storage.
