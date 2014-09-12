@@ -69,7 +69,7 @@ struct Quaternion
      * @details The quaternion conjugate is defined as a quaternion with its
      *          imaginary vector component negated.
      * @f[
-     *   q^* = q_{0} - q_{1}i - q_{2}j - q_{3}k
+     *   q^{*} = q_{0} - q_{1}i - q_{2}j - q_{3}k
      * @f]
      *
      * @return A copy of the quaternion conjugate.
@@ -80,14 +80,16 @@ struct Quaternion
      * @brief   Converts the quaternion to an axis-angle.
      * @details Converts from a quaternion representation of rotation to the
      *          equivalent axis-angle representation of rotation.
-     * @f{eqnarray}{
-     *   q &=& s + \vec{v} \\
-     *   \theta &=& 2 \arccos(s) \\
-     *   \omega &=& \begin{cases}
+     * @f[
+     *   \begin{aligned}
+     *   q &= s + \vec{v} \\
+     *   \theta &= 2 \arccos(s) \\
+     *   \omega &= \begin{cases}
      *   \frac{\vec{v}}{\sin(\theta / 2)} & \text{if $\theta \neq 0$} \\
      *   0 & \text{otherwise}
      *   \end{cases}
-     * @f}
+     *   \end{aligned}
+     * @f]
      * @pre The quaternion must be a versor (unit quaternion).
      *
      * @param[out] wx    The X position of the axis.
@@ -126,7 +128,7 @@ struct Quaternion
      *          product multiplication, use the C++ operator for
      *          multiplication.
      * @f[
-     *   q \cdot p = {q_0}{p_0} + {q_1}{p_1} + {q_2}{p_2} +{q_3}{p_3}
+     *   a \cdot b = {a_0}{b_0} + {a_1}{b_1} + {a_2}{b_2} +{a_3}{b_3}
      * @f]
      * @see     Quaternion::operator*=()
      *
