@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /**
  * @file   imu_filter.h
  * @brief  Inertial measurement unit (IMU) filter class.
- *
- * @addtogroup imu_filter
- * @{
  */
 
 #ifndef IMU_FILTER_H
@@ -57,9 +54,12 @@ public:
      * @pre     The proper units must be used for the input parameters.
      * @post    The estimated orientation is updated.
      *
-     * @param[in] wx The gyroscope X axis measurement in rad/s.
-     * @param[in] wy The gyroscope Y axis measurement in rad/s.
-     * @param[in] wz The gyroscope Z axis measurement in rad/s.
+     * @param[in] wx The gyroscope X axis measurement in
+     *               @f$\frac{\text{rad}}{\text{s}}@f$.
+     * @param[in] wy The gyroscope Y axis measurement in
+     *               @f$\frac{\text{rad}}{\text{s}}@f$.
+     * @param[in] wz The gyroscope Z axis measurement in
+     *               @f$\frac{\text{rad}}{\text{s}}@f$.
      * @param[in] ax The accelerometer X axis measurement in units of gravity.
      * @param[in] ay The accelerometer Y axis measurement in units of gravity.
      * @param[in] az The accelerometer Z axis measurement in units of gravity.
@@ -69,5 +69,3 @@ public:
 };
 
 #endif // IMU_FILTER_H
-
-/** @} */

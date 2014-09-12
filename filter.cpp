@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /**
  * @file  filter.cpp
  * @brief Filter implementation.
- *
- * @addtogroup filter
- * @{
  */
 
 #include <math.h>
@@ -62,5 +59,3 @@ void Filter::setSampleRate(const float rate)
         sampleRate = rate;
     }
 }
-
-/** @} */

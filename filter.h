@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /**
  * @file   filter.h
  * @brief  Abstract class for creating orientation filters.
- *
- * @addtogroup filter
- * @{
  */
 
 #ifndef FILTER_H
@@ -70,7 +67,7 @@ public:
      *          gyroscope measurement errors, expressed as the magnitude of a
      *          quaternion derivative.
      * @f[
-     *   \beta=\sqrt{\frac{3}{4}}\tilde{\omega}_\beta
+     *   \beta = \sqrt{\frac{3}{4}} \tilde{\omega}_\beta
      * @f]
      *
      * @param[in] error The gyroscope error rate in rad/s.
@@ -98,5 +95,3 @@ protected:
 };
 
 #endif // FILTER_H
-
-/** @} */

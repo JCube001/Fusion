@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /**
  * @file  marg_filter.h
  * @brief Magnetic, Angular Rate and Gravity (MARG) filter class.
- *
- * @addtogroup marg_filter
- * @{
  */
 
 #ifndef MARG_FILTER_H
@@ -55,8 +52,11 @@ public:
      *          convergence to remove gyroscope measurement error which are
      *          not mean zero. Expressed as the magnitude of a quaternion
      *          derivative.
+     * @f[
+     *   \zeta = \sqrt{\frac{3}{4}} \tilde{\dot{\omega}}_\zeta
+     * @f]
      *
-     * @param[in] drift The drift rate in @f$\text{rad}\over\text{s}^{2}@f$.
+     * @param[in] drift The drift rate in @f$\frac{\text{rad}}{\text{s}^{2}}@f$.
      */
     void setGyroDriftGain(const float drift);
 
@@ -69,11 +69,11 @@ public:
      * @post    The estimated orientation is updated.
      *
      * @param[in] wx The gyroscope X axis measurement in
-     *               @f$\text{rad}\over\text{s}@f$.
+     *               @f$\frac{\text{rad}}{\text{s}}@f$.
      * @param[in] wy The gyroscope Y axis measurement in
-     *               @f$\text{rad}\over\text{s}@f$.
+     *               @f$\frac{\text{rad}}{\text{s}}@f$.
      * @param[in] wz The gyroscope Z axis measurement in
-     *               @f$\text{rad}\over\text{s}@f$.
+     *               @f$\frac{\text{rad}}{\text{s}}@f$.
      * @param[in] ax The accelerometer X axis measurement in units of gravity.
      * @param[in] ay The accelerometer Y axis measurement in units of gravity.
      * @param[in] az The accelerometer Z axis measurement in units of gravity.
@@ -89,13 +89,12 @@ public:
                 float mx, float my, float mz);
 
 private:
-    Quaternion Eb_hat; /**< TODO */
-    Quaternion Sw_b;   /**< TODO */
+    Quaternion Eb_hat; /**< Normalized magnetic flux in the earth frame */
+    Quaternion Sw_b;   /**< The angular estimated direction of gyroscope
+                            error */
     float zeta;        /**< Filter gain which represents the rate of
                             convergence to remove gyroscope measurement error
                             which are not mean zero */
 };
 
 #endif // MARG_FILTER_H
-
-/** @} */

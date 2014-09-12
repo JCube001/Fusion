@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /**
  * @file  imu_filter.cpp
  * @brief IMU filter implementation.
- *
- * @addtogroup imu_filter
- * @{
  */
 
 #include <math.h>
@@ -73,5 +70,3 @@ void IMUFilter::update(float wx, float wy, float wz,
     // Normalize the output quaternion
     SEq_hat.normalize();
 }
-
-/** @} */

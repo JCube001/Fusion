@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /**
  * @file marg_filter.cpp
  * @brief MARG filter implementation.
- *
- * @addtogroup marg_filter
- * @{
  */
 
 #include <math.h>
@@ -114,5 +111,3 @@ void MARGFilter::update(float wx, float wy, float wz,
     // Normalize the magnetic flux vector to have only x and z components
     Eb_hat = Quaternion(0.0f, sqrt((Eh_hat.x * Eh_hat.x) + (Eh_hat.y * Eh_hat.y)), 0.0f, Eh_hat.z);
 }
-
-/** @} */

@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /**
  * @file  quaternion.cpp
  * @brief Quaternion implementation.
- *
- * @addtogroup quaternion
- * @{
  */
 
 #include <math.h>
@@ -48,7 +45,7 @@ Quaternion::Quaternion(const Quaternion &q) :
 {
 }
 
-Quaternion::Quaternion(float w, float x, float y, float z) :
+Quaternion::Quaternion(const float w, const float x, const float y, const float z) :
     w(w),
     x(x),
     y(y),
@@ -61,19 +58,29 @@ Quaternion Quaternion::conjugate() const
     return Quaternion(w, -x, -y, -z);
 }
 
-void Quaternion::convertToAxisAngle(float &ax, float &ay, float &az, float &angle) const
+void Quaternion::convertToAxisAngle(float &wx, float &wy, float &wz, float &angle) const
 {
-    ax = x;
-    ay = y;
-    az = z;
     angle = 2.0f * acos(w);
+    const float sin_half_angle = sin(angle / 2.0f);
+    if (0 != angle)
+    {
+        wx = x / sin_half_angle;
+        wy = y / sin_half_angle;
+        wz = z / sin_half_angle;
+    }
+    else
+    {
+        wx = 0.0f;
+        wy = 0.0f;
+        wz = 0.0f;
+    }
 }
 
 void Quaternion::convertToEulerAngles(float &roll, float &pitch, float &yaw) const
 {
-    roll = atan2((y * z) + (w * x), 0.5f - ((x * x) + (y * y)));
-    pitch = asin(-2.0f * ((x * z) + (w * y)));
-    yaw = atan2((x * y) + (w * z), 0.5f - ((y * y) + (z * z)));
+    roll = atan2(2.0f * ((w * x) + (y * z)), 1.0f - (2.0f * ((x * x) + (y * y))));
+    pitch = asin(2.0f * ((w * y) - (z * x)));
+    yaw = atan2(2.0f * ((w * z) + (x * y)), 1.0f - (2.0f ((y * y) + (z * z))));
 }
 
 float Quaternion::dot(const Quaternion &q) const
@@ -84,7 +91,7 @@ float Quaternion::dot(const Quaternion &q) const
 Quaternion Quaternion::inverse() const
 {
     const float n = norm();
-    if (n == 0.0f)
+    if (0.0f == n)
     {
         return Quaternion();
     }
@@ -160,5 +167,3 @@ Quaternion &Quaternion::operator/=(float divisor)
     z /= divisor;
     return *this;
 }
-
-/** @} */
