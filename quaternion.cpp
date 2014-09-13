@@ -80,7 +80,7 @@ void Quaternion::convertToEulerAngles(float &roll, float &pitch, float &yaw) con
 {
     roll = atan2(2.0f * ((w * x) + (y * z)), 1.0f - (2.0f * ((x * x) + (y * y))));
     pitch = asin(2.0f * ((w * y) - (z * x)));
-    yaw = atan2(2.0f * ((w * z) + (x * y)), 1.0f - (2.0f ((y * y) + (z * z))));
+    yaw = atan2(2.0f * ((w * z) + (x * y)), 1.0f - (2.0f * ((y * y) + (z * z))));
 }
 
 float Quaternion::dot(const Quaternion &q) const

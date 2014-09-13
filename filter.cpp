@@ -34,7 +34,7 @@ const Quaternion Filter::Eg_hat = Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
 Filter::Filter() :
     SEq_hat(Quaternion()),
     beta(1.0f),
-    deltaTime(0.0f)
+    sampleRate(0.0f)
 {
 }
 

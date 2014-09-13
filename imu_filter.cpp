@@ -65,7 +65,7 @@ void IMUFilter::update(float wx, float wy, float wz,
     const Quaternion SEq_dot_omega = 0.5f * SEq_hat * Quaternion(0.0f, wx, wy, wz);
 
     // Compute then integrate the estimated quaternion derivative
-    SEq_hat += (SEq_dot_omega - (beta * SEq_hat_dot)) * deltaTime;
+    SEq_hat += (SEq_dot_omega - (beta * SEq_hat_dot)) * sampleRate;
 
     // Normalize the output quaternion
     SEq_hat.normalize();

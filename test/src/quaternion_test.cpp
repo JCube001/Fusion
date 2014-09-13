@@ -47,7 +47,7 @@ TEST(QuaternionTest, ConvertToAxisAngle)
     q.convertToAxisAngle(x, y, z, angle);
     EXPECT_FLOAT_EQ(0.0f, x);
     EXPECT_FLOAT_EQ(0.0f, y);
-    EXPECT_FLOAT_EQ(0.707107f, z);
+    EXPECT_NEAR(1.0f, z, 1.0e-4f);
     EXPECT_NEAR(1.57079633f, angle, 1.0e-4f);
 }
 

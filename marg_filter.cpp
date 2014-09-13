@@ -96,11 +96,11 @@ void MARGFilter::update(float wx, float wy, float wz,
     // Compute the angular estimated direction of gyroscope error then compute
     // and remove the gyroscope biases while computing the quaternion
     // derivative measured by the gyroscope
-    Sw_b += zeta * (two_SEq.conjugate() * SEq_hat_dot) * deltaTime;
+    Sw_b += zeta * (two_SEq.conjugate() * SEq_hat_dot) * sampleRate;
     const Quaternion SEq_dot_omega = 0.5f * SEq_hat * (Quaternion(0.0f, wx, wy, wz) - Sw_b);
 
     // Compute then integrate the estimated quaternion derivative
-    SEq_hat += (SEq_dot_omega - (beta * SEq_hat_dot)) * deltaTime;
+    SEq_hat += (SEq_dot_omega - (beta * SEq_hat_dot)) * sampleRate;
 
     // Normalize the output quaternion
     SEq_hat.normalize();
