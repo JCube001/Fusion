@@ -30,11 +30,33 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "imu_filter.h"
 #include "quaternion.h"
 
+/**
+ * @brief   Default constructor.
+ * @details Initializes the filter to a known state.
+ */
 IMUFilter::IMUFilter() :
     Filter()
 {
 }
 
+/**
+ * @brief   Updates estimated orientation.
+ * @details Executes the filter algorithm and updates the estimated
+ *          orientation.
+ * @pre     The sample rate must be set to a value greater than zero.
+ * @pre     The proper units must be used for the input parameters.
+ * @post    The estimated orientation is updated.
+ *
+ * @param[in] wx The gyroscope X axis measurement in
+ *               @f$\frac{\text{rad}}{\text{s}}@f$.
+ * @param[in] wy The gyroscope Y axis measurement in
+ *               @f$\frac{\text{rad}}{\text{s}}@f$.
+ * @param[in] wz The gyroscope Z axis measurement in
+ *               @f$\frac{\text{rad}}{\text{s}}@f$.
+ * @param[in] ax The accelerometer X axis measurement in units of gravity.
+ * @param[in] ay The accelerometer Y axis measurement in units of gravity.
+ * @param[in] az The accelerometer Z axis measurement in units of gravity.
+ */
 void IMUFilter::update(float wx, float wy, float wz,
                        float ax, float ay, float az)
 {

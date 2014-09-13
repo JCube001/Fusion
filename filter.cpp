@@ -31,6 +31,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 const Quaternion Filter::Eg_hat = Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
 
+/**
+ * @brief   Default constructor.
+ * @details Initializes the filter to a known state.
+ */
 Filter::Filter() :
     SEq_hat(Quaternion()),
     beta(1.0f),
@@ -38,20 +42,50 @@ Filter::Filter() :
 {
 }
 
+/**
+ * @brief   Destructor.
+ * @details This is an abstract destructor which prevents this class from being
+ *          used directly.
+ */
 Filter::~Filter()
 {
 }
 
+/**
+ * @brief   Gets the current estimated orientation.
+ * @details Gets the orientation which was most recently computed in a filter
+ *          update.
+ *
+ * @return The most current estimated orientation quaternion.
+ */
 Quaternion Filter::orientation() const
 {
     return SEq_hat;
 }
 
+/**
+ * @brief   Sets the gyroscope error gain.
+ * @details Sets the beta filter gain. This gain represents all mean zero
+ *          gyroscope measurement errors, expressed as the magnitude of a
+ *          quaternion derivative.
+ * @f[
+ *   \beta = \sqrt{\frac{3}{4}} \tilde{\omega}_\beta
+ * @f]
+ *
+ * @param[in] error The gyroscope error rate in rad/s.
+ */
 void Filter::setGyroErrorGain(const float error)
 {
     beta = sqrt(3.0f / 4.0f) * error;
 }
 
+/**
+ * @brief   Sets the sample rate.
+ * @details Sets the sample rate the filter will operate at. This can also be
+ *          the change in time since the last filter update was run.
+ * @pre     The @p rate should be greater than zero, otherwise this function
+ *          does nothing.
+ */
 void Filter::setSampleRate(const float rate)
 {
     if (rate > 0.0f)

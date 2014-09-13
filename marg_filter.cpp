@@ -31,6 +31,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "marg_filter.h"
 #include "quaternion.h"
 
+/**
+ * @brief   Default construction.
+ * @details Initializes the filter to a known state.
+ */
 MARGFilter::MARGFilter() :
     Filter(),
     Eb_hat(Quaternion(0.0f, 1.0f, 0.0f, 0.0f)),
@@ -39,11 +43,43 @@ MARGFilter::MARGFilter() :
 {
 }
 
+/**
+ * @brief   Sets the gyroscope drift gain.
+ * @details Sets the zeta filter gain. This gain represents the rate of
+ *          convergence to remove gyroscope measurement error which are not
+ *          mean zero. Expressed as the magnitude of a quaternion derivative.
+ * @f[
+ *   \zeta = \sqrt{\frac{3}{4}} \tilde{\dot{\omega}}_\zeta
+ * @f]
+ *
+ * @param[in] drift The drift rate in @f$\frac{\text{rad}}{\text{s}^{2}}@f$.
+ */
 void MARGFilter::setGyroDriftGain(const float drift)
 {
     zeta = sqrt(3.0f / 4.0f) * drift;
 }
 
+/**
+ * @brief   Updates estimated orientation.
+ * @details Executes the filter algorithm and updates the estimated
+ *          orientation.
+ * @pre     The sample rate must be set to a value greater than zero.
+ * @pre     The proper units must be used for the input parameters.
+ * @post    The estimated orientation is updated.
+ *
+ * @param[in] wx The gyroscope X axis measurement in
+ *               @f$\frac{\text{rad}}{\text{s}}@f$.
+ * @param[in] wy The gyroscope Y axis measurement in
+ *               @f$\frac{\text{rad}}{\text{s}}@f$.
+ * @param[in] wz The gyroscope Z axis measurement in
+ *               @f$\frac{\text{rad}}{\text{s}}@f$.
+ * @param[in] ax The accelerometer X axis measurement in units of gravity.
+ * @param[in] ay The accelerometer Y axis measurement in units of gravity.
+ * @param[in] az The accelerometer Z axis measurement in units of gravity.
+ * @param[in] mx The magnetometer X axis measurement in units of magnetic flux.
+ * @param[in] my The magnetometer Y axis measurement in units of magnetic flux.
+ * @param[in] mz The magnetometer Z axis measurement in units of magnetic flux.
+ */
 void MARGFilter::update(float wx, float wy, float wz,
                         float ax, float ay, float az,
                         float mx, float my, float mz)
