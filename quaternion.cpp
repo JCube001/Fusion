@@ -163,7 +163,7 @@ void Quaternion::convertToEulerAngles(float &roll, float &pitch, float &yaw) con
  * @f[
  *   a \cdot b = {a_0}{b_0} + {a_1}{b_1} + {a_2}{b_2} +{a_3}{b_3}
  * @f]
- * @see     Quaternion::operator*=(Quaternion)
+ * @see     Quaternion::operator*=()
  *
  * @param[in] q The quaternion to multiply by.
  * @return      The scalar dot product of two quaternions.

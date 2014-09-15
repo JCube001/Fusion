@@ -96,7 +96,7 @@ inline bool operator==(const Quaternion &q1, const Quaternion &q2)
  * @brief   Inequality operator.
  * @details Tests for inequality between two quaternions by comparing each of
  *          their corresponding components.
- * @see     operator==(Quaternion, Quaternion)
+ * @see     operator==()
  *
  * @param[in] q1 The left side quaternion operand.
  * @param[in] q2 The right side quaternion operand.
@@ -112,7 +112,7 @@ inline bool operator!=(const Quaternion &q1, const Quaternion &q2)
 /**
  * @brief   Addition operator.
  * @details Performs addition between two quaternions.
- * @see     Quaternion::operator+=(Quaternion)
+ * @see     Quaternion::operator+=()
  *
  * @param[in] q1 The left side quaternion operand.
  * @param[in] q2 The right side quaternion operand.
@@ -144,7 +144,7 @@ inline const Quaternion operator-(const Quaternion &q)
 /**
  * @brief   Subtraction operator.
  * @details Performs subtraction between two quaternions.
- * @see     Quaternion::operator-=(Quaternion)
+ * @see     Quaternion::operator-=()
  *
  * @param[in] q1 The left side quaternion.
  * @param[in] q2 The right side quaternion.
@@ -189,7 +189,7 @@ inline const Quaternion operator*(Quaternion q, float factor)
 /**
  * @brief   Cross product multiplication operator.
  * @details Performs cross product multiplication between two quaternions.
- * @see     Quaternion::operator*=(Quaternion)
+ * @see     Quaternion::operator*=()
  *
  * @param[in] q1 The left side quaternion.
  * @param[in] q2 The right side quaternion.
