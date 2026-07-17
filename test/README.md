@@ -1,7 +1,3 @@
-# Unit Testing the Fusion Library
+# Tests
 
-The Google Test framework for unit testing C++ code is used to test the Fusion
-library. A compiled Google Test library version 1.7.0 is included to make
-compiling these tests as easy as possible. Simply execute the Makefile to build
-the fusion-test excutable.
-
+[Catch2](https://github.com/catchorg/Catch2) is used to unit test the Fusion library. To run the unit tests, run `make` and then the test executable `tests`.

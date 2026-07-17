@@ -1,50 +1,30 @@
-# Makefile for building a test suite which tests the entire Fusion library
-
-# Project name
-PROJECT = fusion-test
-
-# Google Test library
-GTEST = lib/libgtest.a
-
-# C++ compiler
 CXX = g++
 
-# Remove file program
-RM = rm -f
+CPPFLAGS = -I. -I.. -MMD
+CXXFLAGS = -Wall -Wextra -O2
+LDLIBS =
 
-# C preprocessor flags
-CPPFLAGS += -Iinclude -I..
+CXXFLAGS += $(shell pkg-config --cflags catch2-with-main)
+LDLIBS += $(shell pkg-config --libs catch2-with-main)
 
-# C++ compiler flags
-CXXFLAGS += -g -Wall -Wextra -std=c++11
+TARGET = tests
+SRCS = $(wildcard ../*.cpp *.cpp)
+OBJS = $(SRCS:.cpp=.o)
+DEPS = $(SRCS:.cpp=.d)
 
-# Linker flags
-# Note that pthread is required by Google Test
-LDFLAGS += -lpthread -lm
+.PHONY: all clean
 
-# Source files
-SRC = $(wildcard ../*.cpp) $(wildcard src/*.cpp)
+all: $(TARGET)
 
-# Object files
-OBJ = $(patsubst %.cpp,%.o,$(SRC))
-
-#
-# Rules
-#
-
-.PHONY: all clean dist-clean
-
-all: $(PROJECT)
-
-$(PROJECT): $(OBJ)
-	$(CXX) $^ -o $@ $(GTEST) $(LDFLAGS)
+$(TARGET): $(OBJS)
+	$(CXX) -o $@ $^ $(LDLIBS)
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $< -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
 
 clean:
-	$(RM) $(OBJ)
+	$(RM) $(TARGET) $(OBJS) $(DEPS)
 
-dist-clean: clean
-	$(RM) $(PROJECT)
-
+# Compiler-generated dependency rules
+# THIS MUST BE THE LAST LINE IN THE MAKEFILE
+-include $(DEPS)

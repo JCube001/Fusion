@@ -2,7 +2,8 @@
 *~
 
 # Unit test output
-test/fusion-test
+test/tests
+*.d
 *.o
 
 # Doxygen output
